@@ -1,35 +1,35 @@
 {
-  "generated_at": "2026-11-24T14:22:44.204Z",
+  "generated_at": "2026-11-24T14:55:28.649Z",
   "calls_used": 6,
   "by_match": {
     "6106256": {
       "home": "Manchester City",
       "away": "Napoli",
-      "fetched_at": "2026-11-24T14:22:53.516Z",
+      "fetched_at": "2026-11-24T14:55:36.065Z",
       "risk_level": "CLEAR",
       "signals": [
         "TEAM_NEWS"
       ],
       "headlines": [
         {
+          "title": "Jeremy Doku relishing reunion with Manchester City legend Kevin De Bruyne ahead of Napoli Champions League clash",
+          "source": "Goal.com",
+          "published_at": "2026-11-23T14:37:06Z",
+          "url": "https://www.goal.com/en-us/news/jeremy-doku-manchester-city-kevin-de-bruyne-napoli-champions-league/blt58da345459512e04",
+          "tag": "TEAM_NEWS"
+        },
+        {
+          "title": "Ex-star De Bruyne stands in way as City seek form against Napoli",
+          "source": "Dpa-international.com",
+          "published_at": "2026-11-23T14:33:39Z",
+          "url": "https://dpa-international.com/sports/urn:newsml:dpa.com:20090101:261123-930-39380/",
+          "tag": "TEAM_NEWS"
+        },
+        {
           "title": "Manchester City v Napoli: Preview, expected line-ups, stats and where to watch",
           "source": "101 Great Goals",
           "published_at": "2026-11-23T14:16:15Z",
           "url": "https://www.101greatgoals.com/match-previews/champions-league-matches/manchester-city-napoli-preview-expected-line-ups-stats-stream-where-to-watch/",
-          "tag": "TEAM_NEWS"
-        },
-        {
-          "title": "Maresca: Man City need one thing against Napoli, I ‘still follow’ my favourite Italian club",
-          "source": "Football Italia",
-          "published_at": "2026-11-23T13:17:42Z",
-          "url": "https://football-italia.net/maresca-man-city-1-thing-napoli-favourite-team/",
-          "tag": "TEAM_NEWS"
-        },
-        {
-          "title": "Enzo Maresca Press Conference: Matheus Nunes Fitness Update Ahead of Napoli UEFA Champions League Clash",
-          "source": "Cityxtra.co.uk",
-          "published_at": "2026-11-23T13:04:28Z",
-          "url": "https://cityxtra.co.uk/news/enzo-maresca-press-conference-matheus-nunes-fitness-update-ahead-of-napoli-uefa-champions-league-clash",
           "tag": "TEAM_NEWS"
         }
       ]
@@ -37,43 +37,49 @@
     "6106259": {
       "home": "Arsenal",
       "away": "Borussia Dortmund",
-      "fetched_at": "2026-11-24T14:22:53.890Z",
+      "fetched_at": "2026-11-24T14:55:36.266Z",
       "risk_level": "ALERT",
       "signals": [
-        "INJURY_SHOCK",
-        "TEAM_NEWS"
+        "INJURY_SHOCK"
       ],
       "headlines": [
         {
-          "title": "David Raya to miss Arsenal's Champions League tie against Borussia Dortmund after worrying injury against Newcastle - but Mikel Arteta insists No 1 WILL be fit for Man City clash",
-          "source": "Dailymail.com",
-          "published_at": "2026-11-23T14:10:01Z",
-          "url": "https://www.dailymail.com/sport/football/article-16312993/David-Raya-miss-Arsenals-Champions-League-tie-against-Borussia-Dortmund-worrying-injury-against-Newcastle-Mikel-Arteta-insists-No-1-fit-Man-City-clash.html",
+          "title": "Relief for Arteta and Arsenal as Raya avoids surgery on injured arm",
+          "source": "101 Great Goals",
+          "published_at": "2026-11-23T14:40:07Z",
+          "url": "https://www.101greatgoals.com/football/champions-league/relief-for-mikel-arteta-arsenal-david-raya-avoids-surgery-on-injured-arm/",
           "tag": "INJURY_SHOCK"
         },
         {
-          "title": "Arsenal now expected to seal January move for skilfull star",
-          "source": "Just Arsenal News",
-          "published_at": "2026-11-23T14:00:00Z",
-          "url": "https://www.justarsenal.com/arsenal-now-expected-to-seal-january-move-for-skilfull-star/426371",
-          "tag": "TEAM_NEWS"
+          "title": "Arsenal's Raya ruled out of Dortmund clash",
+          "source": "CNA",
+          "published_at": "2026-11-23T14:37:32Z",
+          "url": "https://www.channelnewsasia.com/sport/arsenals-raya-ruled-out-dortmund-clash-6575361",
+          "tag": "INJURY_SHOCK"
+        },
+        {
+          "title": "Borussia Dortmund duo return to training ahead of Arsenal clash",
+          "source": "Bulinews.com",
+          "published_at": "2026-11-23T14:30:00Z",
+          "url": "https://bulinews.com/dortmund-duo-return-training",
+          "tag": "INJURY_SHOCK"
         }
       ]
     },
     "6106412": {
       "home": "Como",
       "away": "AEK Athens",
-      "fetched_at": "2026-11-24T14:22:53.251Z",
+      "fetched_at": "2026-11-24T14:55:35.873Z",
       "risk_level": "CLEAR",
       "signals": [
         "TEAM_NEWS"
       ],
       "headlines": [
         {
-          "title": "What is the secret behind Como’s rise, and can they sustain their success?",
+          "title": "Fabregas praises Alvini despite 5-1 loss vs. Milan: Como will use the same approach",
           "source": "Football Italia",
-          "published_at": "2026-11-23T07:32:37Z",
-          "url": "https://football-italia.net/what-is-the-secret-behind-como-rise/",
+          "published_at": "2026-11-23T14:53:13Z",
+          "url": "https://football-italia.net/fabregas-alvini-5-1-loss-milan-como-approach/",
           "tag": "TEAM_NEWS"
         }
       ]
