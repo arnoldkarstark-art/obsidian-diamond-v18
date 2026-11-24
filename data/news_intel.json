@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-11-24T14:55:28.649Z",
+  "generated_at": "2026-11-24T15:33:28.568Z",
   "calls_used": 6,
   "by_match": {
     "6106256": {
       "home": "Manchester City",
       "away": "Napoli",
-      "fetched_at": "2026-11-24T14:55:36.065Z",
+      "fetched_at": "2026-11-24T15:33:36.429Z",
       "risk_level": "CLEAR",
       "signals": [
         "TEAM_NEWS"
@@ -17,59 +17,13 @@
           "published_at": "2026-11-23T14:37:06Z",
           "url": "https://www.goal.com/en-us/news/jeremy-doku-manchester-city-kevin-de-bruyne-napoli-champions-league/blt58da345459512e04",
           "tag": "TEAM_NEWS"
-        },
-        {
-          "title": "Ex-star De Bruyne stands in way as City seek form against Napoli",
-          "source": "Dpa-international.com",
-          "published_at": "2026-11-23T14:33:39Z",
-          "url": "https://dpa-international.com/sports/urn:newsml:dpa.com:20090101:261123-930-39380/",
-          "tag": "TEAM_NEWS"
-        },
-        {
-          "title": "Manchester City v Napoli: Preview, expected line-ups, stats and where to watch",
-          "source": "101 Great Goals",
-          "published_at": "2026-11-23T14:16:15Z",
-          "url": "https://www.101greatgoals.com/match-previews/champions-league-matches/manchester-city-napoli-preview-expected-line-ups-stats-stream-where-to-watch/",
-          "tag": "TEAM_NEWS"
-        }
-      ]
-    },
-    "6106259": {
-      "home": "Arsenal",
-      "away": "Borussia Dortmund",
-      "fetched_at": "2026-11-24T14:55:36.266Z",
-      "risk_level": "ALERT",
-      "signals": [
-        "INJURY_SHOCK"
-      ],
-      "headlines": [
-        {
-          "title": "Relief for Arteta and Arsenal as Raya avoids surgery on injured arm",
-          "source": "101 Great Goals",
-          "published_at": "2026-11-23T14:40:07Z",
-          "url": "https://www.101greatgoals.com/football/champions-league/relief-for-mikel-arteta-arsenal-david-raya-avoids-surgery-on-injured-arm/",
-          "tag": "INJURY_SHOCK"
-        },
-        {
-          "title": "Arsenal's Raya ruled out of Dortmund clash",
-          "source": "CNA",
-          "published_at": "2026-11-23T14:37:32Z",
-          "url": "https://www.channelnewsasia.com/sport/arsenals-raya-ruled-out-dortmund-clash-6575361",
-          "tag": "INJURY_SHOCK"
-        },
-        {
-          "title": "Borussia Dortmund duo return to training ahead of Arsenal clash",
-          "source": "Bulinews.com",
-          "published_at": "2026-11-23T14:30:00Z",
-          "url": "https://bulinews.com/dortmund-duo-return-training",
-          "tag": "INJURY_SHOCK"
         }
       ]
     },
     "6106412": {
       "home": "Como",
       "away": "AEK Athens",
-      "fetched_at": "2026-11-24T14:55:35.873Z",
+      "fetched_at": "2026-11-24T15:33:36.226Z",
       "risk_level": "CLEAR",
       "signals": [
         "TEAM_NEWS"

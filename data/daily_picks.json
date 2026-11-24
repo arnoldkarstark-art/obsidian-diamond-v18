@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T14:55:28.649Z",
+  "generated_at": "2026-11-24T15:33:28.568Z",
   "date_label": "2026-11-24",
   "scanned": 14,
   "top_anchors": [
@@ -106,12 +106,7 @@
       "tier_code": "TIER_2",
       "stake_units": 1.88,
       "projected_score": "1–1",
-      "total_lambda": 2.35,
-      "news_risk_level": "ALERT",
-      "news_signals": [
-        "INJURY_SHOCK"
-      ],
-      "news_headline": "Relief for Arteta and Arsenal as Raya avoids surgery on injured arm"
+      "total_lambda": 2.35
     },
     {
       "match_id": "5836947",

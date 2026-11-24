@@ -1,6 +1,6 @@
 {
   "version": "OBSIDIAN_V18_5",
-  "exported_at": "2026-11-24T14:55:35.682Z",
+  "exported_at": "2026-11-24T15:33:35.377Z",
   "predictions": [
     {
       "id": 1795506488326,
@@ -63,7 +63,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:08.139Z",
-      "updated_at": "2026-11-24T14:55:35.681Z"
+      "updated_at": "2026-11-24T15:33:35.376Z"
     },
     {
       "id": 1795506488759,
@@ -77,15 +77,15 @@
       "home_team_id": "8549",
       "away_team_id": "10003",
       "market_family": "Result & AH",
-      "market_key": "1x2_home",
-      "market_label": "Middlesbrough Win (1X2)",
-      "model_prob": 67.6,
-      "raw_prob": 68.9,
-      "fair_odds": 1.48,
-      "opening_odds": 1.465,
+      "market_key": "home_ah_m025",
+      "market_label": "Middlesbrough Asian Handicap -0.25",
+      "model_prob": 73.8,
+      "raw_prob": 73.8,
+      "fair_odds": 1.36,
+      "opening_odds": null,
       "bookmaker_odds": 1.476,
       "steam_pct": -0.51,
-      "confidence": 69,
+      "confidence": 74,
       "tier": "TIER 2: VALUE HUNTER",
       "stake_units": 1.88,
       "home_lambda": 2.3,
@@ -126,7 +126,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:08.058Z",
-      "updated_at": "2026-11-24T14:55:35.565Z"
+      "updated_at": "2026-11-24T15:33:35.006Z"
     },
     {
       "id": 1795506487791,
@@ -139,18 +139,18 @@
       "away_team": "Wrexham",
       "home_team_id": "8427",
       "away_team_id": "9841",
-      "market_family": "Goals",
-      "market_key": "under_2_5",
-      "market_label": "Under 2.5 Total Goals",
-      "model_prob": 61.9,
-      "raw_prob": 64.1,
-      "fair_odds": 1.61,
-      "opening_odds": 1.741,
+      "market_family": "Result & AH",
+      "market_key": "home_ah_p1",
+      "market_label": "Bristol City Asian Handicap +1.0",
+      "model_prob": 71.5,
+      "raw_prob": 71.5,
+      "fair_odds": 1.4,
+      "opening_odds": null,
       "bookmaker_odds": 1.667,
       "steam_pct": 2.55,
-      "confidence": 68,
+      "confidence": 78,
       "tier": "TIER 2: VALUE HUNTER",
-      "stake_units": 0.5,
+      "stake_units": 1.88,
       "home_lambda": 0.84,
       "away_lambda": 1.29,
       "home_corners_lambda": 5.75,
@@ -188,7 +188,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:07.485Z",
-      "updated_at": "2026-11-24T14:55:34.770Z"
+      "updated_at": "2026-11-24T15:33:34.246Z"
     },
     {
       "id": 1795506487658,
@@ -251,7 +251,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:07.357Z",
-      "updated_at": "2026-11-24T14:55:34.771Z"
+      "updated_at": "2026-11-24T15:33:34.247Z"
     },
     {
       "id": 1795506488136,
@@ -315,7 +315,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:07.246Z",
-      "updated_at": "2026-11-24T14:55:35.006Z"
+      "updated_at": "2026-11-24T15:33:34.247Z"
     },
     {
       "id": 1795506487616,
@@ -385,7 +385,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:06.894Z",
-      "updated_at": "2026-11-24T14:55:33.554Z"
+      "updated_at": "2026-11-24T15:33:33.367Z"
     },
     {
       "id": 1795506487759,
@@ -450,7 +450,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:06.892Z",
-      "updated_at": "2026-11-24T14:55:33.751Z"
+      "updated_at": "2026-11-24T15:33:33.254Z"
     },
     {
       "id": 1795506487014,
@@ -518,7 +518,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:06.266Z",
-      "updated_at": "2026-11-24T14:55:33.450Z"
+      "updated_at": "2026-11-24T15:33:32.857Z"
     },
     {
       "id": 1795506486330,
@@ -592,7 +592,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:05.440Z",
-      "updated_at": "2026-11-24T14:55:32.039Z"
+      "updated_at": "2026-11-24T15:33:31.966Z"
     },
     {
       "id": 1795506485178,
@@ -659,7 +659,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:04.874Z",
-      "updated_at": "2026-11-24T14:55:32.493Z"
+      "updated_at": "2026-11-24T15:33:31.764Z"
     },
     {
       "id": 1795506484621,
@@ -735,7 +735,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:04.442Z",
-      "updated_at": "2026-11-24T14:55:31.690Z"
+      "updated_at": "2026-11-24T15:33:31.722Z"
     },
     {
       "id": 1795506484357,
@@ -791,11 +791,7 @@
         "data_confidence": 90,
         "venue": "Emirates Stadium",
         "referee": "Maurizio Mariani",
-        "league_avg_goals": 1.48,
-        "news_risk_level": "ALERT",
-        "news_alerts": [
-          "INJURY_SHOCK"
-        ]
+        "league_avg_goals": 1.48
       },
       "status": "PENDING",
       "closing_odds": null,
@@ -809,7 +805,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:03.560Z",
-      "updated_at": "2026-11-24T14:55:30.669Z"
+      "updated_at": "2026-11-24T15:33:30.655Z"
     },
     {
       "id": 1795506483967,
@@ -874,7 +870,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:03.342Z",
-      "updated_at": "2026-11-24T14:55:30.492Z"
+      "updated_at": "2026-11-24T15:33:30.386Z"
     },
     {
       "id": 1795506483795,
@@ -945,7 +941,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:03.270Z",
-      "updated_at": "2026-11-24T14:55:30.552Z"
+      "updated_at": "2026-11-24T15:33:30.583Z"
     }
   ],
   "weights": {
@@ -1033,8 +1029,8 @@
   "synced_by": "github_actions_auto_bot",
   "usage": {
     "date": "2026-11-24",
-    "fotmob": 292,
-    "espn": 15,
+    "fotmob": 351,
+    "espn": 18,
     "api_football": 0
   }
 }
