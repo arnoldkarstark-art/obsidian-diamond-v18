@@ -4161,6 +4161,7 @@ function buildDateRibbon(datePicker) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  initAuthGate();
   const datePicker = document.getElementById("date-picker");
   datePicker.value = state.currentDate;
   document.getElementById("af-key-input").value = ObsidianEngine.getAfKey();
