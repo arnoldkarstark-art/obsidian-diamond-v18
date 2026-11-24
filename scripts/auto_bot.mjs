@@ -182,21 +182,35 @@ async function sendTelegram(token, chatId, htmlText) {
   const cleanToken = String(token || "").replace(/^["']|["']$/g, "").trim();
   const cleanChatId = String(chatId || "").replace(/^["']|["']$/g, "").trim();
 
-  for (let i = 0; i < chunks.length; i++) {
-    const body = {
-      chat_id: cleanChatId,
-      text: chunks[i],
-      parse_mode: "HTML",
-      disable_web_page_preview: true,
-    };
-    if (i === chunks.length - 1) {
-      body.reply_markup = {
-        inline_keyboard: [[{ text: "Buka Dashboard Obsidian V18.5", url: DASHBOARD_URL }]],
-      };
-    }
+  // Safe diagnostic (prints zero secrets): confirms bot identity & whether an external webhook is attached
+  try {
+    const meR = await fetch(`https://api.telegram.org/bot${cleanToken}/getMe`);
+    const meJ = await meR.json().catch(() => ({}));
+    const whR = await fetch(`https://api.telegram.org/bot${cleanToken}/getWebhookInfo`);
+    const whJ = await whR.json().catch(() => ({}));
+    console.log(`[Telegram Check] ok=${meJ.ok} bot=@${meJ.result?.username || "?"} | webhook=${whJ.result?.url ? "ACTIVE" : "none"} | pending_updates=${whJ.result?.pending_update_count ?? 0}`);
+  } catch {}
 
+  for (let i = 0; i < chunks.length; i++) {
     let sent = false;
-    for (let attempt = 1; attempt <= 4; attempt++) {
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      // On retry after 429, drop inline_keyboard & use plain dashboard link in case Telegram throttles URL buttons on new bots
+      const useButton = attempt === 1 && i === chunks.length - 1;
+      const textOut = (!useButton && i === chunks.length - 1)
+        ? `${chunks[i]}\n\n🔗 ${DASHBOARD_URL}`
+        : chunks[i];
+      const body = {
+        chat_id: cleanChatId,
+        text: textOut,
+        parse_mode: "HTML",
+        disable_web_page_preview: true,
+      };
+      if (useButton) {
+        body.reply_markup = {
+          inline_keyboard: [[{ text: "Buka Dashboard Obsidian V18.5", url: DASHBOARD_URL }]],
+        };
+      }
+
       const resp = await fetch(`https://api.telegram.org/bot${cleanToken}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -207,16 +221,16 @@ async function sendTelegram(token, chatId, htmlText) {
         sent = true;
         break;
       }
-      if (resp.status === 429 && attempt < 4) {
-        const waitSec = Math.min(90, Math.max(5, Number(json?.parameters?.retry_after || 15) + 2));
-        console.warn(`[Telegram 429] Rate limited on shared runner IP — waiting ${waitSec}s before retry ${attempt + 1}/4...`);
+      if (resp.status === 429 && attempt < 3) {
+        const waitSec = Math.min(75, Math.max(5, Number(json?.parameters?.retry_after || 20) + 5));
+        console.warn(`[Telegram 429] Rate limited (retry_after=${json?.parameters?.retry_after}) — waiting ${waitSec}s before retry ${attempt + 1}/3 (plain link mode)...`);
         await sleep(waitSec * 1000);
         continue;
       }
       throw new Error(`Telegram sendMessage failed (${resp.status}): ${JSON.stringify(json)}`);
     }
-    if (!sent) throw new Error("Telegram sendMessage failed after 4 attempts.");
-    if (i < chunks.length - 1) await sleep(1200);
+    if (!sent) throw new Error("Telegram sendMessage failed after 3 attempts.");
+    if (i < chunks.length - 1) await sleep(1500);
   }
   return { ok: true, chunks: chunks.length };
 }
