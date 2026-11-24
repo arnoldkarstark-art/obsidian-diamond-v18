@@ -1,0 +1,4067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Obsidian V18" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2309090b'/%3E%3Cpath d='M32 10L54 27L32 55L10 27Z' fill='none' stroke='%23f5f5f7' stroke-width='3.5' stroke-linejoin='round'/%3E%3Cpath d='M10 27H54M32 10L23 27L32 55L41 27Z' fill='none' stroke='%2330d158' stroke-width='2' opacity='0.8'/%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%2309090b'/%3E%3Cpath d='M90 28L150 76L90 154L30 76Z' fill='none' stroke='%23f5f5f7' stroke-width='8' stroke-linejoin='round'/%3E%3Cpath d='M30 76H150M90 28L66 76L90 154L114 76Z' fill='none' stroke='%2330d158' stroke-width='5' opacity='0.85'/%3E%3C/svg%3E" />
+  <title>OBSIDIAN DIAMOND V18.5 — Sovereign Pro Football Intelligence</title>
+  <meta name="description" content="OBSIDIAN DIAMOND V18.5 Sovereign Pro live football analytics: FotMob & ESPN telemetry, Dynamic League Baselines, Bayesian Market Anchoring, Dixon-Coles, Negative Binomial Corners, Daily Auto-Scanner, CLV & Self-Learning." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+/* OBSIDIAN DIAMOND V18 — Apple Dark Liquid Glass Design System */
+:root {
+  --bg-canvas: #09090b;
+  --bg-elev-1: #111114;
+  --bg-elev-2: #17171c;
+  --bg-elev-3: #1f1f26;
+  --glass: rgba(20, 20, 24, 0.76);
+  --glass-strong: rgba(24, 24, 30, 0.88);
+
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.13);
+  --highlight-top: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  --ink-primary: #f5f5f7;
+  --ink-secondary: #a1a1a6;
+  --ink-tertiary: #6e6e73;
+
+  --emerald: #30d158;
+  --emerald-bg: rgba(48, 209, 88, 0.12);
+  --amber: #ff9f0a;
+  --amber-bg: rgba(255, 159, 10, 0.12);
+  --coral: #ff453a;
+  --coral-bg: rgba(255, 69, 58, 0.13);
+  --ice: #64d2ff;
+  --ice-bg: rgba(100, 210, 255, 0.12);
+  --silver-bg: rgba(255, 255, 255, 0.07);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg-canvas);
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.48;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mono, .num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.hidden { display: none !important; }
+
+/* ---- Topbar ---- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: 58px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(12, 12, 15, 0.82);
+  backdrop-filter: blur(26px) saturate(165%);
+  -webkit-backdrop-filter: blur(26px) saturate(165%);
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+  border: 1px solid var(--border-subtle);
+  color: var(--ink-primary);
+  box-shadow: var(--highlight-top);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+}
+
+/* Apple Segmented Navigation */
+.segmented-nav {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-hairline);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.seg-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--ink-secondary);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.seg-btn:hover { color: var(--ink-primary); }
+
+.seg-btn.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--ink-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35), var(--highlight-top);
+}
+
+.count-chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--ink-primary);
+}
+
+.status-trigger {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-pill);
+  color: var(--ink-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.status-trigger:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: var(--border-subtle);
+  color: var(--ink-primary);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-ok { background: var(--emerald); }
+.dot-warn { background: var(--amber); }
+.dot-live { background: var(--coral); }
+.sep { opacity: 0.35; }
+
+/* Popover */
+.popover {
+  position: fixed;
+  top: 66px;
+  right: 20px;
+  width: 360px;
+  z-index: 60;
+  background: var(--glass-strong);
+  backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), var(--highlight-top);
+}
+.popover-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.popover-head h3 { font-size: 14px; font-weight: 600; }
+.sources-list { display: flex; flex-direction: column; gap: 10px; }
+.source-row {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-hairline);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.source-name { font-weight: 600; font-size: 13px; }
+.source-role { font-size: 11px; color: var(--ink-tertiary); margin-top: 2px; }
+.source-meta { text-align: right; font-size: 11px; }
+.popover-foot { font-size: 11px; color: var(--ink-tertiary); margin-top: 12px; }
+
+/* ---- Workspace & Views ---- */
+.workspace {
+  height: calc(100vh - 58px);
+  overflow: hidden;
+}
+
+.view {
+  display: none;
+  height: 100%;
+}
+
+.view.active {
+  display: block;
+}
+
+/* ---- Split Master-Detail ---- */
+.split-layout {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  height: 100%;
+}
+
+.match-rail {
+  border-right: 1px solid var(--border-hairline);
+  background: var(--bg-elev-1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.rail-controls {
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid var(--border-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.date-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  gap: 6px;
+}
+
+.date-chip {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-hairline);
+  color: var(--ink-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.date-chip:hover { color: var(--ink-primary); background: rgba(255, 255, 255, 0.08); }
+.date-chip.active {
+  background: var(--ink-primary);
+  color: #09090b;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.date-input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-hairline);
+  color: var(--ink-secondary);
+  border-radius: 8px;
+  padding: 4px 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  width: 34px;
+  cursor: pointer;
+  color-scheme: dark;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.state-pills {
+  display: inline-flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.state-pill {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 9px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.state-pill:hover { color: var(--ink-primary); background: rgba(255, 255, 255, 0.05); }
+.state-pill.active {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: var(--border-hairline);
+  color: var(--ink-primary);
+}
+
+.search-wrap input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-hairline);
+  border-radius: 9px;
+  padding: 8px 11px;
+  color: var(--ink-primary);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.search-wrap input:focus {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.07);
+}
+.search-wrap input::placeholder { color: var(--ink-tertiary); }
+
+.rail-meta {
+  padding: 8px 14px;
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  border-bottom: 1px solid var(--border-hairline);
+  display: flex;
+  justify-content: space-between;
+}
+
+.matches-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 10px 24px;
+}
+
+.league-group {
+  margin-bottom: 14px;
+}
+
+.league-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+}
+
+.match-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px;
+  border-radius: 11px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 140ms ease, border-color 140ms ease, transform 120ms ease;
+  margin-bottom: 3px;
+}
+
+.match-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.match-row.selected {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: var(--border-subtle);
+  box-shadow: var(--highlight-top);
+}
+
+.match-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  text-align: center;
+  line-height: 1.25;
+}
+
+.match-time.live {
+  color: var(--coral);
+  font-weight: 600;
+}
+
+.match-teams {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.team-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.team-id-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.team-crest {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.team-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink-primary);
+  font-weight: 500;
+}
+
+.team-score {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink-primary);
+}
+
+.slip-mini-btn {
+  appearance: none;
+  border: 1px solid var(--border-hairline);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink-secondary);
+  font-family: inherit;
+  font-size: 11px;
+  padding: 4px 7px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.slip-mini-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--ink-primary); }
+.slip-mini-btn.in-slip {
+  background: var(--emerald-bg);
+  color: var(--emerald);
+  border-color: rgba(48, 209, 88, 0.3);
+}
+
+/* ---- Right Command Canvas ---- */
+.analysis-canvas {
+  height: 100%;
+  overflow-y: auto;
+  padding: 24px 28px 60px;
+}
+
+.empty-canvas {
+  max-width: 560px;
+  margin: 10vh auto 0;
+  text-align: center;
+}
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--highlight-top);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 20px;
+  color: var(--ink-secondary);
+}
+.empty-canvas h1 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-bottom: 10px;
+}
+.empty-canvas p {
+  color: var(--ink-secondary);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+.empty-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.hl-item {
+  background: var(--bg-elev-1);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hl-k { font-size: 11px; color: var(--ink-tertiary); text-transform: uppercase; letter-spacing: 0.04em; }
+.hl-v { font-size: 12px; color: var(--ink-primary); font-weight: 500; }
+
+/* ---- Audit Layout ---- */
+.audit-wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Match Banner */
+.match-hero {
+  background: var(--bg-elev-1);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--highlight-top);
+}
+
+.match-hero-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+  font-size: 12px;
+  color: var(--ink-secondary);
+}
+
+.meta-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--silver-bg);
+  color: var(--ink-secondary);
+}
+.tag-emerald { background: var(--emerald-bg); color: var(--emerald); }
+.tag-amber { background: var(--amber-bg); color: var(--amber); }
+.tag-coral { background: var(--coral-bg); color: var(--coral); }
+.tag-ice { background: var(--ice-bg); color: var(--ice); }
+
+.scoreboard-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+.hero-team {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.hero-team.away {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.hero-crest {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+.hero-team-name {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.hero-team-sub {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-team.away .hero-team-sub { justify-content: flex-end; }
+
+.form-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+.form-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.form-W { background: var(--emerald-bg); color: var(--emerald); }
+.form-D { background: var(--silver-bg); color: var(--ink-secondary); }
+.form-L { background: var(--coral-bg); color: var(--coral); }
+
+.hero-center {
+  text-align: center;
+}
+.hero-score {
+  font-family: var(--font-mono);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.hero-proj {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  margin-top: 2px;
+}
+
+/* Verdict Hero Card */
+.verdict-card {
+  background: linear-gradient(180deg, #16161b 0%, #111114 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35), var(--highlight-top);
+}
+
+.verdict-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.verdict-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.verdict-pick {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1.15;
+}
+
+.verdict-reason {
+  margin-top: 8px;
+  color: var(--ink-secondary);
+  font-size: 13.5px;
+  max-width: 720px;
+}
+
+.verdict-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.verdict-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.vm-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.vm-label {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.vm-val {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+}
+.vm-sub {
+  font-size: 11px;
+  color: var(--ink-secondary);
+}
+
+/* Custom Odds +EV Bar */
+.odds-calc-bar {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.odds-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.odds-input-group label {
+  font-size: 12px;
+  color: var(--ink-secondary);
+}
+
+.odds-input {
+  width: 96px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: var(--ink-primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  outline: none;
+}
+
+.alt-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+.alt-box {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-hairline);
+}
+.alt-k { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-tertiary); }
+.alt-v { font-size: 13px; font-weight: 600; margin-top: 3px; }
+
+/* Generic Surface Cards */
+.surface-card {
+  background: var(--bg-elev-1);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  box-shadow: var(--highlight-top);
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.card-head h2 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.muted-tag {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-mono);
+}
+
+.two-col-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.three-col-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* Tables */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-tertiary);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-hairline);
+  white-space: nowrap;
+}
+
+td {
+  padding: 11px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+  vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
+
+.prob-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.prob-track {
+  width: 68px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.prob-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--ink-primary);
+}
+.prob-fill.high { background: var(--emerald); }
+.prob-fill.mid { background: var(--amber); }
+.prob-fill.ice { background: var(--ice); }
+
+/* Scoreline Grid & Meters */
+.lambda-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.lambda-tile {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--border-hairline);
+}
+.lambda-tile .k { font-size: 11px; color: var(--ink-tertiary); }
+.lambda-tile .v { font-family: var(--font-mono); font-size: 20px; font-weight: 600; margin-top: 2px; }
+
+.score-chips {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.score-chip {
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-hairline);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.score-chip.top {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-subtle);
+}
+
+.meter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.meter-row {
+  display: grid;
+  grid-template-columns: 145px 1fr 48px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+}
+.meter-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+.meter-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--ink-secondary);
+}
+
+/* Personas & Filters */
+.persona-box {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-hairline);
+}
+.persona-name {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  color: var(--ink-primary);
+}
+.persona-text {
+  font-size: 12.5px;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.filter-item {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--border-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.filter-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.filter-name { font-size: 12px; font-weight: 600; }
+.filter-detail { font-size: 11.5px; color: var(--ink-secondary); }
+
+.alert-banner {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--ice-bg);
+  color: var(--ice);
+  font-size: 12.5px;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+/* Buttons */
+.btn {
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 110ms ease, background 140ms ease, opacity 140ms ease;
+}
+.btn:active { transform: scale(0.98); }
+.btn-primary {
+  background: var(--ink-primary);
+  color: #09090b;
+}
+.btn-primary:hover { background: #ffffff; }
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: var(--border-subtle);
+  color: var(--ink-primary);
+}
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.14); }
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border-hairline);
+  color: var(--ink-secondary);
+}
+.btn-ghost:hover { color: var(--ink-primary); background: rgba(255, 255, 255, 0.05); }
+.btn-xs { padding: 4px 9px; font-size: 11.5px; border-radius: 7px; }
+
+.icon-btn {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-hairline);
+  color: var(--ink-secondary);
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+.icon-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--ink-primary); }
+
+/* Page Containers (Views 2 & 3) */
+.page-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 28px 60px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.page-sub {
+  font-size: 13.5px;
+  color: var(--ink-secondary);
+  margin-top: 4px;
+  max-width: 660px;
+}
+.page-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.kpi-card {
+  background: var(--bg-elev-1);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  box-shadow: var(--highlight-top);
+}
+.kpi-k { font-size: 11px; color: var(--ink-tertiary); text-transform: uppercase; letter-spacing: 0.04em; }
+.kpi-v { font-family: var(--font-mono); font-size: 22px; font-weight: 600; margin-top: 4px; }
+.kpi-s { font-size: 11px; color: var(--ink-secondary); margin-top: 2px; }
+
+.divider { height: 1px; background: var(--border-hairline); margin: 16px 0; }
+.subhead { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-tertiary); margin-bottom: 10px; }
+
+.logs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.log-entry {
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-hairline);
+  font-size: 12px;
+  color: var(--ink-secondary);
+}
+.log-ts { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-tertiary); margin-bottom: 3px; }
+
+.empty-inline {
+  padding: 24px;
+  text-align: center;
+  color: var(--ink-secondary);
+  font-size: 13.5px;
+}
+
+/* Slip Builder */
+.slip-leg-row {
+  display: grid;
+  grid-template-columns: 1fr 240px auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+.slip-leg-row:last-child { border-bottom: none; }
+.slip-select {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--ink-primary);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-family: inherit;
+  font-size: 12.5px;
+}
+
+.slip-results {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.modal-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), var(--highlight-top);
+}
+.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.modal-sub { font-size: 12.5px; color: var(--ink-secondary); margin-bottom: 16px; }
+.modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.modal-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--ink-secondary);
+}
+.modal-grid input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--ink-primary);
+  font-family: var(--font-mono);
+}
+.modal-or {
+  text-align: center;
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin: 14px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.modal-override-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+/* Skeleton Loader */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--radius-md);
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 90;
+  background: var(--glass-strong);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 11px 16px;
+  font-size: 13px;
+  color: var(--ink-primary);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6);
+}
+
+/* Text Utilities */
+.text-emerald { color: var(--emerald); }
+.text-amber { color: var(--amber); }
+.text-coral { color: var(--coral); }
+.text-ice { color: var(--ice); }
+.text-muted { color: var(--ink-secondary); }
+
+.mobile-back-btn {
+  display: none;
+  margin-bottom: 12px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .split-layout { grid-template-columns: 300px minmax(0, 1fr); }
+  .verdict-metrics { grid-template-columns: repeat(3, 1fr); }
+  .kpi-strip { grid-template-columns: repeat(3, 1fr); }
+  .two-col-grid, .three-col-grid, .filters-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 780px) {
+  html, body { overflow-x: hidden; }
+  .workspace { height: auto; overflow: visible; }
+  .split-layout { grid-template-columns: 1fr; height: auto; }
+  .match-rail { max-height: 460px; border-right: none; border-bottom: 1px solid var(--border-hairline); }
+  .analysis-canvas { padding: 14px 14px 48px; }
+  .page-container { padding: 16px 14px 48px; }
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .segmented-nav {
+    order: 3;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .seg-btn {
+    justify-content: center;
+    padding: 7px 6px;
+    font-size: 12px;
+  }
+  .popover {
+    right: 12px;
+    left: 12px;
+    width: auto;
+    top: 108px;
+  }
+  .mobile-back-btn { display: inline-flex; }
+  .match-hero, .verdict-card, .surface-card { padding: 16px; border-radius: 14px; }
+  .scoreboard-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    text-align: center;
+  }
+  .hero-team, .hero-team.away {
+    flex-direction: row;
+    text-align: left;
+    justify-content: flex-start;
+  }
+  .hero-team.away .hero-team-sub { justify-content: flex-start; }
+  .hero-crest { width: 36px; height: 36px; }
+  .hero-team-name { font-size: 16px; }
+  .hero-score { font-size: 24px; }
+  .verdict-pick { font-size: 22px; }
+  .verdict-metrics { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .lambda-row { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .lambda-tile { padding: 9px 8px; }
+  .lambda-tile .v { font-size: 16px; }
+  .meter-row { grid-template-columns: 118px 1fr 42px; font-size: 12px; }
+  .alt-strip, .empty-highlights { grid-template-columns: 1fr; }
+  .slip-leg-row { grid-template-columns: 1fr; gap: 8px; }
+}
+
+/* ---- V18.5 Sovereign Pro Additions ---- */
+.inline-odd-input {
+  width: 68px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-hairline);
+  border-radius: 6px;
+  padding: 4px 6px;
+  color: var(--ink-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: right;
+  outline: none;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+.inline-odd-input:focus {
+  border-color: var(--ice);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.guard-banner {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--amber-bg);
+  color: var(--amber);
+  font-size: 12.5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.guard-banner.danger {
+  background: var(--coral-bg);
+  color: var(--coral);
+}
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  margin-top: 10px;
+}
+.progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--emerald);
+  transition: width 220ms ease;
+}
+
+.radar-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.pick-card {
+  background: var(--bg-elev-1);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--highlight-top);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 150ms ease, transform 130ms ease, background 150ms ease;
+}
+.pick-card:hover {
+  border-color: var(--border-subtle);
+  background: var(--bg-elev-2);
+  transform: translateY(-1px);
+}
+
+.toggle-chip {
+  appearance: none;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink-secondary);
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.toggle-chip.on {
+  background: var(--emerald-bg);
+  color: var(--emerald);
+  border-color: rgba(48, 209, 88, 0.35);
+}
+
+.bankroll-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  background: var(--bg-elev-1);
+  border: 1px solid var(--border-hairline);
+  margin-bottom: 16px;
+}
+
+@media (max-width: 1024px) {
+  .radar-cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 780px) {
+  .segmented-nav { grid-template-columns: repeat(4, 1fr); }
+  .seg-btn { font-size: 11px; padding: 7px 3px; }
+  .radar-cards-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- 7-Day Upcoming Date Ribbon ---- */
+.date-ribbon-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.date-ribbon {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1;
+  padding-bottom: 2px;
+}
+.date-ribbon::-webkit-scrollbar { display: none; }
+.date-ribbon .date-chip {
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 6px 10px;
+}
+.date-chip.week-chip {
+  border-color: rgba(100, 210, 255, 0.35);
+  color: var(--ice);
+}
+.date-chip.week-chip.active {
+  background: var(--ice);
+  color: #09090b;
+  border-color: transparent;
+}
+
+</style>
+</head>
+<body>
+  <!-- Frosted Apple-style Navigation Bar -->
+  <header class="topbar" role="banner">
+    <div class="topbar-left">
+      <div class="brand-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L21 9.5L12 22L3 9.5L12 2Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+          <path d="M3 9.5H21" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
+          <path d="M12 2L8.5 9.5L12 22L15.5 9.5L12 2Z" stroke="currentColor" stroke-width="1.4" opacity="0.65"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">OBSIDIAN V18.5</span>
+        <span class="brand-sub">Sovereign Pro · Live 24/7</span>
+      </div>
+    </div>
+
+    <nav class="segmented-nav" role="tablist" aria-label="Workspace Views">
+      <button id="nav-matches" class="seg-btn active" data-view="matches" role="tab" aria-selected="true">Matches</button>
+      <button id="nav-scanner" class="seg-btn" data-view="scanner" role="tab" aria-selected="false">Daily Radar</button>
+      <button id="nav-slip" class="seg-btn" data-view="slip" role="tab" aria-selected="false">
+        Slip <span id="slip-badge" class="count-chip hidden">0</span>
+      </button>
+      <button id="nav-memory" class="seg-btn" data-view="memory" role="tab" aria-selected="false">
+        Memory <span id="memory-badge" class="count-chip hidden">0</span>
+      </button>
+    </nav>
+
+    <div class="topbar-right">
+      <button id="btn-sources" class="status-trigger" title="Data Pipeline & Optional Fallback Key">
+        <span class="dot dot-ok"></span>
+        <span>FotMob · ESPN</span>
+        <span class="sep">|</span>
+        <span id="header-af-quota" class="mono">AF 0/100</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Data Sources & Optional Fallback Key Popover -->
+  <aside id="sources-popover" class="popover hidden" aria-label="Data Pipeline Status">
+    <div class="popover-head">
+      <h3>Live Data Pipeline</h3>
+      <button id="btn-close-sources" class="icon-btn" aria-label="Close">&times;</button>
+    </div>
+    <div id="sources-list" class="sources-list"></div>
+    <div class="divider" style="margin:12px 0"></div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <label style="font-size:11px;color:var(--ink-secondary)">Optional API-Football Fallback Key (stored only on this device):</label>
+      <div style="display:flex;gap:6px;">
+        <input id="af-key-input" type="password" placeholder="Only used if FotMob/ESPN miss odds" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid var(--border-subtle);border-radius:8px;padding:6px 9px;color:var(--ink-primary);font-size:12px;font-family:var(--font-mono)" />
+        <button id="btn-save-af-key" class="btn btn-secondary btn-xs">Save</button>
+      </div>
+    </div>
+    <p class="popover-foot">FotMob &amp; ESPN run 100% free &amp; live directly from your browser with zero quota.</p>
+  </aside>
+
+  <!-- Main Workspace -->
+  <main class="workspace">
+    <!-- VIEW 1: MATCHES & AUDIT -->
+    <section id="view-matches" class="view active">
+      <div class="split-layout">
+        <aside class="match-rail">
+          <div class="rail-controls">
+            <div class="date-ribbon-wrap">
+              <div id="date-ribbon" class="date-ribbon" role="group" aria-label="Upcoming 7-day schedule"></div>
+              <input id="date-picker" type="date" class="date-input" aria-label="Select custom date" title="Pick any date" />
+            </div>
+
+            <div class="filter-row">
+              <div class="state-pills" role="group" aria-label="Match state filter">
+                <button class="state-pill active" data-state="ALL">All</button>
+                <button class="state-pill" data-state="LIVE">Live <span id="live-count" class="mono"></span></button>
+                <button class="state-pill" data-state="UPCOMING">Upcoming</button>
+                <button class="state-pill" data-state="FT">FT</button>
+              </div>
+              <button id="btn-refresh-matches" class="icon-btn" title="Refresh fixtures">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+                  <polyline points="21 3 21 9 15 9"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="search-wrap">
+              <input id="match-search" type="search" placeholder="Search team or competition..." autocomplete="off" />
+            </div>
+          </div>
+
+          <div id="matches-meta" class="rail-meta">Loading live slate...</div>
+          <div id="matches-list" class="matches-scroll"></div>
+        </aside>
+
+        <section id="analysis-canvas" class="analysis-canvas" aria-live="polite">
+          <div class="empty-canvas">
+            <div class="empty-icon">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+                <path d="M12 2L21 9.5L12 22L3 9.5L12 2Z"/>
+                <path d="M3 9.5H21" opacity="0.4"/>
+              </svg>
+            </div>
+            <h1>Select a Fixture or Run Daily Radar</h1>
+            <p>Dynamic league xG/Corner baselines, Bayesian Market Anchoring, Quarter Asian lines, 1H Goals, Confirmed XI checks, and live FotMob + DraftKings telemetry.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- VIEW 2: DAILY TOP PICKS AUTO-SCANNER -->
+    <section id="view-scanner" class="view">
+      <div class="page-container">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">Daily Top Picks Auto-Scanner</h1>
+            <p class="page-sub">Automatically scans today's priority leagues from FotMob &amp; ESPN to rank the sharpest Titanium Anchors, Best Corners, Best Goals/BTTS, and Trap Games to Avoid.</p>
+          </div>
+          <div class="page-actions">
+            <select id="scan-limit-select" class="slip-select">
+              <option value="8">Scan Top 8 Fixtures (Fast)</option>
+              <option value="14" selected>Scan Top 14 Fixtures</option>
+              <option value="22">Deep Scan Top 22 Fixtures</option>
+            </select>
+            <button id="btn-run-scanner" class="btn btn-primary">Scan Selected Date</button>
+          </div>
+        </div>
+
+        <div id="scanner-status" class="surface-card hidden" style="margin-bottom:18px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
+            <span id="scanner-status-text">Scanning fixtures...</span>
+            <span id="scanner-status-pct" class="mono">0%</span>
+          </div>
+          <div class="progress-track"><div id="scanner-progress-bar" class="progress-bar" style="width:0%"></div></div>
+        </div>
+
+        <div id="scanner-results">
+          <div class="surface-card empty-inline">
+            Click <strong>Scan Selected Date</strong> to auto-rank today's strongest plays across Goals, Corners, BTTS, Clean Sheets, 1H, and Asian Handicaps without clicking matches one by one.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: SLIP BUILDER & PARLAY AUDIT -->
+    <section id="view-slip" class="view">
+      <div class="page-container">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">Slip Re-Calibration &amp; Parlay Control</h1>
+            <p class="page-sub">Add fixtures from Matches or Daily Radar, optionally choose your intended pick per leg, and run V15/V18 risk triangulation &amp; Sovereign Trio parlay math.</p>
+          </div>
+          <div class="page-actions">
+            <button id="btn-clear-slip" class="btn btn-ghost">Clear Slip</button>
+            <button id="btn-run-slip-audit" class="btn btn-primary">Run Obsidian Audit</button>
+          </div>
+        </div>
+        <div id="slip-legs-panel" class="surface-card">
+          <div class="empty-inline">No fixtures in your slip yet. Tap <strong>+ Slip</strong> on any match.</div>
+        </div>
+        <div id="slip-results" class="slip-results hidden"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: MEMORY, BANKROLL & NEURAL LEARNING -->
+    <section id="view-memory" class="view">
+      <div class="page-container">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">Memory, Bankroll &amp; Neural Calibration</h1>
+            <p class="page-sub">Tracks Brier Score, Closing Line Value (CLV), Bankroll Drawdown, and auto-settles completed matches from FotMob final scores &amp; corners.</p>
+          </div>
+          <div class="page-actions">
+            <button id="btn-auto-settle" class="btn btn-primary">Auto-Settle Completed</button>
+            <button id="btn-recalibrate" class="btn btn-secondary">Recalibrate</button>
+            <button id="btn-export-backup" class="btn btn-ghost">Export JSON</button>
+            <button id="btn-import-backup" class="btn btn-ghost">Import JSON</button>
+            <input id="import-file-input" type="file" accept="application/json" class="hidden" />
+            <button id="btn-reset-weights" class="btn btn-ghost">Reset Weights</button>
+          </div>
+        </div>
+
+        <div id="tilt-guard-banner" class="hidden"></div>
+        <div id="bankroll-bar" class="bankroll-bar"></div>
+        <div id="memory-kpis" class="kpi-strip"></div>
+
+        <div class="two-col-grid">
+          <div class="surface-card">
+            <div class="card-head">
+              <h2>Market-Family Calibration &amp; Edge Policy</h2>
+              <span class="muted-tag">Empirical Bayes</span>
+            </div>
+            <div id="calibration-table-wrap" class="table-wrap"></div>
+          </div>
+
+          <div class="surface-card">
+            <div class="card-head">
+              <h2>Active Neural Parameters</h2>
+              <span id="last-trained-label" class="muted-tag">Factory prior</span>
+            </div>
+            <div id="weights-panel"></div>
+            <div class="divider"></div>
+            <h3 class="subhead">Post-Mortem Evolution Log</h3>
+            <div id="learning-logs" class="logs-list"></div>
+          </div>
+        </div>
+
+        <div class="surface-card" style="margin-top: 20px;">
+          <div class="card-head">
+            <h2>Saved Predictions Ledger</h2>
+            <div class="state-pills" id="ledger-filters">
+              <button class="state-pill active" data-pstatus="ALL">All</button>
+              <button class="state-pill" data-pstatus="PENDING">Pending</button>
+              <button class="state-pill" data-pstatus="WON">Won</button>
+              <button class="state-pill" data-pstatus="LOST">Lost</button>
+              <button class="state-pill" data-pstatus="PUSH">Push</button>
+            </div>
+          </div>
+          <div id="predictions-table-wrap" class="table-wrap"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Manual Settle Modal (with Closing Odds for CLV!) -->
+  <div id="settle-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settle-modal-title">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="settle-modal-title">Settle Prediction &amp; Record CLV</h3>
+        <button id="btn-close-settle" class="icon-btn" aria-label="Close">&times;</button>
+      </div>
+      <div id="settle-modal-info" class="modal-sub"></div>
+      <div class="modal-grid">
+        <label>Home Goals (FT) <input id="settle-hg" type="number" min="0" max="20" placeholder="e.g. 2" /></label>
+        <label>Away Goals (FT) <input id="settle-ag" type="number" min="0" max="20" placeholder="e.g. 1" /></label>
+        <label>Home Corners <input id="settle-hc" type="number" min="0" max="30" placeholder="optional" /></label>
+        <label>Away Corners <input id="settle-ac" type="number" min="0" max="30" placeholder="optional" /></label>
+        <label>1H Total Goals <input id="settle-1hg" type="number" min="0" max="15" placeholder="for 1H bets" /></label>
+        <label>Closing Odds (CLV) <input id="settle-close-odds" type="number" step="0.01" min="1.02" placeholder="optional e.g. 1.80" /></label>
+      </div>
+      <div class="modal-or">or override outcome directly</div>
+      <div class="modal-override-row">
+        <button class="btn btn-secondary" data-direct-status="WON">Mark WON</button>
+        <button class="btn btn-secondary" data-direct-status="LOST">Mark LOST</button>
+        <button class="btn btn-secondary" data-direct-status="PUSH">Mark PUSH</button>
+      </div>
+      <div class="modal-foot">
+        <button id="btn-cancel-settle" class="btn btn-ghost">Cancel</button>
+        <button id="btn-confirm-settle" class="btn btn-primary">Grade &amp; Learn</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script>
+/* OBSIDIAN DIAMOND V18.5 SOVEREIGN PRO — Browser-Native Quantitative & Self-Learning Engine
+ * Upgrades: Dynamic League Baselines, Bayesian Market Anchoring (70/30), Quarter Asian Lines,
+ * 1H Goals, Confirmed XI Gate, CLV Tracking, Bankroll/Drawdown Guardrails, Daily Auto-Scanner,
+ * and JSON Export/Import Backup.
+ */
+
+const ObsidianEngine = (() => {
+  const FOTMOB_BASE = "https://www.fotmob.com/api/data";
+  const FOTMOB_CDN = "https://data.fotmob.com/stats";
+  const ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports/soccer";
+  const AF_BASE = "https://v3.football.api-sports.io";
+
+  const PRIORITY_LEAGUES = new Set([42, 73, 10216, 47, 87, 55, 54, 53, 57, 61, 48, 268, 130, 71, 40]);
+  const EURO_KW = ["champions league", "europa league", "conference league", "libertadores", "sudamericana", "afc champions"];
+  const VOLATILE_KW = ["friendly", "friendlies", "club friendl", "paulista", "carioca", "paranaense", "mineiro", "gaucho", "u19", "u20", "u21", "u23", "reserves"];
+
+  const STORE_PREDS = "obsidian_v18_live_predictions";
+  const STORE_WEIGHTS = "obsidian_v18_live_weights";
+  const STORE_LOGS = "obsidian_v18_live_logs";
+  const STORE_AF_KEY = "obsidian_v18_af_key";
+  const STORE_USAGE = "obsidian_v18_usage";
+  const STORE_BANKROLL = "obsidian_v18_bankroll";
+
+  const memCache = new Map();
+
+  const DEFAULT_WEIGHTS = {
+    home_advantage: 1.12,
+    goal_lambda_scale: 1.00,
+    corner_lambda_scale: 1.00,
+    dixon_coles_rho: -0.11,
+    xg_blend_weight: 0.58,
+    form_blend_weight: 0.42,
+    market_anchor_weight: 0.30,
+    market_calibration: {
+      "Goals": { prob_shift: 0, confidence_mult: 1, blocked: false, samples: 0, brier: null, roi: null },
+      "BTTS": { prob_shift: 0, confidence_mult: 1, blocked: false, samples: 0, brier: null, roi: null },
+      "Corners": { prob_shift: 0, confidence_mult: 1, blocked: false, samples: 0, brier: null, roi: null },
+      "First Half": { prob_shift: 0, confidence_mult: 1, blocked: false, samples: 0, brier: null, roi: null },
+      "Clean Sheet": { prob_shift: 0, confidence_mult: 1, blocked: false, samples: 0, brier: null, roi: null },
+      "Team Totals": { prob_shift: 0, confidence_mult: 1, blocked: false, samples: 0, brier: null, roi: null },
+      "Result & AH": { prob_shift: 0, confidence_mult: 1, blocked: false, samples: 0, brier: null, roi: null }
+    },
+    total_settled: 0,
+    last_trained_at: null
+  };
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function loadLS(key, fb) {
+    try { const r = localStorage.getItem(key); return r ? JSON.parse(r) : JSON.parse(JSON.stringify(fb)); }
+    catch { return JSON.parse(JSON.stringify(fb)); }
+  }
+  function saveLS(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+  }
+
+  function recordCall(provider) {
+    const today = new Date().toISOString().slice(0, 10);
+    const u = loadLS(STORE_USAGE, { date: today, fotmob: 0, espn: 0, api_football: 0 });
+    if (u.date !== today) { u.date = today; u.fotmob = 0; u.espn = 0; u.api_football = 0; }
+    u[provider] = (u[provider] || 0) + 1;
+    saveLS(STORE_USAGE, u);
+  }
+  function getUsage() {
+    const today = new Date().toISOString().slice(0, 10);
+    const u = loadLS(STORE_USAGE, { date: today, fotmob: 0, espn: 0, api_football: 0 });
+    return u.date === today ? u : { date: today, fotmob: 0, espn: 0, api_football: 0 };
+  }
+  function getAfKey() { return localStorage.getItem(STORE_AF_KEY) || ""; }
+  function setAfKey(k) { localStorage.setItem(STORE_AF_KEY, (k || "").trim()); }
+
+  function getBankrollConfig() {
+    return loadLS(STORE_BANKROLL, { starting_units: 100, unit_value: 10, currency: "USD", max_daily_pct: 10, max_drawdown_pct: 15 });
+  }
+  function setBankrollConfig(cfg) {
+    const cur = getBankrollConfig();
+    saveLS(STORE_BANKROLL, { ...cur, ...cfg });
+  }
+
+  function cacheGet(k) {
+    const hit = memCache.get(k);
+    if (!hit || hit.exp < Date.now()) return null;
+    return hit.val;
+  }
+  function cacheSet(k, val, ttlSec) {
+    memCache.set(k, { val, exp: Date.now() + ttlSec * 1000 });
+  }
+
+  async function fetchJson(url, headers = {}) {
+    const resp = await fetch(url, { headers });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    return await resp.json();
+  }
+
+  function parseNum(v) {
+    if (v === null || v === undefined) return null;
+    if (typeof v === "number") return Number.isFinite(v) ? v : null;
+    const m = String(v).trim().match(/^[+-]?\d+(\.\d+)?/);
+    return m ? parseFloat(m[0]) : null;
+  }
+  function americanToDec(a) {
+    if (a === null || a === undefined) return null;
+    const n = typeof a === "number" ? a : parseNum(a);
+    if (!n) return null;
+    return n > 0 ? +(1 + n / 100).toFixed(3) : +(1 + 100 / Math.abs(n)).toFixed(3);
+  }
+  function normName(s) {
+    return (s || "").toLowerCase()
+      .replace(/\b(fc|cf|sc|ac|as|us|cd|ud|sd|rc|ca|afc|cfc|ssc|real|club|de|la|el|the)\b/g, " ")
+      .replace(/[^a-z0-9]+/g, " ").trim();
+  }
+  function namesMatch(a, b) {
+    const na = normName(a), nb = normName(b);
+    if (!na || !nb) return false;
+    if (na === nb || na.includes(nb) || nb.includes(na)) return true;
+    const ta = new Set(na.split(" ")), tb = new Set(nb.split(" "));
+    let inter = 0; ta.forEach(t => { if (tb.has(t)) inter++; });
+    return inter > 0 && inter / Math.max(1, Math.min(ta.size, tb.size)) >= 0.6;
+  }
+  function crestUrl(id) {
+    return id ? `https://images.fotmob.com/image_resources/logo/teamlogo/${id}_small.png` : "";
+  }
+
+  // ---- Mathematical Core ----
+  function logGamma(z) {
+    const g = 7;
+    const p = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313,
+      -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+    if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - logGamma(1 - z);
+    z -= 1; let x = p[0];
+    for (let i = 1; i < g + 2; i++) x += p[i] / (z + i);
+    const t = z + g + 0.5;
+    return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+  }
+  function poissonPmf(k, lam) { return lam <= 0 ? (k === 0 ? 1 : 0) : Math.exp(-lam + k * Math.log(lam) - logGamma(k + 1)); }
+  function dcTau(x, y, lh, la, rho) {
+    if (x === 0 && y === 0) return Math.max(0.05, 1 - lh * la * rho);
+    if (x === 0 && y === 1) return Math.max(0.05, 1 + lh * rho);
+    if (x === 1 && y === 0) return Math.max(0.05, 1 + la * rho);
+    if (x === 1 && y === 1) return Math.max(0.05, 1 - rho);
+    return 1;
+  }
+  function buildScoreMatrix(lh, la, rho, baseH = 0, baseA = 0) {
+    const mat = []; let tot = 0;
+    for (let dh = 0; dh <= 8; dh++) {
+      const ph = poissonPmf(dh, lh);
+      for (let da = 0; da <= 8; da++) {
+        const tau = (baseH === 0 && baseA === 0) ? dcTau(dh, da, lh, la, rho) : 1;
+        const p = ph * poissonPmf(da, la) * tau;
+        mat.push({ h: baseH + dh, a: baseA + da, p }); tot += p;
+      }
+    }
+    return mat.map(x => ({ h: x.h, a: x.a, p: x.p / (tot || 1) }));
+  }
+  function negBinPmf(k, mean, r = 8.0) {
+    if (mean <= 0) return k === 0 ? 1 : 0;
+    const p = r / (r + mean);
+    return Math.exp(logGamma(k + r) - logGamma(r) - logGamma(k + 1) + r * Math.log(p) + k * Math.log(1 - p));
+  }
+  function cornersOver(line, mean, baseC = 0, r = 8.0) {
+    const needed = Math.floor(line) + 1 - baseC;
+    if (needed <= 0) return 0.99;
+    if (mean <= 0) return 0.01;
+    let below = 0; for (let k = 0; k < needed; k++) below += negBinPmf(k, mean, r);
+    return clamp(1 - below, 0.01, 0.99);
+  }
+  function devig2(o1, o2) {
+    if (!o1 || !o2 || o1 <= 1.01 || o2 <= 1.01) return [null, null];
+    const i1 = 1 / o1, i2 = 1 / o2, s = i1 + i2; return [i1 / s, i2 / s];
+  }
+  function devig3(oh, od, oa) {
+    if (!oh || !od || !oa || Math.min(oh, od, oa) <= 1.01) return [null, null, null];
+    const ih = 1 / oh, id = 1 / od, ia = 1 / oa, s = ih + id + ia; return [ih / s, id / s, ia / s];
+  }
+  function qKelly(prob, dec) {
+    if (!dec || dec <= 1.02) return 0;
+    const b = dec - 1, f = (b * prob - (1 - prob)) / b;
+    return f <= 0 ? 0 : Math.min(5, +(f * 0.25 * 40).toFixed(2));
+  }
+
+  // ---- Live Data Fetchers ----
+  async function fetchMatchesByDate(dateIso, forceRefresh = false) {
+    const compact = dateIso.replace(/-/g, "");
+    const ck = `matches:${compact}`;
+    if (!forceRefresh) { const hit = cacheGet(ck); if (hit) return hit; }
+
+    try {
+      const data = await fetchJson(`${FOTMOB_BASE}/matches?date=${compact}`);
+      recordCall("fotmob");
+      const leagues = [];
+      let total = 0, liveCount = 0;
+      for (const lg of (data.leagues || [])) {
+        const lgId = lg.primaryId || lg.id;
+        const ms = [];
+        for (const m of (lg.matches || [])) {
+          const st = m.status || {};
+          const finished = !!st.finished, started = !!st.started, cancelled = !!st.cancelled;
+          const isLive = started && !finished && !cancelled;
+          if (isLive) liveCount++;
+          const liveMin = st.liveTime ? (st.liveTime.short || st.liveTime.long || "") : "";
+          const reason = st.reason ? (st.reason.short || "") : "";
+          ms.push({
+            match_id: String(m.id), source: "fotmob", league_id: String(lgId), league_name: lg.name || "Competition",
+            country_code: lg.ccode || "", date: dateIso, kickoff_utc: st.utcTime || "",
+            state: isLive ? "LIVE" : finished ? "FT" : cancelled ? "CANC" : "UPCOMING",
+            is_live: isLive, finished, live_minute: liveMin, status_label: isLive ? liveMin : finished ? reason : "",
+            home_id: String(m.home?.id || ""), home_name: m.home?.name || "Home",
+            home_score: (started || finished) ? m.home?.score : null, home_logo: crestUrl(m.home?.id),
+            away_id: String(m.away?.id || ""), away_name: m.away?.name || "Away",
+            away_score: (started || finished) ? m.away?.score : null, away_logo: crestUrl(m.away?.id),
+            is_priority: PRIORITY_LEAGUES.has(Number(lgId))
+          });
+          total++;
+        }
+        if (ms.length) {
+          leagues.push({
+            league_id: String(lgId), league_name: lg.name || "Competition",
+            country_code: lg.ccode || "", is_priority: PRIORITY_LEAGUES.has(Number(lgId)), matches: ms
+          });
+        }
+      }
+      leagues.sort((a, b) => (a.is_priority ? 0 : 1) - (b.is_priority ? 0 : 1) || (a.matches.some(x => x.is_live) ? 0 : 1) - (b.matches.some(x => x.is_live) ? 0 : 1) || b.matches.length - a.matches.length);
+      const res = { date: dateIso, source: "fotmob", total_matches: total, live_count: liveCount, leagues, fetched_at: new Date().toISOString() };
+      cacheSet(ck, res, 90);
+      return res;
+    } catch {
+      const data = await fetchJson(`${ESPN_BASE}/all/scoreboard?dates=${compact}`);
+      recordCall("espn");
+      const map = {}; let total = 0, liveCount = 0;
+      for (const ev of (data.events || [])) {
+        const comp = (ev.competitions || [{}])[0];
+        const cs = comp.competitors || [];
+        if (cs.length < 2) continue;
+        const hc = cs.find(c => c.homeAway === "home") || cs[0];
+        const ac = cs.find(c => c.homeAway === "away") || cs[1];
+        const stType = ev.status?.type || {};
+        const isLive = stType.state === "in", finished = stType.state === "post";
+        if (isLive) liveCount++;
+        const slug = ev.season?.slug || "espn-soccer";
+        const lgName = slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+        if (!map[slug]) map[slug] = { league_id: slug, league_name: lgName, is_priority: true, matches: [] };
+        map[slug].matches.push({
+          match_id: `espn:${ev.id}`, source: "espn", league_id: slug, league_name: lgName,
+          date: dateIso, kickoff_utc: ev.date || "", state: isLive ? "LIVE" : finished ? "FT" : "UPCOMING",
+          is_live: isLive, finished, live_minute: isLive ? (ev.status?.displayClock || "LIVE") : "", status_label: stType.shortDetail || "",
+          home_id: String(hc.id || ""), home_name: hc.team?.displayName || "Home", home_score: (isLive || finished) ? parseInt(hc.score, 10) : null, home_logo: hc.team?.logo || "",
+          away_id: String(ac.id || ""), away_name: ac.team?.displayName || "Away", away_score: (isLive || finished) ? parseInt(ac.score, 10) : null, away_logo: ac.team?.logo || "",
+          is_priority: true
+        });
+        total++;
+      }
+      const res = { date: dateIso, source: "espn", total_matches: total, live_count: liveCount, leagues: Object.values(map), fetched_at: new Date().toISOString() };
+      cacheSet(ck, res, 90);
+      return res;
+    }
+  }
+
+  async function fetchMatchesNext7Days(startDateIso, forceRefresh = false) {
+    const ck = `matches7d:${startDateIso}`;
+    if (!forceRefresh) { const hit = cacheGet(ck); if (hit) return hit; }
+    const dates = [];
+    const base = new Date(`${startDateIso}T12:00:00Z`);
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(base);
+      d.setUTCDate(base.getUTCDate() + i);
+      dates.push(d.toISOString().slice(0, 10));
+    }
+    const payloads = await Promise.all(dates.map(dt => fetchMatchesByDate(dt, forceRefresh).catch(() => null)));
+    const leagues = [];
+    let total = 0, liveCount = 0;
+    for (const p of payloads) {
+      if (!p || !p.leagues) continue;
+      liveCount += p.live_count || 0;
+      const dObj = new Date(`${p.date}T12:00:00Z`);
+      const dayLabel = dObj.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+      for (const lg of p.leagues) {
+        // Keep priority leagues first; keep all leagues searchable
+        total += lg.matches.length;
+        leagues.push({
+          ...lg,
+          date: p.date,
+          league_name: `${dayLabel} · ${lg.league_name}`,
+          raw_league_name: lg.league_name,
+          matches: lg.matches
+        });
+      }
+    }
+    // Sort: priority leagues chronologically first, then other leagues chronologically
+    leagues.sort((a, b) => (a.is_priority ? 0 : 1) - (b.is_priority ? 0 : 1) || a.date.localeCompare(b.date) || b.matches.length - a.matches.length);
+    const res = {
+      date: `${dates[0]} -> ${dates[6]}`,
+      is_range: true,
+      source: "fotmob",
+      total_matches: total,
+      live_count: liveCount,
+      leagues,
+      fetched_at: new Date().toISOString()
+    };
+    cacheSet(ck, res, 600);
+    return res;
+  }
+
+  async function fetchMatchDetailsRaw(matchId, force = false) {
+    const ck = `md:${matchId}`;
+    if (!force) { const h = cacheGet(ck); if (h) return h; }
+    const d = await fetchJson(`${FOTMOB_BASE}/matchDetails?matchId=${matchId}`);
+    recordCall("fotmob");
+    cacheSet(ck, d, d.ongoing ? 40 : 600);
+    return d;
+  }
+
+  async function fetchTeamRaw(teamId) {
+    if (!teamId) return null;
+    const ck = `tm:${teamId}`;
+    const h = cacheGet(ck); if (h) return h;
+    try {
+      const d = await fetchJson(`${FOTMOB_BASE}/teams?id=${teamId}`);
+      recordCall("fotmob");
+      cacheSet(ck, d, 3600);
+      return d;
+    } catch { return null; }
+  }
+
+  // Dynamic League-Specific Baselines computed directly from FotMob season tables!
+  async function fetchLeagueStats(leagueId, seasonId) {
+    if (!leagueId || !seasonId) return { byTeam: {}, baseline: { avg_goals: 1.38, avg_corners: 4.8, teams: 0, dynamic: false } };
+    const ck = `ls:${leagueId}:${seasonId}`;
+    const h = cacheGet(ck); if (h) return h;
+    const files = {
+      xg: "expected_goals_team.json", xga: "expected_goals_conceded_team.json",
+      corners: "corner_taken_team.json", box_touches: "touches_in_opp_box_team.json",
+      possession: "possession_percentage_team.json", clean_sheets: "clean_sheet_team.json",
+      sot: "ontarget_scoring_att_team.json", crosses: "accurate_cross_team.json",
+      final_third_wins: "poss_won_att_3rd_team.json", big_chances: "big_chance_team.json",
+      big_chances_missed: "big_chance_missed_team.json",
+      goals_per_match: "goals_team_match.json", conceded_per_match: "goals_conceded_team_match.json"
+    };
+    const byTeam = {};
+    await Promise.all(Object.entries(files).map(async ([k, fn]) => {
+      try {
+        const p = await fetchJson(`${FOTMOB_CDN}/${leagueId}/season/${seasonId}/${fn}`);
+        const list = p?.TopLists?.[0]?.StatList || [];
+        for (const r of list) {
+          const tid = String(r.TeamId || "");
+          if (!tid) continue;
+          const mp = r.MatchesPlayed || r.StatValueCount || 0;
+          if (!byTeam[tid]) byTeam[tid] = { matches_played: mp };
+          if (mp > (byTeam[tid].matches_played || 0)) byTeam[tid].matches_played = mp;
+          byTeam[tid][k] = { value: r.StatValue, rank: r.Rank, matches: mp };
+        }
+      } catch {}
+    }));
+
+    // Compute empirical league average xG/team & corners/team
+    const xgVals = [], goalVals = [], corVals = [];
+    Object.values(byTeam).forEach(t => {
+      const mp = t.matches_played || 0;
+      if (t.xg?.value && mp > 0) xgVals.push(t.xg.value / mp);
+      if (t.goals_per_match?.value) goalVals.push(+t.goals_per_match.value);
+      if (t.corners?.value && mp > 0) corVals.push(t.corners.value / mp);
+    });
+    const avg = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
+    const dynG = avg(xgVals) ?? avg(goalVals);
+    const dynC = avg(corVals);
+    const baseline = {
+      avg_goals: dynG ? +clamp(dynG, 0.95, 1.85).toFixed(2) : 1.38,
+      avg_corners: dynC ? +clamp(dynC, 3.4, 6.4).toFixed(2) : 4.80,
+      teams: Object.keys(byTeam).length,
+      dynamic: dynG !== null
+    };
+    const out = { byTeam, baseline };
+    if (Object.keys(byTeam).length) { recordCall("fotmob"); cacheSet(ck, out, 7200); }
+    return out;
+  }
+
+  async function fetchEspnOdds(homeName, awayName, dateIso, force = false) {
+    const compact = dateIso.replace(/-/g, "");
+    const ck = `espnOdds:${compact}`;
+    let sb = force ? null : cacheGet(ck);
+    if (!sb) {
+      try {
+        sb = await fetchJson(`${ESPN_BASE}/all/scoreboard?dates=${compact}`);
+        recordCall("espn");
+        cacheSet(ck, sb, 480);
+      } catch { return null; }
+    }
+    for (const ev of (sb.events || [])) {
+      const comp = (ev.competitions || [{}])[0];
+      const cs = comp.competitors || [];
+      if (cs.length < 2) continue;
+      const hc = cs.find(c => c.homeAway === "home") || cs[0];
+      const ac = cs.find(c => c.homeAway === "away") || cs[1];
+      if (namesMatch(homeName, hc.team?.displayName) && namesMatch(awayName, ac.team?.displayName)) {
+        const o = (comp.odds || [])[0];
+        if (!o) return null;
+        const pick = node => {
+          const raw = node?.close?.odds ?? node?.open?.odds;
+          if (raw === undefined || raw === null) return null;
+          if (String(raw).trim().toUpperCase() === "EVEN") return 2.0;
+          return americanToDec(raw);
+        };
+        const ml = o.moneyline || {}, tot = o.total || {};
+        const hml = pick(ml.home) || americanToDec(o.homeTeamOdds?.moneyLine);
+        const aml = pick(ml.away) || americanToDec(o.awayTeamOdds?.moneyLine);
+        const dml = pick(ml.draw) || americanToDec(o.drawOdds?.moneyLine);
+        const ov = pick(tot.over) || americanToDec(o.overOdds);
+        const un = pick(tot.under) || americanToDec(o.underOdds);
+        const hOpen = americanToDec(ml.home?.open?.odds);
+        if (!hml && !aml && !ov && !un) return null;
+        return {
+          provider: o.provider?.name || "DraftKings (ESPN)", source: "espn",
+          home_win: hml, home_win_open: hOpen, draw: dml, away_win: aml,
+          ou_line: parseNum(o.overUnder) || 2.5, over: ov, under: un
+        };
+      }
+    }
+    return null;
+  }
+
+  async function fetchApiFootballOddsFallback(homeName, awayName, dateIso) {
+    const key = getAfKey();
+    if (!key) return null;
+    if (getUsage().api_football >= 95) return null;
+    try {
+      const ckDay = `afDay:${dateIso}`;
+      let day = cacheGet(ckDay);
+      if (!day) {
+        day = await fetchJson(`${AF_BASE}/fixtures?date=${dateIso}`, { "x-apisports-key": key });
+        recordCall("api_football");
+        cacheSet(ckDay, day, 21600);
+      }
+      const match = (day.response || []).find(it => namesMatch(homeName, it.teams?.home?.name) && namesMatch(awayName, it.teams?.away?.name));
+      if (!match) return null;
+      const fid = match.fixture?.id;
+      const ckO = `afOdds:${fid}`;
+      let od = cacheGet(ckO);
+      if (!od) {
+        od = await fetchJson(`${AF_BASE}/odds?fixture=${fid}`, { "x-apisports-key": key });
+        recordCall("api_football");
+        cacheSet(ckO, od, 21600);
+      }
+      const bets = od.response?.[0]?.bookmakers?.[0]?.bets || [];
+      const out = { provider: "API-Football Consensus", source: "api_football" };
+      for (const b of bets) {
+        const bn = (b.name || "").toLowerCase();
+        for (const v of (b.values || [])) {
+          const val = String(v.value || ""), odd = parseNum(v.odd);
+          if (bn === "match winner") {
+            if (val.toLowerCase() === "home") out.home_win = odd;
+            if (val.toLowerCase() === "draw") out.draw = odd;
+            if (val.toLowerCase() === "away") out.away_win = odd;
+          } else if (bn.includes("goals over/under")) {
+            if (val === "Over 2.5") { out.ou_line = 2.5; out.over = odd; }
+            if (val === "Under 2.5") out.under = odd;
+          } else if (bn.includes("both teams score")) {
+            if (val.toLowerCase() === "yes") out.btts_yes = odd;
+            if (val.toLowerCase() === "no") out.btts_no = odd;
+          } else if (bn.includes("corners over under")) {
+            if (val === "Over 9.5") out.corners_over = odd;
+            if (val === "Under 9.5") out.corners_under = odd;
+          }
+        }
+      }
+      return Object.keys(out).length > 2 ? out : null;
+    } catch { return null; }
+  }
+
+  function extractLiveStats(raw) {
+    const out = {};
+    const groups = raw?.content?.stats?.Periods?.All?.stats || [];
+    for (const g of groups) {
+      for (const it of (g.stats || [])) {
+        if (it.key && Array.isArray(it.stats) && it.stats.length === 2) {
+          const h = parseNum(it.stats[0]), a = parseNum(it.stats[1]);
+          if (h !== null || a !== null) out[it.key] = [h, a];
+        }
+      }
+    }
+    return out;
+  }
+
+  function extractHalfTimeGoals(raw) {
+    const evs = raw?.content?.matchFacts?.events?.events || [];
+    let g1h = 0;
+    for (const ev of evs) {
+      if (ev.type === "Goal" && Number(ev.time || 99) <= 45) g1h++;
+    }
+    return evs.length ? g1h : null;
+  }
+
+  function extractRestAndRecent(teamRaw, teamId, targetUtc, targetMid) {
+    const out = { rest_days: null, last_match_comp: null, european_hangover: false, wed_sat_fatigue: false, recent_matches: [], season_id: "", primary_league_id: "" };
+    if (!teamRaw) return out;
+    out.primary_league_id = String(teamRaw.stats?.primaryLeagueId || "");
+    out.season_id = String(teamRaw.stats?.primarySeasonId || "");
+    const targetMs = targetUtc ? Date.parse(targetUtc) : Date.now();
+    const fxs = teamRaw.fixtures?.allFixtures?.fixtures || [];
+    const done = [];
+    for (const fx of fxs) {
+      if (String(fx.id) === String(targetMid)) continue;
+      if (!fx.status?.finished || !fx.status?.utcTime) continue;
+      const ms = Date.parse(fx.status.utcTime);
+      if (!ms || ms >= targetMs) continue;
+      const isHome = String(fx.home?.id) === String(teamId);
+      const gf = isHome ? fx.home?.score : fx.away?.score;
+      const ga = isHome ? fx.away?.score : fx.home?.score;
+      if (gf === null || gf === undefined || ga === null || ga === undefined) continue;
+      done.push({ ms, is_home: isHome, gf: +gf, ga: +ga, comp: fx.tournament?.name || "", res: gf > ga ? "W" : gf === ga ? "D" : "L" });
+    }
+    done.sort((a, b) => b.ms - a.ms);
+    if (done.length) {
+      const hrs = (targetMs - done[0].ms) / 3600000;
+      out.rest_days = +(hrs / 24).toFixed(2);
+      out.last_match_comp = done[0].comp;
+      if (hrs < 78) out.wed_sat_fatigue = true;
+      if (EURO_KW.some(k => done[0].comp.toLowerCase().includes(k)) && hrs < 115) out.european_hangover = true;
+    }
+    out.recent_matches = done.slice(0, 8);
+    return out;
+  }
+
+  function extractStandings(raw, teamId) {
+    const res = {};
+    const tObj = raw?.content?.table;
+    const tables = Array.isArray(tObj?.tables) ? tObj.tables : tObj?.table ? [tObj.table] : tObj?.data ? [tObj.data] : [];
+    for (const tbl of tables) {
+      const blk = tbl?.table || tbl;
+      if (!blk) continue;
+      for (const sp of ["all", "home", "away"]) {
+        const rows = blk[sp] || [];
+        const r = rows.find(x => String(x.id) === String(teamId));
+        if (r) {
+          const pts = String(r.scoresStr || "0-0").split("-");
+          res[sp] = { idx: r.idx, played: +(r.played || 0), gf: +(pts[0] || 0), ga: +(pts[1] || 0), pts: +(r.pts || 0), total_teams: rows.length };
+        }
+      }
+    }
+    return res;
+  }
+
+  function statPM(ss, key, already = false) {
+    const e = ss?.[key];
+    if (!e || e.value === null || e.value === undefined) return null;
+    if (already) return +e.value;
+    const mp = e.matches || ss.matches_played || 0;
+    return mp > 0 ? +e.value / mp : null;
+  }
+  function weightedRecent(recent, isHome) {
+    if (!recent.length) return [null, null, 0];
+    const ws = [0.25, 0.20, 0.16, 0.13, 0.10, 0.07, 0.05, 0.04];
+    let wS = 0, gfS = 0, gaS = 0;
+    recent.slice(0, 8).forEach((m, i) => {
+      let w = ws[i] || 0.03;
+      if (m.is_home === isHome) w *= 1.25;
+      gfS += m.gf * w; gaS += m.ga * w; wS += w;
+    });
+    return wS > 0 ? [gfS / wS, gaS / wS, recent.length] : [null, null, 0];
+  }
+
+  // ---- Main Fixture Analyzer (V18.5 Sovereign Pro) ----
+  async function analyzeMatchById(matchId, { customOdds = null, fallbackAf = false, forceRefresh = false, marketAnchored = true } = {}) {
+    const raw = await fetchMatchDetailsRaw(matchId, forceRefresh);
+    const gen = raw.general || {}, hdr = raw.header || {}, content = raw.content || {};
+    const hId = String(gen.homeTeam?.id || ""), aId = String(gen.awayTeam?.id || "");
+    const hName = gen.homeTeam?.name || "Home", aName = gen.awayTeam?.name || "Away";
+    const lgId = String(gen.parentLeagueId || gen.leagueId || ""), lgName = gen.leagueName || "Competition";
+    const koUtc = gen.matchTimeUTCDate || hdr.status?.utcTime || "";
+    const matchDate = koUtc ? koUtc.slice(0, 10) : new Date().toISOString().slice(0, 10);
+
+    const st = hdr.status || {};
+    const finished = !!st.finished, started = !!st.started, isLive = started && !finished && !st.cancelled;
+    let liveMin = null;
+    if (isLive && st.liveTime?.short) { const mm = String(st.liveTime.short).match(/(\d+)/); if (mm) liveMin = +mm[1]; }
+    const hScore = (started || finished) ? hdr.teams?.[0]?.score ?? null : null;
+    const aScore = (started || finished) ? hdr.teams?.[1]?.score ?? null : null;
+
+    const [hTeamRaw, aTeamRaw, espnOdds] = await Promise.all([
+      fetchTeamRaw(hId), fetchTeamRaw(aId), fetchEspnOdds(hName, aName, matchDate)
+    ]);
+
+    const hRest = extractRestAndRecent(hTeamRaw, hId, koUtc, matchId);
+    const aRest = extractRestAndRecent(aTeamRaw, aId, koUtc, matchId);
+
+    let seasonId = "", statsLgId = lgId;
+    if (hRest.season_id && hRest.primary_league_id === lgId) seasonId = hRest.season_id;
+    else if (aRest.season_id && aRest.primary_league_id === lgId) seasonId = aRest.season_id;
+    else if (hRest.season_id) { seasonId = hRest.season_id; statsLgId = hRest.primary_league_id || lgId; }
+
+    const { byTeam: lgStats, baseline: leagueBaseline } = await fetchLeagueStats(statsLgId, seasonId);
+    const hSS = lgStats[hId] || {}, aSS = lgStats[aId] || {};
+
+    let odds = espnOdds ? { ...espnOdds } : {};
+    const sourcesUsed = ["FotMob"];
+    if (espnOdds) sourcesUsed.push("ESPN Odds");
+    else if (fallbackAf) {
+      const af = await fetchApiFootballOddsFallback(hName, aName, matchDate);
+      if (af) { odds = af; sourcesUsed.push("API-Football Fallback"); }
+    }
+
+    const parseUnav = lu => (lu?.unavailable || []).map(p => {
+      const mv = p.marketValue || 0, g = p.performance?.seasonGoals || 0, a = p.performance?.seasonAssists || 0;
+      const tier = (mv >= 30e6 || (g + a) >= 8) ? "Tier S" : (mv >= 12e6 || (g + a) >= 4) ? "Tier A" : "Tier B";
+      const er = String(p.unavailability?.expectedReturn || "");
+      return { name: p.name || "Player", tier, status: er.toLowerCase().includes("doubt") ? "DOUBTFUL" : "OUT" };
+    });
+    const hLu = content.lineup?.homeTeam || {}, aLu = content.lineup?.awayTeam || {};
+    const hUnav = parseUnav(hLu), aUnav = parseUnav(aLu);
+    const hTbl = extractStandings(raw, hId), aTbl = extractStandings(raw, aId);
+    const liveStats = extractLiveStats(raw);
+
+    const buildMetrics = (ss, tbl, rest, unav, isHome) => {
+      const xg = statPM(ss, "xg"), xga = statPM(ss, "xga"), cor = statPM(ss, "corners");
+      const bt = statPM(ss, "box_touches"), poss = statPM(ss, "possession", true), cr = statPM(ss, "crosses", true);
+      const f3 = statPM(ss, "final_third_wins", true), bcm = statPM(ss, "big_chances_missed");
+      const mp = ss.matches_played || tbl.all?.played || 0;
+      const cs = (ss.clean_sheets?.value !== undefined && mp > 0) ? (ss.clean_sheets.value / mp) * 100 : null;
+      const gpm = statPM(ss, "goals_per_match", true) ?? (tbl.all?.played ? tbl.all.gf / tbl.all.played : null);
+      const gapm = statPM(ss, "conceded_per_match", true) ?? (tbl.all?.played ? tbl.all.ga / tbl.all.played : null);
+      const sp = isHome ? tbl.home : tbl.away;
+      const [rgf, rga, rn] = weightedRecent(rest.recent_matches, isHome);
+      return {
+        xg_pm: xg !== null ? +xg.toFixed(2) : null, xga_pm: xga !== null ? +xga.toFixed(2) : null,
+        xg_diff_pm: (xg !== null && xga !== null) ? +(xg - xga).toFixed(2) : null,
+        goals_pm: gpm !== null ? +gpm.toFixed(2) : null, conceded_pm: gapm !== null ? +gapm.toFixed(2) : null,
+        split_goals_pm: sp?.played >= 2 ? +(sp.gf / sp.played).toFixed(2) : null,
+        split_conceded_pm: sp?.played >= 2 ? +(sp.ga / sp.played).toFixed(2) : null,
+        recent_gf: rgf !== null ? +rgf.toFixed(2) : null, recent_ga: rga !== null ? +rga.toFixed(2) : null, recent_sample: rn,
+        corners_pm: cor !== null ? +cor.toFixed(2) : null, box_touches_pm: bt !== null ? +bt.toFixed(1) : null,
+        possession: poss !== null ? +poss.toFixed(1) : null, crosses_pm: cr !== null ? +cr.toFixed(2) : null,
+        final_third_pm: f3 !== null ? +f3.toFixed(2) : null, big_missed_pm: bcm !== null ? +bcm.toFixed(2) : null,
+        clean_sheet_rate: cs !== null ? +cs.toFixed(1) : null,
+        table_rank: tbl.all?.idx ?? null, table_total: tbl.all?.total_teams ?? null,
+        rest_days: rest.rest_days, last_match_comp: rest.last_match_comp,
+        european_hangover: rest.european_hangover, wed_sat_fatigue: rest.wed_sat_fatigue,
+        tier_s_out: unav.filter(p => p.tier === "Tier S" && p.status === "OUT"),
+        tier_s_doubt: unav.filter(p => p.tier === "Tier S" && p.status === "DOUBTFUL"),
+        tier_a_out: unav.filter(p => p.tier === "Tier A" && p.status === "OUT"),
+        recent_form_str: rest.recent_matches.slice(0, 5).map(x => x.res).join("")
+      };
+    };
+
+    const hm = buildMetrics(hSS, hTbl, hRest, hUnav, true);
+    const am = buildMetrics(aSS, aTbl, aRest, aUnav, false);
+    const weights = getWeights();
+
+    // Lineup Confirmation Status (T-60' Gate)
+    const luTypeRaw = String(content.lineup?.lineupType || "").toLowerCase();
+    const xiStatus = luTypeRaw.includes("confirm") ? "CONFIRMED XI" : hLu.formation ? "PROJECTED XI (WAIT T-60')" : "LINEUP DATA GAP";
+    const xiConfirmed = xiStatus === "CONFIRMED XI";
+    const lineupConf = xiConfirmed ? 94 : hLu.formation ? 74 : 55;
+
+    let dp = 0;
+    if (hm.xg_pm !== null && am.xg_pm !== null) dp += 3;
+    if (hm.recent_sample >= 4 && am.recent_sample >= 4) dp += 2;
+    if (hm.table_rank && am.table_rank) dp += 1;
+    if (hm.corners_pm !== null && am.corners_pm !== null) dp += 2;
+    if (hm.rest_days !== null && am.rest_days !== null) dp += 1;
+    if (Object.keys(odds).length) dp += 1;
+    const dataConf = Math.round(clamp(42 + (dp / 10) * 53, 35, 95));
+
+    // DYNAMIC LEAGUE BASELINE (no longer hardcoded 1.38!)
+    const avgG = leagueBaseline.avg_goals;
+    const att = m => {
+      const p = [];
+      if (m.xg_pm !== null) p.push([m.xg_pm, weights.xg_blend_weight]);
+      else if (m.goals_pm !== null) p.push([m.goals_pm, weights.xg_blend_weight * 0.75]);
+      if (m.recent_gf !== null) p.push([m.recent_gf, weights.form_blend_weight]);
+      if (m.split_goals_pm !== null) p.push([m.split_goals_pm, 0.25]);
+      if (!p.length) return avgG;
+      const r = p.reduce((s, [v, w]) => s + v * w, 0) / p.reduce((s, [, w]) => s + w, 0);
+      return 0.85 * r + 0.15 * avgG;
+    };
+    const def = m => {
+      const p = [];
+      if (m.xga_pm !== null) p.push([m.xga_pm, weights.xg_blend_weight]);
+      else if (m.conceded_pm !== null) p.push([m.conceded_pm, weights.xg_blend_weight * 0.75]);
+      if (m.recent_ga !== null) p.push([m.recent_ga, weights.form_blend_weight]);
+      if (m.split_conceded_pm !== null) p.push([m.split_conceded_pm, 0.25]);
+      if (!p.length) return avgG;
+      const r = p.reduce((s, [v, w]) => s + v * w, 0) / p.reduce((s, [, w]) => s + w, 0);
+      return 0.85 * r + 0.15 * avgG;
+    };
+
+    let lamH = ((att(hm) * def(am)) / avgG) * Math.sqrt(weights.home_advantage) * weights.goal_lambda_scale;
+    let lamA = ((att(am) * def(hm)) / avgG) / Math.sqrt(weights.home_advantage) * weights.goal_lambda_scale;
+    const hPen = Math.min(0.18, hm.tier_s_out.length * 0.065 + hm.tier_s_doubt.length * 0.03 + hm.tier_a_out.length * 0.025);
+    const aPen = Math.min(0.18, am.tier_s_out.length * 0.065 + am.tier_s_doubt.length * 0.03 + am.tier_a_out.length * 0.025);
+    lamH *= (1 - hPen * 0.75) * (1 + aPen * 0.35);
+    lamA *= (1 - aPen * 0.75) * (1 + hPen * 0.35);
+    if (hm.european_hangover || hm.wed_sat_fatigue) { lamH *= 0.94; lamA *= 1.05; }
+    if (am.european_hangover || am.wed_sat_fatigue) { lamA *= 0.93; lamH *= 1.06; }
+    lamH = clamp(lamH, 0.32, 3.60); lamA = clamp(lamA, 0.25, 3.20);
+
+    const baseH = isLive ? (hScore || 0) : 0, baseA = isLive ? (aScore || 0) : 0;
+    let remH = lamH, remA = lamA, liveCornerPressure = null;
+    if (isLive && liveMin) {
+      const mins = clamp(liveMin, 1, 90), remF = clamp((93 - mins) / 93, 0.04, 0.98);
+      let eH = lamH, eA = lamA;
+      const lxg = liveStats.expected_goals;
+      if (lxg && lxg[0] !== null && lxg[1] !== null && mins >= 15) {
+        const bw = clamp(mins / 90, 0.15, 0.55);
+        eH = (1 - bw) * lamH + bw * clamp((lxg[0] / mins) * 90, 0.2, 4.0);
+        eA = (1 - bw) * lamA + bw * clamp((lxg[1] / mins) * 90, 0.2, 4.0);
+      }
+      const rc = liveStats.red_cards;
+      if (rc) { if ((rc[0] || 0) > (rc[1] || 0)) { eH *= 0.72; eA *= 1.28; } else if ((rc[1] || 0) > (rc[0] || 0)) { eA *= 0.72; eH *= 1.28; } }
+      remH = eH * remF; remA = eA * remF;
+
+      const lc = liveStats.corners;
+      if (lc && lc[0] !== null && lc[1] !== null && mins >= 20) {
+        const totC = lc[0] + lc[1], pace = (totC / mins) * 90;
+        const trailing = (baseH < baseA && lamH > lamA) || (baseA < baseH && lamA > lamH);
+        if (pace >= 11 || (trailing && pace >= 9.2)) {
+          liveCornerPressure = { active: true, signal: `HIGH CORNER TEMPO (${totC} corners by ${mins}') — Live Over Corners angle; beware Volume ≠ Goal Quality (France Rule).` };
+        }
+      }
+    }
+
+    const rho = weights.dixon_coles_rho;
+    const mat = buildScoreMatrix(remH, remA, rho, baseH, baseA);
+    const sumIf = fn => mat.reduce((s, x) => s + (fn(x.h, x.a) ? x.p : 0), 0);
+    const topScores = [...mat].sort((a, b) => b.p - a.p).slice(0, 6);
+    const projScore = `${topScores[0].h}–${topScores[0].a}`;
+
+    const pHW = sumIf((h, a) => h > a), pD = sumIf((h, a) => h === a), pAW = sumIf((h, a) => h < a);
+    const pHS = sumIf(h => h >= 1), pAS = sumIf((_, a) => a >= 1);
+    const pBY = sumIf((h, a) => h >= 1 && a >= 1), pBN = 1 - pBY;
+    const pHCS = sumIf((_, a) => a === 0), pACS = sumIf(h => h === 0);
+    const pO15 = sumIf((h, a) => h + a > 1.5), pO25 = sumIf((h, a) => h + a > 2.5), pU25 = 1 - pO25, pO35 = sumIf((h, a) => h + a > 3.5), pU35 = 1 - pO35;
+    const pEq2 = sumIf((h, a) => h + a === 2), pEq3 = sumIf((h, a) => h + a === 3);
+    const pO20 = pO25 / Math.max(0.05, 1 - pEq2), pU30 = pU25 / Math.max(0.05, 1 - pEq3);
+    // Quarter Asian Goal Lines: effective expected payout win-equivalent probability
+    // Over 2.25: 100% win on >=3, 50% refund on ==2 (equiv win weight 0.25 of stake)
+    const pO225 = clamp(pO25 + 0.25 * pEq2, 0.03, 0.96);
+    // Under 2.75: 100% win on <=2, 50% refund on ==3 (equiv win weight 0.25)
+    const pU275 = clamp(pU25 + 0.25 * pEq3, 0.03, 0.96);
+
+    // First-Half (1H) Goals: ~44.5% of total λ occurs in 1H
+    const lam1H = (lamH + lamA) * 0.445;
+    const p1HO05 = clamp(1 - poissonPmf(0, lam1H), 0.05, 0.95);
+    const p1HO15 = clamp(1 - poissonPmf(0, lam1H) - poissonPmf(1, lam1H), 0.04, 0.90);
+
+    const pHDNB = pHW / Math.max(0.05, pHW + pAW), pADNB = pAW / Math.max(0.05, pHW + pAW);
+    const pHAHp1Push = sumIf((h, a) => a - h === 1), pHAHp1 = (pHW + pD) / Math.max(0.05, 1 - pHAHp1Push);
+    const pAAHp1Push = sumIf((h, a) => h - a === 1), pAAHp1 = (pAW + pD) / Math.max(0.05, 1 - pAAHp1Push);
+    // Quarter Asian Handicaps (-0.25 / +0.25)
+    const pHAHm025 = clamp(pHW + 0.25 * pD, 0.03, 0.96);
+    const pAAHp025 = clamp(pAW + 0.75 * pD, 0.03, 0.96);
+
+    // Corners (Dynamic League Corners Baseline)
+    const hasCData = hm.corners_pm !== null && am.corners_pm !== null;
+    const avgC = leagueBaseline.avg_corners;
+    let hcBase = hasCData ? hm.corners_pm * 1.06 : clamp(avgC * 0.75 + lamH * 1.1, 3.0, 7.2);
+    let acBase = hasCData ? am.corners_pm * 0.94 : clamp(avgC * 0.65 + lamA * 1.0, 2.6, 6.5);
+    if (hasCData && hm.crosses_pm !== null && am.crosses_pm !== null) {
+      hcBase *= clamp(0.92 + (hm.crosses_pm / 5) * 0.1, 0.9, 1.14);
+      acBase *= clamp(0.92 + (am.crosses_pm / 5) * 0.1, 0.9, 1.14);
+    }
+    const lamCH = clamp(hcBase * weights.corner_lambda_scale, 2.2, 8.8);
+    const lamCA = clamp(acBase * weights.corner_lambda_scale, 1.8, 8.0);
+    let bCH = 0, bCA = 0, rCH = lamCH, rCA = lamCA;
+    if (isLive && liveMin && liveStats.corners && liveStats.corners[0] !== null) {
+      bCH = liveStats.corners[0]; bCA = liveStats.corners[1];
+      const rf = clamp((93 - liveMin) / 93, 0.04, 0.98);
+      rCH = lamCH * rf; rCA = lamCA * rf;
+    }
+    const cTot = rCH + rCA, bCT = bCH + bCA;
+    const pCO85 = cornersOver(8.5, cTot, bCT), pCO95 = cornersOver(9.5, cTot, bCT), pCO105 = cornersOver(10.5, cTot, bCT);
+    const pCU95 = 1 - pCO95, pCU105 = 1 - pCO105;
+    const pCHO45 = cornersOver(4.5, rCH, bCH, 6.5), pCAO35 = cornersOver(3.5, rCA, bCA, 6.5);
+
+    // 12 Mandatory Filters
+    const lgLow = lgName.toLowerCase();
+    const volatileComp = VOLATILE_KW.some(k => lgLow.includes(k));
+    const [mh, md, ma] = devig3(odds.home_win, odds.draw, odds.away_win);
+    const [mo, mu] = devig2(odds.over, odds.under);
+    const balanced = Math.abs(pHW - pAW) < 0.13 && pD >= 0.25;
+    const mirassol = (hm.xga_pm ?? 1.4) <= 1.05 && (am.xga_pm ?? 1.4) <= 1.12;
+    const foundation = !!(hm.table_rank && hm.table_rank <= 3);
+    const driftTrap = !!(odds.home_win && odds.home_win_open && (odds.home_win - odds.home_win_open) >= 0.28);
+    const veto1x2 = balanced || driftTrap;
+    const fatigue = [];
+    if (hm.european_hangover) fatigue.push(`${hName} (Euro hangover, ${hm.rest_days}d)`); else if (hm.wed_sat_fatigue) fatigue.push(`${hName} (<78h, ${hm.rest_days}d)`);
+    if (am.european_hangover) fatigue.push(`${aName} (Euro hangover, ${am.rest_days}d)`); else if (am.wed_sat_fatigue) fatigue.push(`${aName} (<78h, ${am.rest_days}d)`);
+    const staminaRisk = !!(hm.wed_sat_fatigue || am.wed_sat_fatigue || (hm.xga_pm || 0) >= 1.65 || (am.xga_pm || 0) >= 1.65);
+    const france = [];
+    if ((hm.possession || 0) >= 56 && (hm.big_missed_pm || 0) >= 1.65) france.push(hName);
+    if ((am.possession || 0) >= 56 && (am.big_missed_pm || 0) >= 1.65) france.push(aName);
+
+    const filters = [
+      { name: "1. Bookmaker Trap Veto", status: driftTrap ? "FAIL" : mh ? "PASS" : "DATA GAP", detail: driftTrap ? `Home line drifted sharply (${odds.home_win_open} -> ${odds.home_win}) — straight 1X2 vetoed.` : mh ? `Live consensus (${odds.provider}): H ${odds.home_win} / D ${odds.draw} / A ${odds.away_win}.` : "No live 1X2 odds to validate trap." },
+      { name: "2. European Hangover & Wed–Sat Fatigue", status: fatigue.length ? "WARN" : hm.rest_days !== null ? "PASS" : "DATA GAP", detail: fatigue.length ? fatigue.join("; ") : hm.rest_days !== null ? `Normal rest: ${hName} ${hm.rest_days}d vs ${aName} ${am.rest_days}d.` : "Rest calendar DATA GAP." },
+      { name: "3. Stylistic Matchup Priority", status: "PASS", detail: `Shape clash: ${hLu.formation || "DATA GAP"} (${hm.possession ?? "GAP"}% poss) vs ${aLu.formation || "DATA GAP"} (${am.possession ?? "GAP"}% poss).` },
+      { name: "4. Derby & Balanced Match Rule", status: balanced ? "WARN" : "PASS", detail: balanced ? "50/50 tactical balance — straight 1X2 downgraded; pivot to Quarter AH / DNB / Goals / Corners." : `Clear separation (${Math.round(pHW * 100)}% vs ${Math.round(pAW * 100)}%).` },
+      { name: "5. Atmosphere Illusion Filter", status: (hm.xg_diff_pm !== null && hm.xg_diff_pm < -0.25 && pHW < 0.45) ? "WARN" : "PASS", detail: (hm.xg_diff_pm !== null && hm.xg_diff_pm < -0.25) ? `${hName} carries negative xG diff (${hm.xg_diff_pm}/90) — do not back purely on home crowd.` : "Home projection supported by underlying telemetry." },
+      { name: "6. Mirassol Rule (Defensive Walls)", status: mirassol ? "WARN" : "PASS", detail: mirassol ? `Dual low-xGA defensive lock (${hm.xga_pm} vs ${am.xga_pm}) — aggressive Overs suppressed.` : "No dual elite low-xGA lock." },
+      { name: "7. France Rule (Sterile Possession)", status: france.length ? "WARN" : "PASS", detail: france.length ? `Conversion volatility flagged on ${france.join(", ")} — prefer Corners/AH over 1X2.` : "No extreme sterile-possession breach." },
+      { name: "8. Foundation Rule (Home Fortress)", status: foundation ? "WARN" : "PASS", detail: foundation ? `${hName} is Top-3 (#${hm.table_rank}) at home — naked Away Win vetoed.` : "Host outside Top-3 fortress tier." },
+      { name: "9. Friendly & Volatile League Veto", status: volatileComp ? "FAIL" : "PASS", detail: volatileComp ? `CRITICAL RISK: ${lgName} flagged as Friendly/Youth/State league.` : `Competitive tournament verified (${lgName}).` },
+      { name: "10. Motivation Index (+25%)", status: "PASS", detail: `Dynamic League Baseline: ${leagueBaseline.avg_goals} xG/team · ${leagueBaseline.avg_corners} corners/team (${leagueBaseline.dynamic ? leagueBaseline.teams + " clubs" : "prior"}).` },
+      { name: "11. Mid-Tier Home Synergy", status: EURO_KW.some(k => lgLow.includes(k)) ? "WARN" : "PASS", detail: EURO_KW.some(k => lgLow.includes(k)) ? "Continental home intensity evaluated." : "Domestic league baseline." },
+      { name: "12. Late-Game Stamina & Lineup Gate", status: (!xiConfirmed || staminaRisk) ? "WARN" : "PASS", detail: !xiConfirmed ? `${xiStatus} — cap stake until official XI confirmed at T-60'.` : staminaRisk ? "Elevated post-75' concession risk." : "Official XI confirmed; no acute stamina risk." }
+    ];
+
+    const oddsMap = {};
+    if (mh) { oddsMap["1x2_home"] = [odds.home_win, mh]; oddsMap["1x2_draw"] = [odds.draw, md]; oddsMap["1x2_away"] = [odds.away_win, ma]; }
+    if (mo) { oddsMap["over_2_5"] = [odds.over, mo]; oddsMap["under_2_5"] = [odds.under, mu]; }
+    const [pby, pbn] = devig2(odds.btts_yes, odds.btts_no);
+    if (pby) { oddsMap["btts_yes"] = [odds.btts_yes, pby]; oddsMap["btts_no"] = [odds.btts_no, pbn]; }
+    const [pco, pcu] = devig2(odds.corners_over, odds.corners_under);
+    if (pco) { oddsMap["corners_over_9_5"] = [odds.corners_over, pco]; oddsMap["corners_under_9_5"] = [odds.corners_under, pcu]; }
+    if (customOdds) Object.entries(customOdds).forEach(([k, v]) => { if (v > 1.01) oddsMap[k] = [+v, 1 / +v]; });
+
+    const cands = [
+      { key: "over_1_5", label: "Over 1.5 Total Goals", family: "Goals", line: 1.5, raw: pO15, push: 0, v: 0.12 },
+      { key: "over_2_0_asian", label: "Over 2.0 Asian Goals (Push on 2)", family: "Goals", line: 2.0, raw: pO20, push: pEq2, v: 0.14 },
+      { key: "over_2_25", label: "Over 2.25 Asian Goals (Half-Loss on 2)", family: "Goals", line: 2.25, raw: pO225, push: pEq2 * 0.5, v: 0.17 },
+      { key: "over_2_5", label: "Over 2.5 Total Goals", family: "Goals", line: 2.5, raw: pO25, push: 0, v: 0.22 },
+      { key: "under_2_5", label: "Under 2.5 Total Goals", family: "Goals", line: 2.5, raw: pU25, push: 0, v: 0.22 },
+      { key: "under_2_75", label: "Under 2.75 Asian Goals (Half-Loss on 3)", family: "Goals", line: 2.75, raw: pU275, push: pEq3 * 0.5, v: 0.17 },
+      { key: "under_3_0_asian", label: "Under 3.0 Asian Goals (Push on 3)", family: "Goals", line: 3.0, raw: pU30, push: pEq3, v: 0.14 },
+      { key: "under_3_5", label: "Under 3.5 Total Goals", family: "Goals", line: 3.5, raw: pU35, push: 0, v: 0.12 },
+      { key: "over_3_5", label: "Over 3.5 Total Goals", family: "Goals", line: 3.5, raw: pO35, push: 0, v: 0.30 },
+      { key: "btts_yes", label: "BTTS — YES", family: "BTTS", line: null, raw: pBY, push: 0, v: 0.21 },
+      { key: "btts_no", label: "BTTS — NO", family: "BTTS", line: null, raw: pBN, push: 0, v: 0.21 },
+      { key: "corners_over_8_5", label: "Over 8.5 Total Corners", family: "Corners", line: 8.5, raw: pCO85, push: 0, v: hasCData ? 0.20 : 0.34 },
+      { key: "corners_over_9_5", label: "Over 9.5 Total Corners", family: "Corners", line: 9.5, raw: pCO95, push: 0, v: hasCData ? 0.22 : 0.35 },
+      { key: "corners_over_10_5", label: "Over 10.5 Total Corners", family: "Corners", line: 10.5, raw: pCO105, push: 0, v: hasCData ? 0.26 : 0.38 },
+      { key: "corners_under_9_5", label: "Under 9.5 Total Corners", family: "Corners", line: 9.5, raw: pCU95, push: 0, v: hasCData ? 0.22 : 0.35 },
+      { key: "corners_under_10_5", label: "Under 10.5 Total Corners", family: "Corners", line: 10.5, raw: pCU105, push: 0, v: hasCData ? 0.19 : 0.33 },
+      { key: "home_corners_over_4_5", label: `${hName} Over 4.5 Corners`, family: "Corners", line: 4.5, raw: pCHO45, push: 0, v: hasCData ? 0.23 : 0.36 },
+      { key: "away_corners_over_3_5", label: `${aName} Over 3.5 Corners`, family: "Corners", line: 3.5, raw: pCAO35, push: 0, v: hasCData ? 0.24 : 0.36 },
+      { key: "1h_over_0_5", label: "1st Half Over 0.5 Goals", family: "First Half", line: 0.5, raw: p1HO05, push: 0, v: 0.16 },
+      { key: "1h_over_1_5", label: "1st Half Over 1.5 Goals", family: "First Half", line: 1.5, raw: p1HO15, push: 0, v: 0.28 },
+      { key: "home_cs_yes", label: `${hName} Clean Sheet — YES`, family: "Clean Sheet", line: null, raw: pHCS, push: 0, v: 0.26 },
+      { key: "away_cs_yes", label: `${aName} Clean Sheet — YES`, family: "Clean Sheet", line: null, raw: pACS, push: 0, v: 0.27 },
+      { key: "home_over_0_5", label: `${hName} Over 0.5 Goals`, family: "Team Totals", line: 0.5, raw: pHS, push: 0, v: 0.13 },
+      { key: "away_over_0_5", label: `${aName} Over 0.5 Goals`, family: "Team Totals", line: 0.5, raw: pAS, push: 0, v: 0.15 },
+      { key: "1x2_home", label: `${hName} Win (1X2)`, family: "Result & AH", line: 0, raw: pHW, push: 0, v: 0.25 },
+      { key: "1x2_draw", label: "Match Draw (X)", family: "Result & AH", line: 0, raw: pD, push: 0, v: 0.34 },
+      { key: "1x2_away", label: `${aName} Win (1X2)`, family: "Result & AH", line: 0, raw: pAW, push: 0, v: 0.26 },
+      { key: "dc_1x", label: `${hName} or Draw (1X)`, family: "Result & AH", line: 0.5, raw: pHW + pD, push: 0, v: 0.13 },
+      { key: "dc_x2", label: `${aName} or Draw (X2)`, family: "Result & AH", line: 0.5, raw: pAW + pD, push: 0, v: 0.14 },
+      { key: "home_dnb", label: `${hName} Draw No Bet (DNB)`, family: "Result & AH", line: 0, raw: pHDNB, push: pD, v: 0.16 },
+      { key: "away_dnb", label: `${aName} Draw No Bet (DNB)`, family: "Result & AH", line: 0, raw: pADNB, push: pD, v: 0.17 },
+      { key: "home_ah_m025", label: `${hName} Asian Handicap -0.25`, family: "Result & AH", line: -0.25, raw: pHAHm025, push: pD * 0.5, v: 0.19 },
+      { key: "away_ah_p025", label: `${aName} Asian Handicap +0.25`, family: "Result & AH", line: 0.25, raw: pAAHp025, push: pD * 0.5, v: 0.16 },
+      { key: "home_ah_p1", label: `${hName} Asian Handicap +1.0`, family: "Result & AH", line: 1, raw: pHAHp1, push: pHAHp1Push, v: 0.11 },
+      { key: "away_ah_p1", label: `${aName} Asian Handicap +1.0`, family: "Result & AH", line: 1, raw: pAAHp1, push: pAAHp1Push, v: 0.12 }
+    ];
+
+    const anchorW = marketAnchored ? (weights.market_anchor_weight ?? 0.30) : 0.0;
+
+    const scored = cands.map(c => {
+      const cal = weights.market_calibration?.[c.family] || { prob_shift: 0, confidence_mult: 1, blocked: false };
+      let pPure = clamp(c.raw + (cal.prob_shift || 0), 0.03, 0.96);
+      const [bk, mktImp] = oddsMap[c.key] || [null, null];
+      // Bayesian Market Anchoring: shrinks extreme model deviations toward sharp market consensus
+      const isLiveMkt = bk && mktImp && (!customOdds || !customOdds[c.key]);
+      const p = (isLiveMkt && anchorW > 0) ? clamp((1 - anchorW) * pPure + anchorW * mktImp, 0.03, 0.96) : pPure;
+      const fair = +(1 / p).toFixed(2);
+      const minOdds = +(1 / Math.max(0.03, p - 0.035)).toFixed(2);
+      const edge = (bk && mktImp) ? +((p - mktImp) * 100).toFixed(2) : null;
+      let valStatus = "Verify Odds";
+      if (edge !== null) valStatus = edge >= 5 ? "Strong Value" : edge >= 2.5 ? "Moderate Value" : edge >= 1 ? "Thin Value" : edge >= -0.9 ? "No Value" : "Negative Value";
+      let pen = 0; const vr = [];
+      if (c.key.startsWith("1x2_") && veto1x2) { pen += 22; vr.push("1X2 vetoed by Trap/Balanced Filter"); }
+      if (c.key === "1x2_away" && foundation) { pen += 20; vr.push("Foundation Rule: Top-3 Home Fortress"); }
+      if ((c.key === "over_2_5" || c.key === "over_3_5") && (mirassol || volatileComp)) { pen += 18; vr.push("Mirassol/Volatile suppresses Over"); }
+      if (c.family === "Corners" && !hasCData) { pen += 14; vr.push("Season corner table DATA GAP"); }
+      if (cal.blocked) { pen += 18; vr.push("Auto Edge-Policy Haircut"); }
+      const usab = (p >= 0.56 && p <= 0.78) ? 14 : (p >= 0.50 && p < 0.56) ? 8 : (p > 0.78 && p <= 0.85) ? 6 : (p > 0.85 ? -6 : -18);
+      const eb = edge === null ? 0 : edge >= 5 ? 14 : edge >= 2.5 ? 9 : edge >= 1 ? 4 : edge <= -3 ? -16 : edge <= -1 ? -9 : 0;
+      const pb = Math.min(6, c.push * 22);
+      const conf = Math.round(clamp((p * 58 + dataConf * 0.3 + lineupConf * 0.1 + pb - c.v * 28 - pen * 0.6) * (cal.confidence_mult || 1) + (edge && edge > 2 ? Math.min(6, edge * 0.7) : 0), 25, 95));
+      let qs = p * 52 + usab + eb + pb + conf * 0.35 - pen;
+      if (liveCornerPressure && c.key.startsWith("corners_over_")) qs += 8;
+      return {
+        key: c.key, label: c.label, family: c.family, line: c.line,
+        raw_prob: +(c.raw * 100).toFixed(1), pure_prob: +(pPure * 100).toFixed(1), model_prob: +(p * 100).toFixed(1),
+        anchored: !!(isLiveMkt && anchorW > 0), push_prob: +(c.push * 100).toFixed(1),
+        fair_odds: fair, min_acceptable_odds: minOdds, bookmaker_odds: bk,
+        edge_pct: edge, value_status: valStatus, kelly_units: qKelly(p, bk),
+        confidence: conf, quality_score: +qs.toFixed(2), veto_reasons: vr
+      };
+    }).sort((a, b) => b.quality_score - a.quality_score);
+
+    const primary = scored[0];
+    const radar = [{ ...primary, verdict: "PRIMARY" }];
+    const uF = new Set([primary.family]), uK = new Set([primary.key]);
+    for (const m of scored.slice(1)) {
+      if (radar.length >= 4) break;
+      if (!uF.has(m.family) && m.model_prob >= 48) {
+        radar.push({ ...m, verdict: radar.length === 1 ? "BACKUP" : m.model_prob >= 66 ? "SAFER PIVOT" : "SECONDARY" });
+        uF.add(m.family); uK.add(m.key);
+      }
+    }
+    const avoid = scored.filter(m => !uK.has(m.key) && (m.veto_reasons.length || (m.edge_pct !== null && m.edge_pct <= -2) || m.key.startsWith("1x2_"))).sort((a, b) => a.quality_score - b.quality_score)[0] || scored[scored.length - 1];
+    radar.push({ ...avoid, verdict: "AVOID / VETO" });
+
+    const marketsByFam = {};
+    scored.forEach(m => { (marketsByFam[m.family] ||= []).push(m); });
+
+    const doubtS = hm.tier_s_doubt.length > 0 || am.tier_s_doubt.length > 0;
+    let tier = "TIER 2: VALUE HUNTER", tierCode = "TIER_2", stake = 2.5, cmd = "EXECUTE";
+    if (volatileComp || primary.confidence < 50 || (primary.edge_pct !== null && primary.edge_pct <= -3)) {
+      tier = "TIER 4: STRICT VETO"; tierCode = "TIER_4"; stake = 0; cmd = "VETO";
+    } else if (primary.confidence >= 82 && !driftTrap && !doubtS) {
+      tier = "TIER 1: TITANIUM ANCHOR"; tierCode = "TIER_1"; stake = primary.confidence >= 87 ? 4.5 : 4.0; cmd = "EXECUTE";
+    } else if (primary.confidence < 68) {
+      tier = "TIER 3: HIGH-VARIANCE PIVOT"; tierCode = "TIER_3"; stake = 1.0; cmd = "PIVOT";
+    }
+    // Lineup & Doubtful Tier-S stake protection
+    if (stake > 0 && doubtS) stake = +(stake * 0.5).toFixed(2);
+    else if (stake > 0 && !xiConfirmed) stake = +(stake * 0.75).toFixed(2);
+
+    const chaos = Math.round(clamp(25 + (volatileComp ? 18 : 0) + (driftTrap ? 14 : 0) + (balanced ? 12 : 0) + (fatigue.length ? 10 : 0) + (doubtS ? 10 : 0) + (dataConf < 65 ? 15 : 0), 12, 94));
+    const sw = [
+      ...hUnav.filter(p => p.tier === "Tier S" || p.tier === "Tier A").map(p => ({ team: hName, player: p.name, tier: p.tier, status: p.status })),
+      ...aUnav.filter(p => p.tier === "Tier S" || p.tier === "Tier A").map(p => ({ team: aName, player: p.name, tier: p.tier, status: p.status }))
+    ];
+
+    const infoBox = content.matchFacts?.infoBox || {};
+    const venue = typeof infoBox.Stadium === "object" ? (infoBox.Stadium?.name || "DATA GAP") : (infoBox.Stadium || "DATA GAP");
+    const referee = typeof infoBox.Referee === "object" ? (infoBox.Referee?.text || "DATA GAP") : (infoBox.Referee || "DATA GAP");
+
+    return {
+      match_id: String(matchId), sources_used: sourcesUsed, league_id: lgId, league_name: lgName,
+      league_baseline: leagueBaseline, market_anchored: marketAnchored, xi_status: xiStatus, xi_confirmed: xiConfirmed,
+      venue, referee, kickoff_utc: koUtc, match_date: matchDate,
+      state: isLive ? "LIVE" : finished ? "FT" : "UPCOMING", is_live: isLive, finished, live_minute: liveMin,
+      home: { id: hId, name: hName, logo: crestUrl(hId), score: hScore, formation: hLu.formation || "DATA GAP", metrics: hm },
+      away: { id: aId, name: aName, logo: crestUrl(aId), score: aScore, formation: aLu.formation || "DATA GAP", metrics: am },
+      verdict: {
+        tier, tier_code: tierCode, primary_bet: primary.label, market_key: primary.key, market_family: primary.family,
+        line_value: primary.line, model_prob: primary.model_prob, pure_prob: primary.pure_prob, raw_prob: primary.raw_prob,
+        fair_odds: primary.fair_odds, min_acceptable_odds: primary.min_acceptable_odds,
+        bookmaker_odds: primary.bookmaker_odds, edge_pct: primary.edge_pct, value_status: primary.value_status,
+        confidence: primary.confidence, stake_units: stake, kelly_units: primary.kelly_units, command: cmd,
+        executive_reason: `Dixon-Coles (${lamH.toFixed(2)} vs ${lamA.toFixed(2)} λ; league avg ${leagueBaseline.avg_goals}) + NegBin Corners (${(lamCH + lamCA).toFixed(1)} λ) rank ${primary.label} #1 at ${primary.model_prob}% (Fair ${primary.fair_odds})${primary.edge_pct !== null ? ` with ${primary.edge_pct > 0 ? "+" : ""}${primary.edge_pct}% edge vs ${odds.provider}.` : "; verify price in Market Radar before executing."}`,
+        backup: radar[1] || null, safer_alternative: radar.slice(1).find(r => r.model_prob >= 65) || radar[2] || null, avoid: radar[radar.length - 1] || null
+      },
+      radar, markets_by_family: marketsByFam, all_markets: scored,
+      goal_model: {
+        home_lambda: +lamH.toFixed(2), away_lambda: +lamA.toFixed(2), total_lambda: +(lamH + lamA).toFixed(2),
+        dixon_coles_rho: rho, projected_score: projScore,
+        top_scores: topScores.map(s => ({ score: `${s.h}–${s.a}`, prob: +(s.p * 100).toFixed(1) })),
+        p_over_1_5: +(pO15 * 100).toFixed(1), p_over_2_5: +(pO25 * 100).toFixed(1), p_under_2_5: +(pU25 * 100).toFixed(1),
+        p_btts_yes: +(pBY * 100).toFixed(1), p_home_cs: +(pHCS * 100).toFixed(1), p_away_cs: +(pACS * 100).toFixed(1),
+        p_1h_over_0_5: +(p1HO05 * 100).toFixed(1)
+      },
+      corners_model: {
+        has_season_data: hasCData, home_corners_lambda: +lamCH.toFixed(2), away_corners_lambda: +lamCA.toFixed(2),
+        total_corners_lambda: +(lamCH + lamCA).toFixed(1),
+        p_over_8_5: +(pCO85 * 100).toFixed(1), p_over_9_5: +(pCO95 * 100).toFixed(1), p_over_10_5: +(pCO105 * 100).toFixed(1),
+        p_under_9_5: +(pCU95 * 100).toFixed(1), p_under_10_5: +(pCU105 * 100).toFixed(1),
+        p_home_over_4_5: +(pCHO45 * 100).toFixed(1), p_away_over_3_5: +(pCAO35 * 100).toFixed(1),
+        live_corner_pressure: liveCornerPressure
+      },
+      personas: {
+        neville: `Structural spacing pits ${hName}'s ${hLu.formation || "DATA GAP"} (xGA ${hm.xga_pm ?? "DATA GAP"}/90, CS ${hm.clean_sheet_rate ?? "DATA GAP"}%) against ${aName}'s ${aLu.formation || "DATA GAP"} (xGA ${am.xga_pm ?? "DATA GAP"}/90).`,
+        henry: `Verticality audit: ${hName} ${hm.xg_pm ?? "DATA GAP"} xG & ${hm.box_touches_pm ?? "DATA GAP"} box touches/90 vs ${aName} ${am.xg_pm ?? "DATA GAP"} xG & ${am.box_touches_pm ?? "DATA GAP"} box touches/90. Projects ${(lamH + lamA).toFixed(2)} goal λ & ${(lamCH + lamCA).toFixed(1)} corners.`,
+        keane: `Mentality & discipline (Ref: ${referee}): Final-3rd recoveries ${hm.final_third_pm ?? "DATA GAP"}/90 vs ${am.final_third_pm ?? "DATA GAP"}/90. ${fatigue.length ? `Fatigue alert: ${fatigue.join("; ")}.` : `Rest: ${hm.rest_days ?? "?"}d vs ${am.rest_days ?? "?"}d.`}`
+      },
+      filters, star_watchlist: sw, live_stats: liveStats, odds,
+      risk_audit: {
+        chaos_index: chaos, data_confidence: dataConf, lineup_confidence: lineupConf,
+        self_critique: !xiConfirmed ? `Lineups are still ${xiStatus} — stake capped at 75% until official XI drops at T-60'.` : hm.xg_pm === null ? "Season xG table unavailable (DATA GAP); weighted recent goal splits used." : "Primary survives 10-point audit; residual risk is early red card or penalty shock (0.76 xG).",
+        failure_condition: primary.family === "Corners" ? "Early 2-0 lead slows tempo and suppresses late corners." : primary.key.includes("under") ? "Early opening goal (<15') or red card breaks compact block." : "Poor finishing variance vs xG or conservative 0-0 HT stalemate.",
+        live_hedge_trigger: primary.family === "Corners" ? "If <3 corners by 35' in slow tempo, skip adding live corners." : primary.key.includes("over") ? "If 0-0 at 55' with live xG < 0.75, hedge partially into Under 1.5." : "If backed side trails at HT with <0.45 live xG, protect bankroll."
+      },
+      active_learning_weights: { home_advantage: weights.home_advantage, goal_lambda_scale: weights.goal_lambda_scale, corner_lambda_scale: weights.corner_lambda_scale, dixon_coles_rho: weights.dixon_coles_rho, total_settled: weights.total_settled || 0 }
+    };
+  }
+
+  // ---- Daily Top Picks Auto-Scanner ----
+  async function scanDailyTopPicks(matchesList, limit = 14, onProgress = null) {
+    const valid = matchesList.filter(m => !String(m.match_id).startsWith("espn:") && m.state !== "CANC");
+    const open = valid.filter(m => !m.finished);
+    const queue = (open.length >= 3 ? open : valid).slice(0, limit);
+    const results = [];
+    const batchSize = 3;
+    for (let i = 0; i < queue.length; i += batchSize) {
+      const batch = queue.slice(i, i + batchSize);
+      const settled = await Promise.all(batch.map(async m => {
+        try { return await analyzeMatchById(m.match_id); } catch { return null; }
+      }));
+      settled.forEach(a => { if (a) results.push(a); });
+      if (onProgress) onProgress(Math.min(queue.length, i + batchSize), queue.length);
+    }
+
+    const anchors = [...results].filter(a => a.verdict.tier_code === "TIER_1" || a.verdict.tier_code === "TIER_2")
+      .sort((a, b) => (b.verdict.confidence + (b.verdict.edge_pct || 0) * 1.2) - (a.verdict.confidence + (a.verdict.edge_pct || 0) * 1.2));
+    const traps = results.filter(a => a.verdict.tier_code === "TIER_4" || a.filters.some(f => f.status === "FAIL"));
+
+    const bestInFamily = fam => {
+      const cands = [];
+      results.forEach(a => {
+        const best = (a.markets_by_family[fam] || []).find(m => m.model_prob >= 56 && m.model_prob <= 82);
+        if (best) cands.push({ analysis: a, market: best });
+      });
+      return cands.sort((x, y) => y.market.quality_score - x.market.quality_score).slice(0, 3);
+    };
+
+    return {
+      scanned: results.length,
+      anchors: anchors.slice(0, 6),
+      best_corners: bestInFamily("Corners"),
+      best_goals: bestInFamily("Goals"),
+      best_btts: bestInFamily("BTTS"),
+      best_first_half: bestInFamily("First Half"),
+      traps: traps.slice(0, 4)
+    };
+  }
+
+  // ---- Slip Audit ----
+  async function auditSlip(legs) {
+    const rows = [], score_projections = [];
+    for (let i = 0; i < legs.length; i++) {
+      const a = await analyzeMatchById(legs[i].match_id);
+      const v = a.verdict;
+      let risk = "SAFE", cmd = v.command, reason = v.executive_reason, uPick = "Auto (Obsidian)";
+      if (legs[i].user_pick_key) {
+        const up = a.all_markets.find(m => m.key === legs[i].user_pick_key);
+        if (up) {
+          uPick = up.label;
+          if (up.veto_reasons.length || up.confidence < 50) { risk = "CRITICAL"; cmd = `PIVOT -> ${v.primary_bet}`; reason = `Flagged (${up.veto_reasons.join("; ") || "low confidence"}). Pivot to Obsidian #1 edge.`; }
+          else if (up.confidence < 65 || up.model_prob < 52) { risk = "HIGH"; cmd = `PIVOT -> ${v.primary_bet}`; reason = `Excess variance (${up.model_prob}%) vs ${v.primary_bet} (${v.model_prob}%).`; }
+          else if (up.confidence < 76 && up.key !== v.market_key) { risk = "MEDIUM"; cmd = `PROTECT -> ${v.primary_bet}`; reason = `Moderate risk; ${v.primary_bet} offers cleaner downside protection.`; }
+          else { risk = "SAFE"; cmd = "MAINTAIN"; reason = `Aligned with Obsidian telemetry (${up.model_prob}%, Conf ${up.confidence}/100).`; }
+        }
+      } else {
+        risk = v.tier_code === "TIER_4" ? "CRITICAL" : v.tier_code === "TIER_3" ? "HIGH" : v.tier_code === "TIER_2" ? "MEDIUM" : "SAFE";
+      }
+      rows.push({ index: i + 1, fixture: `${a.home.name} vs ${a.away.name}`, league: a.league_name, user_pick: uPick, risk_status: risk, obsidian_bet: v.primary_bet, prob: v.model_prob, fair_odds: v.fair_odds, confidence: v.confidence, tier_code: v.tier_code, command: cmd, reason });
+      score_projections.push({ index: i + 1, fixture: `${a.home.name} vs ${a.away.name}`, projected_score: a.goal_model.projected_score, lambdas: `${a.goal_model.home_lambda} – ${a.goal_model.away_lambda} λ`, corners_lambda: `${a.corners_model.total_corners_lambda} corners λ` });
+    }
+    const trio = rows.filter(r => r.tier_code === "TIER_1" || r.tier_code === "TIER_2").sort((a, b) => b.confidence - a.confidence).slice(0, 3);
+    const pc = trio.reduce((p, r) => p * (r.prob / 100), 1);
+    return {
+      rows, score_projections,
+      sovereign_trio: {
+        legs: trio, combined_prob: trio.length ? +(pc * 100).toFixed(1) : 0,
+        combined_fair_odds: (trio.length && pc > 0) ? +(1 / pc).toFixed(2) : null,
+        warning: trio.length >= 2 ? "Sovereign Trio optimal (2–3 disciplined legs)." : trio.length === 1 ? "Single-leg play recommended — avoid forcing weak legs." : "No Tier 1–2 legs qualified."
+      }
+    };
+  }
+
+  // ---- Memory, CLV, Quarter-Line Grading & Self-Learning ----
+  function getWeights() {
+    const w = loadLS(STORE_WEIGHTS, DEFAULT_WEIGHTS);
+    w.market_calibration ||= JSON.parse(JSON.stringify(DEFAULT_WEIGHTS.market_calibration));
+    for (const k of Object.keys(DEFAULT_WEIGHTS.market_calibration)) {
+      if (!w.market_calibration[k]) w.market_calibration[k] = { ...DEFAULT_WEIGHTS.market_calibration[k] };
+    }
+    return w;
+  }
+  function resetWeights() {
+    const fresh = JSON.parse(JSON.stringify(DEFAULT_WEIGHTS));
+    saveLS(STORE_WEIGHTS, fresh);
+    return fresh;
+  }
+  function listPredictions(status = "ALL") {
+    const all = loadLS(STORE_PREDS, []);
+    return status === "ALL" ? all : all.filter(p => p.status === status || (status === "WON" && p.status === "HALF_WON") || (status === "LOST" && p.status === "HALF_LOST"));
+  }
+  function savePrediction(pred) {
+    const all = loadLS(STORE_PREDS, []);
+    const item = {
+      ...pred, id: Date.now(), status: "PENDING",
+      closing_odds: null, clv_pct: null,
+      actual_home_goals: null, actual_away_goals: null,
+      actual_home_corners: null, actual_away_corners: null,
+      actual_1h_goals: null, pnl_units: null, brier_score: null,
+      created_at: new Date().toISOString()
+    };
+    all.unshift(item);
+    saveLS(STORE_PREDS, all);
+    return item.id;
+  }
+  function deletePrediction(id) {
+    const all = loadLS(STORE_PREDS, []).filter(p => p.id !== Number(id));
+    saveLS(STORE_PREDS, all);
+    recalibrateWeights();
+  }
+
+  function gradeMarket(key, hg, ag, hc, ac, g1h = null) {
+    const tg = hg + ag, tc = (hc !== null && ac !== null) ? hc + ac : null;
+    const map = {
+      over_1_5: () => tg >= 2 ? "WON" : "LOST",
+      over_2_0_asian: () => tg >= 3 ? "WON" : tg === 2 ? "PUSH" : "LOST",
+      over_2_25: () => tg >= 3 ? "WON" : tg === 2 ? "HALF_LOST" : "LOST",
+      over_2_5: () => tg >= 3 ? "WON" : "LOST",
+      under_2_5: () => tg <= 2 ? "WON" : "LOST",
+      under_2_75: () => tg <= 2 ? "WON" : tg === 3 ? "HALF_LOST" : "LOST",
+      under_3_0_asian: () => tg <= 2 ? "WON" : tg === 3 ? "PUSH" : "LOST",
+      under_3_5: () => tg <= 3 ? "WON" : "LOST",
+      over_3_5: () => tg >= 4 ? "WON" : "LOST",
+      btts_yes: () => (hg >= 1 && ag >= 1) ? "WON" : "LOST",
+      btts_no: () => (hg === 0 || ag === 0) ? "WON" : "LOST",
+      "1h_over_0_5": () => g1h === null ? null : (g1h >= 1 ? "WON" : "LOST"),
+      "1h_over_1_5": () => g1h === null ? null : (g1h >= 2 ? "WON" : "LOST"),
+      home_cs_yes: () => ag === 0 ? "WON" : "LOST",
+      away_cs_yes: () => hg === 0 ? "WON" : "LOST",
+      home_over_0_5: () => hg >= 1 ? "WON" : "LOST",
+      away_over_0_5: () => ag >= 1 ? "WON" : "LOST",
+      "1x2_home": () => hg > ag ? "WON" : "LOST",
+      "1x2_draw": () => hg === ag ? "WON" : "LOST",
+      "1x2_away": () => ag > hg ? "WON" : "LOST",
+      dc_1x: () => hg >= ag ? "WON" : "LOST",
+      dc_x2: () => ag >= hg ? "WON" : "LOST",
+      home_dnb: () => hg > ag ? "WON" : hg === ag ? "PUSH" : "LOST",
+      away_dnb: () => ag > hg ? "WON" : hg === ag ? "PUSH" : "LOST",
+      home_ah_m025: () => hg > ag ? "WON" : hg === ag ? "HALF_LOST" : "LOST",
+      away_ah_p025: () => ag > hg ? "WON" : ag === hg ? "HALF_WON" : "LOST",
+      home_ah_p1: () => (hg - ag) >= 0 ? "WON" : (hg - ag) === -1 ? "PUSH" : "LOST",
+      away_ah_p1: () => (ag - hg) >= 0 ? "WON" : (ag - hg) === -1 ? "PUSH" : "LOST",
+      corners_over_8_5: () => tc === null ? null : (tc >= 9 ? "WON" : "LOST"),
+      corners_over_9_5: () => tc === null ? null : (tc >= 10 ? "WON" : "LOST"),
+      corners_over_10_5: () => tc === null ? null : (tc >= 11 ? "WON" : "LOST"),
+      corners_under_9_5: () => tc === null ? null : (tc <= 9 ? "WON" : "LOST"),
+      corners_under_10_5: () => tc === null ? null : (tc <= 10 ? "WON" : "LOST"),
+      home_corners_over_4_5: () => hc === null ? null : (hc >= 5 ? "WON" : "LOST"),
+      away_corners_over_3_5: () => ac === null ? null : (ac >= 4 ? "WON" : "LOST")
+    };
+    return map[key] ? map[key]() : null;
+  }
+
+  function applySettlement(p, st, hg, ag, hc, ac, g1h, closingOdds) {
+    const takenOdds = (p.bookmaker_odds && p.bookmaker_odds > 1.01) ? p.bookmaker_odds : Math.max(1.05, p.fair_odds * 0.96);
+    const prob = clamp(p.model_prob / 100, 0.01, 0.99);
+    let pnl = 0, brier = null;
+    if (st === "WON") { pnl = p.stake_units * (takenOdds - 1); brier = Math.pow(prob - 1, 2); }
+    else if (st === "HALF_WON") { pnl = 0.5 * p.stake_units * (takenOdds - 1); brier = Math.pow(prob - 0.75, 2); }
+    else if (st === "HALF_LOST") { pnl = -0.5 * p.stake_units; brier = Math.pow(prob - 0.25, 2); }
+    else if (st === "LOST") { pnl = -p.stake_units; brier = Math.pow(prob - 0, 2); }
+    p.status = st;
+    p.actual_home_goals = hg; p.actual_away_goals = ag;
+    p.actual_home_corners = hc; p.actual_away_corners = ac;
+    p.actual_1h_goals = g1h;
+    p.pnl_units = +pnl.toFixed(3);
+    p.brier_score = brier !== null ? +brier.toFixed(5) : null;
+    if (closingOdds && closingOdds > 1.01 && p.bookmaker_odds && p.bookmaker_odds > 1.01) {
+      p.closing_odds = +closingOdds;
+      p.clv_pct = +(((1 / closingOdds) - (1 / p.bookmaker_odds)) * 100).toFixed(2);
+    }
+  }
+
+  function settleManual(id, { home_goals, away_goals, home_corners, away_corners, goals_1h, closing_odds, explicit_status }) {
+    const all = loadLS(STORE_PREDS, []);
+    const p = all.find(x => x.id === Number(id));
+    if (!p) throw new Error("Prediction not found");
+    let st = explicit_status;
+    if (!st) {
+      if (home_goals === null || away_goals === null) throw new Error("Enter final score or mark directly");
+      st = gradeMarket(p.market_key, home_goals, away_goals, home_corners, away_corners, goals_1h);
+      if (!st) throw new Error("Missing corners or 1H goals for this market — enter them or mark directly");
+    }
+    applySettlement(p, st, home_goals, away_goals, home_corners, away_corners, goals_1h, closing_odds);
+    saveLS(STORE_PREDS, all);
+    recalibrateWeights();
+    return { status: st, pnl_units: p.pnl_units, clv_pct: p.clv_pct };
+  }
+
+  async function autoSettlePending() {
+    const all = loadLS(STORE_PREDS, []);
+    const pending = all.filter(p => p.status === "PENDING");
+    let settledCount = 0;
+    for (const p of pending) {
+      if (String(p.match_id).startsWith("espn:")) continue;
+      try {
+        const raw = await fetchMatchDetailsRaw(p.match_id, true);
+        if (!raw?.header?.status?.finished) continue;
+        const ts = raw.header.teams || [];
+        if (ts.length < 2 || ts[0].score === null || ts[1].score === null) continue;
+        const hg = +ts[0].score, ag = +ts[1].score;
+        const ls = extractLiveStats(raw);
+        const hc = ls.corners?.[0] ?? null, ac = ls.corners?.[1] ?? null;
+        const g1h = extractHalfTimeGoals(raw);
+        const st = gradeMarket(p.market_key, hg, ag, hc, ac, g1h);
+        if (!st) continue;
+        // Also attempt closing odds lookup from ESPN for automatic CLV!
+        let closeOdd = null;
+        try {
+          const eo = await fetchEspnOdds(p.home_team, p.away_team, p.match_date);
+          if (eo) {
+            const m = { "1x2_home": eo.home_win, "1x2_draw": eo.draw, "1x2_away": eo.away_win, over_2_5: eo.over, under_2_5: eo.under };
+            closeOdd = m[p.market_key] || null;
+          }
+        } catch {}
+        applySettlement(p, st, hg, ag, hc, ac, g1h, closeOdd);
+        settledCount++;
+      } catch {}
+    }
+    saveLS(STORE_PREDS, all);
+    if (settledCount > 0) recalibrateWeights();
+    return { checked: pending.length, settled_count: settledCount };
+  }
+
+  function recalibrateWeights() {
+    const all = loadLS(STORE_PREDS, []);
+    const settled = all.filter(p => ["WON", "HALF_WON", "LOST", "HALF_LOST", "PUSH"].includes(p.status));
+    const np = settled.filter(p => p.status !== "PUSH");
+    const w = getWeights();
+    w.total_settled = settled.length;
+    w.last_trained_at = new Date().toISOString();
+    if (!np.length) { saveLS(STORE_WEIGHTS, w); return { updated: false, reason: "No settled non-push bets yet." }; }
+
+    const notes = [];
+    for (const fam of Object.keys(DEFAULT_WEIGHTS.market_calibration)) {
+      const rows = np.filter(p => p.market_family === fam);
+      const n = rows.length;
+      if (!n) { w.market_calibration[fam] = { ...DEFAULT_WEIGHTS.market_calibration[fam] }; continue; }
+      const scoreWin = r => r.status === "WON" ? 1 : r.status === "HALF_WON" ? 0.75 : r.status === "HALF_LOST" ? 0.25 : 0;
+      const act = rows.reduce((s, r) => s + scoreWin(r), 0) / n;
+      const avgP = rows.reduce((s, r) => s + (r.raw_prob || r.model_prob) / 100, 0) / n;
+      const brier = rows.reduce((s, r) => s + (r.brier_score || 0), 0) / n;
+      const staked = rows.reduce((s, r) => s + r.stake_units, 0), pnl = rows.reduce((s, r) => s + (r.pnl_units || 0), 0);
+      const roi = staked > 0 ? (pnl / staked) * 100 : 0;
+      const shrink = n / (n + 10);
+      const shift = +clamp(shrink * (act - avgP) * 0.65, -0.09, 0.06).toFixed(4);
+      let blocked = false, cm = 1.0;
+      if (n >= 8 && (brier > 0.27 || roi < -12)) { blocked = true; cm = 0.84; notes.push(`${fam} Edge-Policy haircut`); }
+      else if (n >= 4 && (act - avgP) < -0.08) { cm = 0.92; notes.push(`${fam} trim (${(shift * 100).toFixed(1)}%)`); }
+      else if (n >= 6 && roi > 5 && brier < 0.20) { cm = 1.05; notes.push(`${fam} boost`); }
+      w.market_calibration[fam] = { prob_shift: shift, confidence_mult: cm, blocked, samples: n, brier: +brier.toFixed(4), roi: +roi.toFixed(1) };
+    }
+    const sc = settled.filter(p => p.actual_home_goals !== null && p.home_lambda);
+    if (sc.length >= 3) {
+      const pT = sc.reduce((s, p) => s + p.home_lambda + p.away_lambda, 0);
+      const aT = sc.reduce((s, p) => s + p.actual_home_goals + p.actual_away_goals, 0);
+      const sh = sc.length / (sc.length + 14);
+      w.goal_lambda_scale = +clamp(1 + sh * ((aT / Math.max(0.5, pT)) - 1) * 0.55, 0.88, 1.12).toFixed(4);
+    }
+    const cc = settled.filter(p => p.actual_home_corners !== null && p.home_corners_lambda);
+    if (cc.length >= 3) {
+      const pC = cc.reduce((s, p) => s + p.home_corners_lambda + p.away_corners_lambda, 0);
+      const aC = cc.reduce((s, p) => s + p.actual_home_corners + p.actual_away_corners, 0);
+      const sh = cc.length / (cc.length + 12);
+      w.corner_lambda_scale = +clamp(1 + sh * ((aC / Math.max(1, pC)) - 1) * 0.6, 0.86, 1.14).toFixed(4);
+    }
+    saveLS(STORE_WEIGHTS, w);
+    const logs = loadLS(STORE_LOGS, []);
+    const brier = +(np.reduce((s, r) => s + (r.brier_score || 0), 0) / np.length).toFixed(4);
+    const pnl = +settled.reduce((s, r) => s + (r.pnl_units || 0), 0).toFixed(2);
+    const stk = np.reduce((s, r) => s + r.stake_units, 0);
+    const roi = stk > 0 ? +((pnl / stk) * 100).toFixed(1) : 0;
+    logs.unshift({ created_at: new Date().toISOString(), settled_count: settled.length, summary: `Calibrated on ${settled.length} bets (Brier ${brier}, ROI ${roi > 0 ? "+" : ""}${roi}%, Goal×${w.goal_lambda_scale}, Corner×${w.corner_lambda_scale}). ${notes.join("; ") || "Within tolerance."}` });
+    saveLS(STORE_LOGS, logs.slice(0, 20));
+    return { updated: true, settled_count: settled.length };
+  }
+
+  function getAnalytics() {
+    const all = loadLS(STORE_PREDS, []);
+    const settled = all.filter(p => ["WON", "HALF_WON", "LOST", "HALF_LOST", "PUSH"].includes(p.status));
+    const np = settled.filter(p => p.status !== "PUSH");
+    const wins = np.filter(p => p.status === "WON" || p.status === "HALF_WON").length;
+    const losses = np.filter(p => p.status === "LOST" || p.status === "HALF_LOST").length;
+    const pushes = settled.filter(p => p.status === "PUSH").length;
+    const briers = np.filter(p => p.brier_score !== null).map(p => p.brier_score);
+    const meanBrier = briers.length ? +(briers.reduce((a, b) => a + b, 0) / briers.length).toFixed(4) : null;
+    const clvs = settled.filter(p => p.clv_pct !== null && p.clv_pct !== undefined).map(p => p.clv_pct);
+    const meanClv = clvs.length ? +(clvs.reduce((a, b) => a + b, 0) / clvs.length).toFixed(2) : null;
+    const staked = np.reduce((s, p) => s + p.stake_units, 0);
+    const pnl = +settled.reduce((s, p) => s + (p.pnl_units || 0), 0).toFixed(2);
+
+    // Bankroll & Drawdown Guardrail Math
+    const bcfg = getBankrollConfig();
+    let running = bcfg.starting_units, peak = bcfg.starting_units;
+    [...settled].reverse().forEach(p => {
+      running += (p.pnl_units || 0);
+      if (running > peak) peak = running;
+    });
+    const drawdownPct = peak > 0 ? +(((peak - running) / peak) * 100).toFixed(1) : 0;
+    const today = new Date().toISOString().slice(0, 10);
+    const todayPendingUnits = all.filter(p => p.status === "PENDING" && (p.match_date === today || (p.created_at || "").startsWith(today)))
+      .reduce((s, p) => s + p.stake_units, 0);
+    const dailyExposurePct = running > 0 ? +((todayPendingUnits / running) * 100).toFixed(1) : 0;
+
+    const warnings = [];
+    if (drawdownPct >= bcfg.max_drawdown_pct) warnings.push(`ANTI-TILT COOLDOWN: Drawdown reached ${drawdownPct}% (limit ${bcfg.max_drawdown_pct}%). Pause real stakes & audit CLV.`);
+    if (dailyExposurePct >= bcfg.max_daily_pct) warnings.push(`DAILY EXPOSURE CAP: Today's pending stakes (${todayPendingUnits.toFixed(1)}u = ${dailyExposurePct}%) hit your ${bcfg.max_daily_pct}% daily cap.`);
+    if (clvs.length >= 10 && meanClv < -1.0) warnings.push(`NEGATIVE CLV ALERT: Rolling CLV is ${meanClv}% across ${clvs.length} bets — pause and tighten market anchoring.`);
+
+    const w = getWeights();
+    const byFamily = Object.keys(DEFAULT_WEIGHTS.market_calibration).map(fam => {
+      const rows = np.filter(p => p.market_family === fam);
+      const fw = rows.filter(r => r.status === "WON" || r.status === "HALF_WON").length;
+      const fs = rows.reduce((s, r) => s + r.stake_units, 0);
+      const fp = +rows.reduce((s, r) => s + (r.pnl_units || 0), 0).toFixed(2);
+      const fb = rows.filter(r => r.brier_score !== null).map(r => r.brier_score);
+      const c = w.market_calibration[fam] || {};
+      return {
+        family: fam, bets: rows.length, wins: fw,
+        hit_rate: rows.length ? +((fw / rows.length) * 100).toFixed(1) : null,
+        avg_pred: rows.length ? +(rows.reduce((s, r) => s + r.model_prob, 0) / rows.length).toFixed(1) : null,
+        brier: fb.length ? +(fb.reduce((a, b) => a + b, 0) / fb.length).toFixed(4) : null,
+        roi: fs > 0 ? +((fp / fs) * 100).toFixed(1) : null,
+        prob_shift_pct: +((c.prob_shift || 0) * 100).toFixed(2),
+        blocked: !!c.blocked
+      };
+    });
+    return {
+      summary: {
+        total_saved: all.length, pending: all.length - settled.length, settled: settled.length,
+        wins, losses, pushes, hit_rate: np.length ? +((wins / np.length) * 100).toFixed(1) : 0,
+        mean_brier: meanBrier, mean_clv: meanClv, clv_samples: clvs.length,
+        skill_score: meanBrier !== null ? +((1 - meanBrier / 0.25) * 100).toFixed(1) : null,
+        total_staked: +staked.toFixed(2), pnl_units: pnl, roi_pct: staked > 0 ? +((pnl / staked) * 100).toFixed(1) : 0
+      },
+      bankroll: { ...bcfg, current_units: +running.toFixed(2), peak_units: +peak.toFixed(2), drawdown_pct: drawdownPct, today_pending_units: +todayPendingUnits.toFixed(2), daily_exposure_pct: dailyExposurePct, warnings },
+      by_family: byFamily, weights: w, logs: loadLS(STORE_LOGS, [])
+    };
+  }
+
+  function exportBackup() {
+    return JSON.stringify({
+      version: "OBSIDIAN_V18_5", exported_at: new Date().toISOString(),
+      predictions: loadLS(STORE_PREDS, []),
+      weights: getWeights(),
+      logs: loadLS(STORE_LOGS, []),
+      bankroll: getBankrollConfig()
+    }, null, 2);
+  }
+
+  function importBackup(jsonText) {
+    const parsed = JSON.parse(jsonText);
+    if (!Array.isArray(parsed.predictions)) throw new Error("Invalid backup file format.");
+    saveLS(STORE_PREDS, parsed.predictions);
+    if (parsed.weights) saveLS(STORE_WEIGHTS, parsed.weights);
+    if (Array.isArray(parsed.logs)) saveLS(STORE_LOGS, parsed.logs);
+    if (parsed.bankroll) saveLS(STORE_BANKROLL, parsed.bankroll);
+    return parsed.predictions.length;
+  }
+
+  return {
+    fetchMatchesByDate, fetchMatchesNext7Days, analyzeMatchById, scanDailyTopPicks, auditSlip,
+    getUsage, getAfKey, setAfKey, getBankrollConfig, setBankrollConfig,
+    listPredictions, savePrediction, deletePrediction, settleManual, autoSettlePending,
+    recalibrateWeights, resetWeights, getAnalytics, exportBackup, importBackup
+  };
+})();
+
+
+/* OBSIDIAN DIAMOND V18.5 SOVEREIGN PRO — Live UI Controller */
+
+const state = {
+  currentDate: todayISO(0),
+  stateFilter: "ALL",
+  searchQuery: "",
+  matchesPayload: null,
+  selectedMatchId: null,
+  currentAnalysis: null,
+  activeMarketTab: "RADAR",
+  marketAnchored: true,
+  customOddsByMatch: {}, // matchId -> { marketKey: decimalOdds }
+  liveAutoPoll: true,
+  livePollTimer: null,
+  slipLegs: [],
+  ledgerFilter: "ALL",
+  settlingPredId: null,
+};
+
+const SLIP_PICK_OPTIONS = [
+  { key: "", label: "Auto (Obsidian Primary)" },
+  { key: "over_1_5", label: "Over 1.5 Goals" },
+  { key: "over_2_25", label: "Over 2.25 Asian Goals" },
+  { key: "over_2_5", label: "Over 2.5 Goals" },
+  { key: "under_2_5", label: "Under 2.5 Goals" },
+  { key: "under_2_75", label: "Under 2.75 Asian Goals" },
+  { key: "under_3_5", label: "Under 3.5 Goals" },
+  { key: "btts_yes", label: "BTTS — YES" },
+  { key: "btts_no", label: "BTTS — NO" },
+  { key: "1h_over_0_5", label: "1H Over 0.5 Goals" },
+  { key: "corners_over_8_5", label: "Over 8.5 Corners" },
+  { key: "corners_over_9_5", label: "Over 9.5 Corners" },
+  { key: "corners_under_10_5", label: "Under 10.5 Corners" },
+  { key: "1x2_home", label: "Home Win (1X2)" },
+  { key: "1x2_draw", label: "Draw (X)" },
+  { key: "1x2_away", label: "Away Win (1X2)" },
+  { key: "home_dnb", label: "Home DNB" },
+  { key: "away_dnb", label: "Away DNB" },
+  { key: "home_ah_m025", label: "Home AH -0.25" },
+  { key: "away_ah_p025", label: "Away AH +0.25" },
+  { key: "home_cs_yes", label: "Home Clean Sheet" },
+  { key: "away_cs_yes", label: "Away Clean Sheet" },
+];
+
+function todayISO(offsetDays = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function esc(str) {
+  return String(str ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function fmtKickoff(utcStr) {
+  if (!utcStr) return "--:--";
+  try { return new Date(utcStr).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false }); }
+  catch { return "--:--"; }
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.remove("hidden");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.add("hidden"), 3200);
+}
+
+function buildDateRibbon(datePicker) {
+  const ribbon = document.getElementById("date-ribbon");
+  if (!ribbon) return;
+  const chips = [
+    { mode: "7D", label: "Next 7 Days", cls: "week-chip" },
+    { offset: -1, label: "Yest" },
+    { offset: 0, label: "Today", active: true },
+  ];
+  for (let i = 1; i <= 7; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    const lbl = i === 1 ? "Tmrw" : d.toLocaleDateString(undefined, { weekday: "short", day: "numeric" });
+    chips.push({ offset: i, label: lbl });
+  }
+  ribbon.innerHTML = chips.map(c => c.mode === "7D"
+    ? `<button class="date-chip ${c.cls}" data-range="7D">${c.label}</button>`
+    : `<button class="date-chip ${c.active ? "active" : ""}" data-offset="${c.offset}">${c.label}</button>`
+  ).join("");
+
+  ribbon.querySelectorAll(".date-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      ribbon.querySelectorAll(".date-chip").forEach((c) => c.classList.remove("active"));
+      chip.classList.add("active");
+      if (chip.dataset.range === "7D") {
+        state.dateRangeMode = "7D";
+        state.currentDate = todayISO(0);
+        datePicker.value = state.currentDate;
+      } else {
+        state.dateRangeMode = "1D";
+        state.currentDate = todayISO(parseInt(chip.dataset.offset, 10));
+        datePicker.value = state.currentDate;
+      }
+      loadMatches(false);
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const datePicker = document.getElementById("date-picker");
+  datePicker.value = state.currentDate;
+  document.getElementById("af-key-input").value = ObsidianEngine.getAfKey();
+  buildDateRibbon(datePicker);
+
+  document.querySelectorAll(".seg-btn").forEach((btn) => {
+    btn.addEventListener("click", () => switchView(btn.dataset.view));
+  });
+
+  datePicker.addEventListener("change", () => {
+    if (!datePicker.value) return;
+    document.querySelectorAll("#date-ribbon .date-chip").forEach((c) => c.classList.remove("active"));
+    state.dateRangeMode = "1D";
+    state.currentDate = datePicker.value;
+    loadMatches(false);
+  });
+
+  document.querySelectorAll(".match-rail .state-pill").forEach((pill) => {
+    pill.addEventListener("click", () => {
+      document.querySelectorAll(".match-rail .state-pill").forEach((p) => p.classList.remove("active"));
+      pill.classList.add("active");
+      state.stateFilter = pill.dataset.state;
+      renderMatchesList();
+    });
+  });
+
+  document.getElementById("match-search").addEventListener("input", (e) => {
+    state.searchQuery = e.target.value.trim().toLowerCase();
+    renderMatchesList();
+  });
+
+  document.getElementById("btn-refresh-matches").addEventListener("click", () => loadMatches(true));
+
+  const popover = document.getElementById("sources-popover");
+  document.getElementById("btn-sources").addEventListener("click", () => {
+    popover.classList.toggle("hidden");
+    refreshStatus();
+  });
+  document.getElementById("btn-close-sources").addEventListener("click", () => popover.classList.add("hidden"));
+  document.getElementById("btn-save-af-key").addEventListener("click", () => {
+    ObsidianEngine.setAfKey(document.getElementById("af-key-input").value);
+    showToast("Saved API-Football fallback key locally on this device");
+    refreshStatus();
+  });
+
+  // Daily Radar Scanner
+  document.getElementById("btn-run-scanner").addEventListener("click", runDailyScanner);
+
+  // Slip Builder
+  document.getElementById("btn-clear-slip").addEventListener("click", () => {
+    state.slipLegs = [];
+    updateSlipBadge();
+    renderSlipBuilder();
+    renderMatchesList();
+    document.getElementById("slip-results").classList.add("hidden");
+  });
+  document.getElementById("btn-run-slip-audit").addEventListener("click", runSlipAudit);
+
+  // Memory, Backup & Learning
+  document.getElementById("btn-auto-settle").addEventListener("click", runAutoSettle);
+  document.getElementById("btn-recalibrate").addEventListener("click", () => {
+    const r = ObsidianEngine.recalibrateWeights();
+    showToast(r.updated ? `Recalibrated on ${r.settled_count} bets` : r.reason);
+    loadMemoryView();
+  });
+  document.getElementById("btn-reset-weights").addEventListener("click", () => {
+    ObsidianEngine.resetWeights();
+    showToast("Neural weights reset to factory prior");
+    loadMemoryView();
+  });
+  document.getElementById("btn-export-backup").addEventListener("click", () => {
+    const blob = new Blob([ObsidianEngine.exportBackup()], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `obsidian-v18-backup-${todayISO(0)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast("Exported Memory & Neural Weights backup JSON");
+  });
+  document.getElementById("btn-import-backup").addEventListener("click", () => {
+    document.getElementById("import-file-input").click();
+  });
+  document.getElementById("import-file-input").addEventListener("change", (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const count = ObsidianEngine.importBackup(reader.result);
+        showToast(`Imported ${count} predictions & learned weights`);
+        loadMemoryView();
+      } catch (err) {
+        showToast(`Import failed: ${err.message}`);
+      }
+    };
+    reader.readAsText(f);
+    e.target.value = "";
+  });
+
+  document.querySelectorAll("#ledger-filters .state-pill").forEach((pill) => {
+    pill.addEventListener("click", () => {
+      document.querySelectorAll("#ledger-filters .state-pill").forEach((p) => p.classList.remove("active"));
+      pill.classList.add("active");
+      state.ledgerFilter = pill.dataset.pstatus;
+      renderPredictionsLedger();
+    });
+  });
+
+  const closeSettle = () => document.getElementById("settle-modal").classList.add("hidden");
+  document.getElementById("btn-close-settle").addEventListener("click", closeSettle);
+  document.getElementById("btn-cancel-settle").addEventListener("click", closeSettle);
+  document.getElementById("btn-confirm-settle").addEventListener("click", () => submitManualSettle(null));
+  document.querySelectorAll("[data-direct-status]").forEach((btn) => {
+    btn.addEventListener("click", () => submitManualSettle(btn.dataset.directStatus));
+  });
+
+  refreshStatus();
+  loadMatches(false, true);
+});
+
+function switchView(viewName) {
+  document.querySelectorAll(".seg-btn").forEach((b) => {
+    const active = b.dataset.view === viewName;
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-selected", active ? "true" : "false");
+  });
+  document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+  document.getElementById(`view-${viewName}`).classList.add("active");
+  if (viewName === "slip") renderSlipBuilder();
+  if (viewName === "memory") loadMemoryView();
+}
+
+function refreshStatus() {
+  const u = ObsidianEngine.getUsage();
+  document.getElementById("header-af-quota").textContent = `AF ${u.api_football}/100`;
+  const savedCount = ObsidianEngine.listPredictions("ALL").length;
+  const memBadge = document.getElementById("memory-badge");
+  memBadge.textContent = savedCount;
+  memBadge.classList.toggle("hidden", savedCount === 0);
+
+  const items = [
+    { name: "FotMob", role: "Primary (Matches, Dynamic League xG/Corners, XI, Rest)", status: "ONLINE", quota: `${u.fotmob} calls · Free`, cls: "tag-emerald" },
+    { name: "ESPN", role: "Secondary (Live DraftKings Odds & CLV Closing Prices)", status: "ONLINE", quota: `${u.espn} calls · Free`, cls: "tag-emerald" },
+    { name: "SofaScore", role: "Optional Mirror (Anti-bot 403 respected)", status: "GATED", quota: "Protected", cls: "tag-amber" },
+    { name: "API-Football", role: ObsidianEngine.getAfKey() ? "Strict Fallback Ready (Local Key)" : "Optional Fallback (No Key Set)", status: "STANDBY", quota: `${u.api_football} / 100`, cls: "tag-ice" }
+  ];
+  document.getElementById("sources-list").innerHTML = items.map((x) => `
+    <div class="source-row">
+      <div><div class="source-name">${esc(x.name)}</div><div class="source-role">${esc(x.role)}</div></div>
+      <div class="source-meta"><span class="tag ${x.cls}">${esc(x.status)}</span><div class="mono" style="margin-top:4px;color:var(--ink-tertiary)">${esc(x.quota)}</div></div>
+    </div>
+  `).join("");
+}
+
+async function loadMatches(forceRefresh = false, autoSelectFirst = false) {
+  const listEl = document.getElementById("matches-list");
+  const metaEl = document.getElementById("matches-meta");
+  const is7d = state.dateRangeMode === "7D";
+  metaEl.textContent = is7d
+    ? `Fetching next 7 days (${state.currentDate} + 7d) live from FotMob...`
+    : `Fetching ${state.currentDate} live from FotMob...`;
+  listEl.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;padding:8px">${Array(8).fill('<div class="skeleton" style="height:56px"></div>').join("")}</div>`;
+
+  try {
+    const data = is7d
+      ? await ObsidianEngine.fetchMatchesNext7Days(state.currentDate, forceRefresh)
+      : await ObsidianEngine.fetchMatchesByDate(state.currentDate, forceRefresh);
+    state.matchesPayload = data;
+    document.getElementById("live-count").textContent = data.live_count > 0 ? `(${data.live_count})` : "";
+    renderMatchesList();
+    refreshStatus();
+    if (autoSelectFirst && !state.selectedMatchId && data.leagues?.[0]?.matches?.[0]) {
+      selectMatch(data.leagues[0].matches[0].match_id);
+    }
+  } catch (e) {
+    metaEl.textContent = "Failed to load live slate";
+    listEl.innerHTML = `<div class="empty-inline">Error loading live fixtures: ${esc(e.message)}</div>`;
+  }
+}
+
+function getAllSlateMatchesFlat() {
+  const out = [];
+  for (const lg of (state.matchesPayload?.leagues || [])) {
+    for (const m of (lg.matches || [])) out.push(m);
+  }
+  return out;
+}
+
+function renderMatchesList() {
+  const payload = state.matchesPayload;
+  const listEl = document.getElementById("matches-list");
+  const metaEl = document.getElementById("matches-meta");
+  if (!payload) return;
+
+  const q = state.searchQuery;
+  let visibleCount = 0;
+  const htmlParts = [];
+
+  for (const lg of payload.leagues || []) {
+    const filtered = lg.matches.filter((m) => {
+      if (state.stateFilter !== "ALL" && m.state !== state.stateFilter) return false;
+      if (q && !`${m.home_name} ${m.away_name} ${m.league_name}`.toLowerCase().includes(q)) return false;
+      return true;
+    });
+    if (!filtered.length) continue;
+    visibleCount += filtered.length;
+
+    const rowsHtml = filtered.map((m) => {
+      const isSelected = state.selectedMatchId === m.match_id;
+      const inSlip = state.slipLegs.some((l) => l.match_id === m.match_id);
+      const timeLabel = m.is_live ? esc(m.live_minute || "LIVE") : m.finished ? esc(m.status_label || "FT") : fmtKickoff(m.kickoff_utc);
+      return `
+        <div class="match-row ${isSelected ? "selected" : ""}" data-match-id="${esc(m.match_id)}">
+          <div class="match-time ${m.is_live ? "live" : ""}">${timeLabel}</div>
+          <div class="match-teams">
+            <div class="team-line">
+              <div class="team-id-wrap">
+                ${m.home_logo ? `<img class="team-crest" src="${esc(m.home_logo)}" alt="" loading="lazy" />` : ""}
+                <span class="team-name">${esc(m.home_name)}</span>
+              </div>
+              <span class="team-score">${m.home_score ?? ""}</span>
+            </div>
+            <div class="team-line">
+              <div class="team-id-wrap">
+                ${m.away_logo ? `<img class="team-crest" src="${esc(m.away_logo)}" alt="" loading="lazy" />` : ""}
+                <span class="team-name">${esc(m.away_name)}</span>
+              </div>
+              <span class="team-score">${m.away_score ?? ""}</span>
+            </div>
+          </div>
+          <button class="slip-mini-btn ${inSlip ? "in-slip" : ""}" data-slip-toggle="${esc(m.match_id)}">${inSlip ? "✓ Slip" : "+ Slip"}</button>
+        </div>
+      `;
+    }).join("");
+
+    htmlParts.push(`<div class="league-group"><div class="league-header"><span>${esc(lg.league_name)}</span><span class="mono">${filtered.length}</span></div>${rowsHtml}</div>`);
+  }
+
+  metaEl.innerHTML = `<span>${visibleCount} of ${payload.total_matches} fixtures · ${esc(payload.date)}</span><span class="mono" style="text-transform:uppercase">${esc(payload.source)}</span>`;
+  listEl.innerHTML = htmlParts.length ? htmlParts.join("") : `<div class="empty-inline">No matches match the current filter.</div>`;
+
+  listEl.querySelectorAll(".match-row").forEach((row) => {
+    row.addEventListener("click", (e) => {
+      if (e.target.closest("[data-slip-toggle]")) return;
+      selectMatch(row.dataset.matchId);
+      if (window.innerWidth <= 780) document.getElementById("analysis-canvas").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+  listEl.querySelectorAll("[data-slip-toggle]").forEach((btn) => {
+    btn.addEventListener("click", (e) => { e.stopPropagation(); toggleSlipMatch(btn.dataset.slipToggle); });
+  });
+}
+
+function findMatchInSlate(matchId) {
+  return getAllSlateMatchesFlat().find(m => m.match_id === matchId) || null;
+}
+
+function clearLivePoll() {
+  if (state.livePollTimer) { clearInterval(state.livePollTimer); state.livePollTimer = null; }
+}
+
+async function selectMatch(matchId, opts = {}) {
+  clearLivePoll();
+  state.selectedMatchId = matchId;
+  renderMatchesList();
+  const canvas = document.getElementById("analysis-canvas");
+  if (!opts.silent) {
+    canvas.innerHTML = `<div class="audit-wrap"><div class="skeleton" style="height:140px"></div><div class="skeleton" style="height:220px"></div><div class="skeleton" style="height:260px"></div></div>`;
+  }
+
+  try {
+    const savedCustom = state.customOddsByMatch[matchId] || null;
+    const data = await ObsidianEngine.analyzeMatchById(matchId, {
+      ...opts,
+      customOdds: opts.customOdds || savedCustom,
+      marketAnchored: state.marketAnchored
+    });
+    state.currentAnalysis = data;
+    if (!opts.keepTab) state.activeMarketTab = "RADAR";
+    renderAnalysis(data);
+    refreshStatus();
+
+    // Live 45-second Auto-Polling when watching an active LIVE match
+    if (data.is_live && state.liveAutoPoll) {
+      state.livePollTimer = setInterval(() => {
+        if (state.selectedMatchId === matchId) {
+          selectMatch(matchId, { forceRefresh: true, silent: true, keepTab: true });
+        }
+      }, 45000);
+    }
+  } catch (e) {
+    canvas.innerHTML = `<div class="empty-canvas"><h1>Telemetry Fetch Interrupted</h1><p>${esc(e.message)}</p><button class="btn btn-secondary" onclick="selectMatch('${esc(matchId)}',{forceRefresh:true})">Retry Fetch</button></div>`;
+  }
+}
+
+function tierTagClass(c) { return c === "TIER_1" ? "tag-emerald" : c === "TIER_2" ? "tag-amber" : c === "TIER_3" ? "tag-ice" : "tag-coral"; }
+function cmdCls(c) { return (c === "EXECUTE" || c === "MAINTAIN") ? "text-emerald" : (c === "PROTECT" || c === "PIVOT") ? "text-amber" : "text-coral"; }
+function renderFormDots(s) { return s ? `<span class="form-dots">${s.split("").map(c => `<span class="form-dot form-${c}">${c}</span>`).join("")}</span>` : `<span class="muted-tag">DATA GAP</span>`; }
+function meterRow(lbl, pct, f = "") { const cls = f || (pct >= 65 ? "high" : pct >= 50 ? "mid" : ""); return `<div class="meter-row"><span class="text-muted">${esc(lbl)}</span><div class="meter-bar"><div class="meter-fill ${cls}" style="width:${Math.min(100, Math.max(0, pct))}%"></div></div><span class="mono" style="text-align:right">${pct}%</span></div>`; }
+
+function renderAnalysis(a) {
+  const canvas = document.getElementById("analysis-canvas");
+  const v = a.verdict, gm = a.goal_model, cm = a.corners_model, lb = a.league_baseline;
+  const inSlip = state.slipLegs.some((l) => l.match_id === a.match_id);
+  const scoreDisplay = (a.is_live || a.finished) && a.home.score !== null ? `${a.home.score} – ${a.away.score}` : "vs";
+  const stateBadge = a.is_live ? `<span class="tag tag-coral">LIVE ${a.live_minute ? a.live_minute + "'" : ""}</span>` : a.finished ? `<span class="tag">FULL TIME</span>` : `<span class="tag">${fmtKickoff(a.kickoff_utc)} · ${esc(a.match_date)}</span>`;
+  const xiBadge = a.xi_confirmed ? `<span class="tag tag-emerald">CONFIRMED XI</span>` : `<span class="tag tag-amber">${esc(a.xi_status)}</span>`;
+
+  canvas.innerHTML = `
+    <div class="audit-wrap">
+      <button id="btn-mobile-back" class="btn btn-ghost btn-xs mobile-back-btn">← Back to Matches</button>
+
+      <div class="match-hero">
+        <div class="match-hero-meta">
+          <div class="meta-tags">
+            ${stateBadge}
+            ${xiBadge}
+            <span class="tag">${esc(a.league_name)}</span>
+            <span class="tag tag-ice mono">Avg ${lb.avg_goals} xG · ${lb.avg_corners} C</span>
+            ${a.sources_used.map(s => `<span class="tag">${esc(s)}</span>`).join("")}
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            ${a.is_live ? `<button id="btn-toggle-poll" class="toggle-chip ${state.liveAutoPoll ? "on" : ""}">Live 45s ${state.liveAutoPoll ? "ON" : "OFF"}</button>` : ""}
+            <button id="btn-refresh-audit" class="btn btn-ghost btn-xs">Refresh</button>
+            <button id="btn-af-fallback" class="btn btn-ghost btn-xs">API-FB Fallback</button>
+          </div>
+        </div>
+        <div class="scoreboard-grid">
+          <div class="hero-team">
+            ${a.home.logo ? `<img class="hero-crest" src="${esc(a.home.logo)}" alt="" />` : ""}
+            <div>
+              <div class="hero-team-name">${esc(a.home.name)}</div>
+              <div class="hero-team-sub"><span class="mono">${esc(a.home.formation)}</span>${a.home.metrics.table_rank ? `<span class="mono">#${a.home.metrics.table_rank}</span>` : ""}${renderFormDots(a.home.metrics.recent_form_str)}</div>
+            </div>
+          </div>
+          <div class="hero-center">
+            <div class="hero-score">${scoreDisplay}</div>
+            <div class="hero-proj">Model FT: <strong class="mono">${esc(gm.projected_score)}</strong></div>
+          </div>
+          <div class="hero-team away">
+            ${a.away.logo ? `<img class="hero-crest" src="${esc(a.away.logo)}" alt="" />` : ""}
+            <div>
+              <div class="hero-team-name">${esc(a.away.name)}</div>
+              <div class="hero-team-sub">${renderFormDots(a.away.metrics.recent_form_str)}${a.away.metrics.table_rank ? `<span class="mono">#${a.away.metrics.table_rank}</span>` : ""}<span class="mono">${esc(a.away.formation)}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="verdict-card">
+        <div class="verdict-top">
+          <div>
+            <div class="verdict-eyebrow">
+              <span class="tag ${tierTagClass(v.tier_code)}">${esc(v.tier)}</span>
+              <span class="tag">${esc(v.market_family)}</span>
+              <span class="mono ${cmdCls(v.command)}" style="font-size:12px;font-weight:700">${esc(v.command)}</span>
+              <button id="btn-toggle-anchor" class="toggle-chip ${state.marketAnchored ? "on" : ""}" title="Blend 70% Model + 30% Sharp Market Consensus to suppress overconfidence">
+                ${state.marketAnchored ? "Bayesian Anchor 70/30: ON" : "Pure Model: ON"}
+              </button>
+            </div>
+            <h1 class="verdict-pick">${esc(v.primary_bet)}</h1>
+            <p class="verdict-reason">${esc(v.executive_reason)}</p>
+          </div>
+          <div class="verdict-actions">
+            <button id="btn-save-primary" class="btn btn-primary">Save to Memory</button>
+            <button id="btn-toggle-slip-hero" class="btn btn-secondary">${inSlip ? "✓ In Slip" : "+ Add to Slip"}</button>
+          </div>
+        </div>
+
+        <div class="verdict-metrics">
+          <div class="vm-cell"><span class="vm-label">Model Prob</span><span class="vm-val text-emerald">${v.model_prob}%</span><span class="vm-sub">Pure ${v.pure_prob}%</span></div>
+          <div class="vm-cell"><span class="vm-label">Fair Odds</span><span class="vm-val">${v.fair_odds.toFixed(2)}</span><span class="vm-sub">Min ${v.min_acceptable_odds.toFixed(2)}</span></div>
+          <div class="vm-cell"><span class="vm-label">Market Price</span><span class="vm-val">${v.bookmaker_odds ? v.bookmaker_odds.toFixed(2) : "—"}</span><span class="vm-sub">${esc(v.value_status)}</span></div>
+          <div class="vm-cell"><span class="vm-label">Edge (+EV)</span><span class="vm-val ${v.edge_pct > 0 ? "text-emerald" : v.edge_pct < 0 ? "text-coral" : ""}">${v.edge_pct !== null ? `${v.edge_pct > 0 ? "+" : ""}${v.edge_pct}%` : "N/A"}</span><span class="vm-sub">¼-Kelly ${v.kelly_units}u</span></div>
+          <div class="vm-cell"><span class="vm-label">Confidence</span><span class="vm-val">${v.confidence}<span style="font-size:13px;color:var(--ink-tertiary)">/100</span></span><span class="vm-sub">Chaos ${a.risk_audit.chaos_index}/100</span></div>
+          <div class="vm-cell"><span class="vm-label">Stake Sizing</span><span class="vm-val ${cmdCls(v.command)}">${v.stake_units.toFixed(2)}u</span><span class="vm-sub">${a.xi_confirmed ? "Full Stake" : "75% Pre-XI Cap"}</span></div>
+        </div>
+
+        <div class="alt-strip">
+          <div class="alt-box"><div class="alt-k">Backup Bet</div><div class="alt-v">${v.backup ? `${esc(v.backup.label)} <span class="mono text-muted">(${v.backup.model_prob}% · ${v.backup.fair_odds})</span>` : "—"}</div></div>
+          <div class="alt-box"><div class="alt-k">Safer Pivot</div><div class="alt-v">${v.safer_alternative ? `${esc(v.safer_alternative.label)} <span class="mono text-muted">(${v.safer_alternative.model_prob}% · ${v.safer_alternative.fair_odds})</span>` : "—"}</div></div>
+          <div class="alt-box"><div class="alt-k">Avoid / Trap</div><div class="alt-v text-coral">${v.avoid ? `${esc(v.avoid.label)} <span class="mono">(${v.avoid.model_prob}%)</span>` : "—"}</div></div>
+        </div>
+      </div>
+
+      <div class="surface-card">
+        <div class="card-head">
+          <h2>Multi-Market Radar · Inline Bookmaker +EV Calculator</h2>
+          <div class="state-pills" id="market-family-tabs">
+            ${["RADAR", "Goals", "BTTS", "Corners", "First Half", "Clean Sheet", "Team Totals", "Result & AH"].map(f => `<button class="state-pill ${state.activeMarketTab === f ? "active" : ""}" data-fam="${f}">${f === "RADAR" ? "Top 5 Radar" : f}</button>`).join("")}
+          </div>
+        </div>
+        <div id="market-table-wrap" class="table-wrap"></div>
+      </div>
+
+      <div class="two-col-grid">
+        <div class="surface-card">
+          <div class="card-head"><h2>Dixon-Coles Goal Model</h2><span class="muted-tag">ρ = ${gm.dixon_coles_rho}</span></div>
+          <div class="lambda-row">
+            <div class="lambda-tile"><div class="k">${esc(a.home.name)} λ</div><div class="v">${gm.home_lambda.toFixed(2)}</div></div>
+            <div class="lambda-tile"><div class="k">${esc(a.away.name)} λ</div><div class="v">${gm.away_lambda.toFixed(2)}</div></div>
+            <div class="lambda-tile"><div class="k">Total xG Exp</div><div class="v text-emerald">${gm.total_lambda.toFixed(2)}</div></div>
+          </div>
+          <div class="subhead">Most Probable Scorelines</div>
+          <div class="score-chips">${gm.top_scores.map((s, i) => `<div class="score-chip ${i === 0 ? "top" : ""}"><span class="mono" style="font-weight:600">${esc(s.score)}</span><span class="mono text-muted">${s.prob}%</span></div>`).join("")}</div>
+          <div class="meter-list">
+            ${meterRow("1st Half Over 0.5", gm.p_1h_over_0_5)}
+            ${meterRow("Over 1.5 Goals", gm.p_over_1_5)}
+            ${meterRow("Over 2.5 Goals", gm.p_over_2_5)}
+            ${meterRow("Under 2.5 Goals", gm.p_under_2_5)}
+            ${meterRow("BTTS — YES", gm.p_btts_yes)}
+            ${meterRow("Home Clean Sheet", gm.p_home_cs)}
+          </div>
+        </div>
+
+        <div class="surface-card">
+          <div class="card-head"><h2>Corners Engine (Negative Binomial)</h2><span class="muted-tag">${cm.has_season_data ? "FotMob Season Data" : "League Prior"}</span></div>
+          ${cm.live_corner_pressure ? `<div class="alert-banner">${esc(cm.live_corner_pressure.signal)}</div>` : ""}
+          <div class="lambda-row">
+            <div class="lambda-tile"><div class="k">Home Corners λ</div><div class="v text-ice">${cm.home_corners_lambda.toFixed(1)}</div></div>
+            <div class="lambda-tile"><div class="k">Away Corners λ</div><div class="v text-ice">${cm.away_corners_lambda.toFixed(1)}</div></div>
+            <div class="lambda-tile"><div class="k">Total Corners λ</div><div class="v">${cm.total_corners_lambda.toFixed(1)}</div></div>
+          </div>
+          <div class="meter-list">
+            ${meterRow("Over 8.5 Corners", cm.p_over_8_5, "ice")}
+            ${meterRow("Over 9.5 Corners", cm.p_over_9_5, "ice")}
+            ${meterRow("Over 10.5 Corners", cm.p_over_10_5, "ice")}
+            ${meterRow("Under 9.5 Corners", cm.p_under_9_5)}
+            ${meterRow("Under 10.5 Corners", cm.p_under_10_5)}
+            ${meterRow("Home Over 4.5", cm.p_home_over_4_5, "ice")}
+          </div>
+          <div class="divider"></div>
+          <div class="subhead">Season Per-90 Telemetry · Ref: ${esc(a.referee)}</div>
+          <table>
+            <thead><tr><th>Metric</th><th style="text-align:right">${esc(a.home.name)}</th><th style="text-align:right">${esc(a.away.name)}</th></tr></thead>
+            <tbody>
+              ${[["xG / 90", a.home.metrics.xg_pm, a.away.metrics.xg_pm], ["xGA / 90", a.home.metrics.xga_pm, a.away.metrics.xga_pm], ["Corners / 90", a.home.metrics.corners_pm, a.away.metrics.corners_pm], ["Box Touches", a.home.metrics.box_touches_pm, a.away.metrics.box_touches_pm], ["Possession %", a.home.metrics.possession, a.away.metrics.possession], ["Rest Days", a.home.metrics.rest_days, a.away.metrics.rest_days]].map(([k, hv, av]) => `<tr><td class="text-muted">${k}</td><td class="mono" style="text-align:right">${hv ?? "DATA GAP"}</td><td class="mono" style="text-align:right">${av ?? "DATA GAP"}</td></tr>`).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="surface-card">
+        <div class="card-head"><h2>V15 Tactical Persona Triangulation</h2><span class="muted-tag">Neville · Henry · Keane</span></div>
+        <div class="three-col-grid">
+          <div class="persona-box"><div class="persona-name">Gary Neville · Structure</div><div class="persona-text">${esc(a.personas.neville)}</div></div>
+          <div class="persona-box"><div class="persona-name">Thierry Henry · Verticality</div><div class="persona-text">${esc(a.personas.henry)}</div></div>
+          <div class="persona-box"><div class="persona-name">Roy Keane · Mentality</div><div class="persona-text">${esc(a.personas.keane)}</div></div>
+        </div>
+      </div>
+
+      <div class="two-col-grid">
+        <div class="surface-card">
+          <div class="card-head"><h2>STAR_WATCHLIST</h2><span class="muted-tag">${a.star_watchlist.length} flagged</span></div>
+          ${a.star_watchlist.length ? `<div class="table-wrap"><table><thead><tr><th>Player</th><th>Team</th><th>Tier</th><th>Status</th></tr></thead><tbody>${a.star_watchlist.map(p => `<tr><td><strong>${esc(p.player)}</strong></td><td class="text-muted">${esc(p.team)}</td><td><span class="tag ${p.tier === "Tier S" ? "tag-coral" : "tag-amber"}">${esc(p.tier)}</span></td><td class="mono">${esc(p.status)}</td></tr>`).join("")}</tbody></table></div>` : `<div class="empty-inline">No Tier-S or Tier-A structural absences reported on FotMob.</div>`}
+        </div>
+        <div class="surface-card">
+          <div class="card-head"><h2>10-Point Self-Critique &amp; Risk Protocol</h2><span class="muted-tag">Data ${a.risk_audit.data_confidence}/100</span></div>
+          <div style="display:flex;flex-direction:column;gap:12px;font-size:13px;">
+            <div><div class="alt-k">Contradiction Audit</div><div style="margin-top:4px;color:var(--ink-secondary)">${esc(a.risk_audit.self_critique)}</div></div>
+            <div><div class="alt-k">Main Failure Condition</div><div style="margin-top:4px;color:var(--ink-secondary)">${esc(a.risk_audit.failure_condition)}</div></div>
+            <div><div class="alt-k">In-Play Counter-Bet / Hedge Trigger</div><div style="margin-top:4px;color:var(--ice)">${esc(a.risk_audit.live_hedge_trigger)}</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="surface-card">
+        <div class="card-head"><h2>12 Mandatory Titanium Filters &amp; Sovereign Laws</h2><span class="muted-tag">Automated Audit</span></div>
+        <div class="filters-grid">
+          ${a.filters.map(f => `<div class="filter-item"><div class="filter-top"><span class="filter-name">${esc(f.name)}</span><span class="tag ${f.status === "PASS" ? "tag-emerald" : f.status === "FAIL" ? "tag-coral" : f.status === "WARN" ? "tag-amber" : ""}">${esc(f.status)}</span></div><div class="filter-detail">${esc(f.detail)}</div></div>`).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+
+  renderMarketTable(a, state.activeMarketTab);
+
+  document.getElementById("btn-mobile-back")?.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+  document.getElementById("btn-toggle-poll")?.addEventListener("click", () => {
+    state.liveAutoPoll = !state.liveAutoPoll;
+    showToast(`Live 45s auto-refresh ${state.liveAutoPoll ? "enabled" : "paused"}`);
+    selectMatch(a.match_id, { silent: true, keepTab: true });
+  });
+  document.getElementById("btn-toggle-anchor").addEventListener("click", () => {
+    state.marketAnchored = !state.marketAnchored;
+    showToast(state.marketAnchored ? "Bayesian Market Anchoring (70/30) ON" : "Pure Statistical Model ON");
+    selectMatch(a.match_id, { silent: true, keepTab: true });
+  });
+  document.getElementById("btn-refresh-audit").addEventListener("click", () => selectMatch(a.match_id, { forceRefresh: true }));
+  document.getElementById("btn-af-fallback").addEventListener("click", () => {
+    if (!ObsidianEngine.getAfKey()) {
+      document.getElementById("sources-popover").classList.remove("hidden");
+      showToast("Add your optional API-Football key in the Pipeline drawer first");
+      return;
+    }
+    selectMatch(a.match_id, { fallbackAf: true });
+  });
+  document.getElementById("btn-save-primary").addEventListener("click", () => {
+    const pm = a.all_markets.find(m => m.key === a.verdict.market_key) || a.radar[0];
+    saveMarketToMemory(a, pm, true);
+  });
+  document.getElementById("btn-toggle-slip-hero").addEventListener("click", () => { toggleSlipMatch(a.match_id, a); renderAnalysis(a); });
+
+  document.querySelectorAll("#market-family-tabs .state-pill").forEach((pill) => {
+    pill.addEventListener("click", () => {
+      document.querySelectorAll("#market-family-tabs .state-pill").forEach((p) => p.classList.remove("active"));
+      pill.classList.add("active");
+      state.activeMarketTab = pill.dataset.fam;
+      renderMarketTable(a, pill.dataset.fam);
+    });
+  });
+}
+
+function renderMarketTable(a, fam) {
+  const wrap = document.getElementById("market-table-wrap");
+  const rows = fam === "RADAR" ? a.radar : (a.markets_by_family[fam] || []);
+  const customMap = state.customOddsByMatch[a.match_id] || {};
+  wrap.innerHTML = `
+    <table>
+      <thead><tr><th>Market</th><th>Family</th><th>Prob</th><th>Fair</th><th>Your / Mkt Odds</th><th>Edge (+EV)</th><th>¼-Kelly</th><th style="text-align:right">Save</th></tr></thead>
+      <tbody>
+        ${rows.map(m => {
+          const valOdd = customMap[m.key] ?? m.bookmaker_odds ?? "";
+          return `
+            <tr>
+              <td>
+                <strong>${esc(m.label)}</strong>
+                ${m.push_prob > 0 ? `<div style="font-size:11px;color:var(--ink-tertiary)">Push / half-protection: ${m.push_prob}%</div>` : ""}
+              </td>
+              <td><span class="tag">${esc(m.family)}</span></td>
+              <td class="mono">${m.model_prob}%</td>
+              <td class="mono">${m.fair_odds.toFixed(2)}</td>
+              <td><input class="inline-odd-input" type="number" step="0.01" min="1.02" placeholder="${m.min_acceptable_odds.toFixed(2)}" value="${valOdd}" data-inline-odd="${esc(m.key)}" /></td>
+              <td class="mono ${m.edge_pct >= 1 ? "text-emerald" : m.edge_pct <= -1 ? "text-coral" : "text-muted"}" data-edge-cell="${esc(m.key)}">${m.edge_pct !== null ? `${m.edge_pct > 0 ? "+" : ""}${m.edge_pct}%` : "—"}</td>
+              <td class="mono text-muted" data-kelly-cell="${esc(m.key)}">${m.kelly_units ? m.kelly_units + "u" : "—"}</td>
+              <td style="text-align:right"><button class="btn btn-secondary btn-xs" data-save-market="${esc(m.key)}">Save</button></td>
+            </tr>
+          `;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+
+  // Live inline +EV recalculation on ANY market row!
+  wrap.querySelectorAll("[data-inline-odd]").forEach(inp => {
+    inp.addEventListener("input", () => {
+      const key = inp.dataset.inlineOdd;
+      const odd = parseFloat(inp.value);
+      const m = a.all_markets.find(x => x.key === key);
+      if (!m) return;
+      state.customOddsByMatch[a.match_id] ||= {};
+      const edgeCell = wrap.querySelector(`[data-edge-cell="${key}"]`);
+      const kellyCell = wrap.querySelector(`[data-kelly-cell="${key}"]`);
+      if (odd && odd > 1.01) {
+        state.customOddsByMatch[a.match_id][key] = odd;
+        const p = m.model_prob / 100;
+        const imp = 1 / odd;
+        const edge = +((p - imp) * 100).toFixed(1);
+        const b = odd - 1;
+        const kf = (b * p - (1 - p)) / b;
+        const ku = kf > 0 ? Math.min(5, +(kf * 0.25 * 40).toFixed(2)) : 0;
+        edgeCell.textContent = `${edge > 0 ? "+" : ""}${edge}%`;
+        edgeCell.className = `mono ${edge >= 1 ? "text-emerald" : edge <= -1 ? "text-coral" : "text-muted"}`;
+        kellyCell.textContent = ku ? `${ku}u` : "0u";
+      } else {
+        delete state.customOddsByMatch[a.match_id][key];
+        edgeCell.textContent = "—";
+        kellyCell.textContent = "—";
+      }
+    });
+  });
+
+  wrap.querySelectorAll("[data-save-market]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const m = a.all_markets.find(x => x.key === btn.dataset.saveMarket);
+      if (m) saveMarketToMemory(a, m, false);
+    });
+  });
+}
+
+function saveMarketToMemory(a, market, isPrimary) {
+  const customMap = state.customOddsByMatch[a.match_id] || {};
+  const bk = customMap[market.key] || market.bookmaker_odds || null;
+  ObsidianEngine.savePrediction({
+    match_id: a.match_id, match_date: a.match_date, league_name: a.league_name,
+    home_team: a.home.name, away_team: a.away.name,
+    market_family: market.family, market_key: market.key, market_label: market.label,
+    model_prob: market.model_prob, raw_prob: market.raw_prob, fair_odds: market.fair_odds,
+    bookmaker_odds: bk, confidence: market.confidence,
+    stake_units: isPrimary ? Math.max(0.5, a.verdict.stake_units || 1.0) : (market.confidence >= 75 ? 2.0 : 1.0),
+    home_lambda: a.goal_model.home_lambda, away_lambda: a.goal_model.away_lambda,
+    home_corners_lambda: a.corners_model.home_corners_lambda, away_corners_lambda: a.corners_model.away_corners_lambda,
+    projected_score: a.goal_model.projected_score
+  });
+  showToast(`Saved "${market.label}"${bk ? ` @ ${bk.toFixed(2)}` : ""} to Memory`);
+  refreshStatus();
+}
+
+// ============================================================
+// DAILY TOP PICKS AUTO-SCANNER
+// ============================================================
+
+async function runDailyScanner() {
+  const allMatches = getAllSlateMatchesFlat();
+  if (!allMatches.length) return showToast("Load a match date first");
+  const limit = parseInt(document.getElementById("scan-limit-select").value, 10) || 14;
+  const stBox = document.getElementById("scanner-status");
+  const stTxt = document.getElementById("scanner-status-text");
+  const stPct = document.getElementById("scanner-status-pct");
+  const bar = document.getElementById("scanner-progress-bar");
+  const out = document.getElementById("scanner-results");
+
+  stBox.classList.remove("hidden");
+  stTxt.textContent = `Scanning top ${limit} fixtures from ${state.currentDate}...`;
+  stPct.textContent = "0%";
+  bar.style.width = "4%";
+
+  try {
+    const res = await ObsidianEngine.scanDailyTopPicks(allMatches, limit, (done, total) => {
+      const pct = total ? Math.round((done / total) * 100) : 100;
+      stTxt.textContent = `Audited ${done} of ${total} priority fixtures...`;
+      stPct.textContent = `${pct}%`;
+      bar.style.width = `${pct}%`;
+    });
+
+    stTxt.textContent = `Completed: ${res.scanned} priority fixtures analyzed (${state.currentDate})`;
+
+    const renderPickCards = (items, title, badgeCls) => `
+      <div class="surface-card" style="margin-bottom:18px;">
+        <div class="card-head"><h2>${title}</h2><span class="tag ${badgeCls}">${items.length} plays</span></div>
+        ${items.length ? `<div class="radar-cards-grid">${items.map(({ analysis: a, market: m }) => `
+          <div class="pick-card" data-jump-match="${esc(a.match_id)}">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--ink-tertiary)">
+              <span>${esc(a.league_name)}</span>
+              <span class="mono">${fmtKickoff(a.kickoff_utc)}</span>
+            </div>
+            <div style="font-size:13.5px;font-weight:600">${esc(a.home.name)} vs ${esc(a.away.name)}</div>
+            <div style="font-size:15px;font-weight:700;color:var(--ink-primary)">${esc(m.label)}</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;" class="mono">
+              <span class="text-emerald">${m.model_prob}% (Fair ${m.fair_odds})</span>
+              <span>${m.edge_pct !== null ? `<span class="${m.edge_pct > 0 ? "text-emerald" : "text-coral"}">${m.edge_pct > 0 ? "+" : ""}${m.edge_pct}% EV</span>` : `Conf ${m.confidence}`}</span>
+            </div>
+          </div>
+        `).join("")}</div>` : `<div class="empty-inline">No qualifying picks in this category for ${esc(state.currentDate)}.</div>`}
+      </div>
+    `;
+
+    out.innerHTML = `
+      ${renderPickCards(res.anchors.map(a => ({ analysis: a, market: a.all_markets.find(x => x.key === a.verdict.market_key) || a.radar[0] })), "Top Titanium Anchors & Value Hunters Today", "tag-emerald")}
+      ${renderPickCards(res.best_corners, "Best Corners Plays Today (Negative Binomial)", "tag-ice")}
+      ${renderPickCards(res.best_goals, "Best Over / Under & Quarter-Line Goals", "tag-amber")}
+      ${renderPickCards(res.best_btts, "Best BTTS Picks Today", "tag-emerald")}
+      ${renderPickCards(res.best_first_half, "Best 1st Half (1H) Plays", "tag-ice")}
+      ${res.traps.length ? `
+        <div class="surface-card">
+          <div class="card-head"><h2>Trap Games &amp; Veto Warnings</h2><span class="tag tag-coral">${res.traps.length} flagged</span></div>
+          <div class="radar-cards-grid">
+            ${res.traps.map(a => `
+              <div class="pick-card" data-jump-match="${esc(a.match_id)}">
+                <div style="font-size:11px;color:var(--coral)" class="mono">VETO / TRAP WARNING</div>
+                <div style="font-size:14px;font-weight:600">${esc(a.home.name)} vs ${esc(a.away.name)}</div>
+                <div style="font-size:12px;color:var(--ink-secondary)">${esc(a.filters.find(f => f.status === "FAIL")?.detail || a.verdict.tier)}</div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      ` : ""}
+    `;
+
+    out.querySelectorAll("[data-jump-match]").forEach(card => {
+      card.addEventListener("click", () => {
+        switchView("matches");
+        selectMatch(card.dataset.jumpMatch);
+      });
+    });
+    refreshStatus();
+  } catch (e) {
+    out.innerHTML = `<div class="surface-card empty-inline">Scanner error: ${esc(e.message)}</div>`;
+  }
+}
+
+// ============================================================
+// SLIP BUILDER & PARLAY AUDIT
+// ============================================================
+
+function toggleSlipMatch(matchId, aObj = null) {
+  const idx = state.slipLegs.findIndex(l => l.match_id === matchId);
+  if (idx >= 0) { state.slipLegs.splice(idx, 1); showToast("Removed from Slip"); }
+  else {
+    const m = findMatchInSlate(matchId);
+    state.slipLegs.push({
+      match_id: matchId,
+      home_name: aObj ? aObj.home.name : (m?.home_name || "Home"),
+      away_name: aObj ? aObj.away.name : (m?.away_name || "Away"),
+      league_name: aObj ? aObj.league_name : (m?.league_name || ""),
+      user_pick_key: ""
+    });
+    showToast("Added to Slip Builder");
+  }
+  updateSlipBadge();
+  renderMatchesList();
+  renderSlipBuilder();
+}
+
+function updateSlipBadge() {
+  const b = document.getElementById("slip-badge");
+  b.textContent = state.slipLegs.length;
+  b.classList.toggle("hidden", state.slipLegs.length === 0);
+}
+
+function renderSlipBuilder() {
+  const panel = document.getElementById("slip-legs-panel");
+  if (!state.slipLegs.length) {
+    panel.innerHTML = `<div class="empty-inline">No fixtures in your slip yet. Tap <strong>+ Slip</strong> on any match.</div>`;
+    return;
+  }
+  panel.innerHTML = state.slipLegs.map((leg, i) => `
+    <div class="slip-leg-row">
+      <div><strong>${esc(leg.home_name)} vs ${esc(leg.away_name)}</strong><div class="text-muted" style="font-size:12px">${esc(leg.league_name)}</div></div>
+      <select class="slip-select" data-slip-pick="${i}">${SLIP_PICK_OPTIONS.map(o => `<option value="${esc(o.key)}" ${leg.user_pick_key === o.key ? "selected" : ""}>${esc(o.label)}</option>`).join("")}</select>
+      <button class="btn btn-ghost btn-xs" data-remove-leg="${i}">Remove</button>
+    </div>
+  `).join("");
+  panel.querySelectorAll("[data-slip-pick]").forEach(s => s.addEventListener("change", () => state.slipLegs[+s.dataset.slipPick].user_pick_key = s.value));
+  panel.querySelectorAll("[data-remove-leg]").forEach(b => b.addEventListener("click", () => { state.slipLegs.splice(+b.dataset.removeLeg, 1); updateSlipBadge(); renderSlipBuilder(); renderMatchesList(); }));
+}
+
+async function runSlipAudit() {
+  if (!state.slipLegs.length) return showToast("Add at least one fixture first");
+  const out = document.getElementById("slip-results");
+  out.classList.remove("hidden");
+  out.innerHTML = `<div class="skeleton" style="height:220px"></div>`;
+  try {
+    const res = await ObsidianEngine.auditSlip(state.slipLegs);
+    const trio = res.sovereign_trio;
+    out.innerHTML = `
+      <div class="surface-card">
+        <div class="card-head"><h2>OBSIDIAN Master Bet Board &amp; Slip Re-Calibration</h2><span class="muted-tag">${res.rows.length} legs</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Fixture</th><th>Your Pick</th><th>Risk</th><th>Obsidian Bet</th><th>Prob</th><th>Fair</th><th>Command</th></tr></thead>
+            <tbody>${res.rows.map(r => `<tr><td class="mono">${r.index}</td><td><strong>${esc(r.fixture)}</strong></td><td>${esc(r.user_pick)}</td><td><span class="tag ${r.risk_status === "SAFE" ? "tag-emerald" : r.risk_status === "MEDIUM" ? "tag-amber" : "tag-coral"}">${r.risk_status}</span></td><td><strong>${esc(r.obsidian_bet)}</strong></td><td class="mono">${r.prob}%</td><td class="mono">${r.fair_odds}</td><td style="font-size:12px"><strong>${esc(r.command)}</strong><div class="text-muted">${esc(r.reason)}</div></td></tr>`).join("")}</tbody>
+          </table>
+        </div>
+      </div>
+      <div class="two-col-grid">
+        <div class="surface-card">
+          <div class="card-head"><h2>Sovereign Trio Parlay Control</h2><span class="tag tag-emerald">${trio.legs.length} Core Legs</span></div>
+          <div class="lambda-row" style="grid-template-columns:repeat(2,1fr)">
+            <div class="lambda-tile"><div class="k">Combined Prob</div><div class="v text-emerald">${trio.combined_prob}%</div></div>
+            <div class="lambda-tile"><div class="k">Combined Fair Odds</div><div class="v">${trio.combined_fair_odds ?? "—"}</div></div>
+          </div>
+          <p class="text-muted" style="font-size:12.5px">${esc(trio.warning)}</p>
+        </div>
+        <div class="surface-card">
+          <div class="card-head"><h2>Logical FT Score Projections</h2><span class="muted-tag">Probabilistic</span></div>
+          ${res.score_projections.map(p => `<div style="padding:8px 0;border-bottom:1px solid var(--border-hairline);display:flex;justify-content:space-between"><div><strong>${p.index}. ${esc(p.fixture)}</strong><div class="mono text-muted" style="font-size:11px">${esc(p.lambdas)} · ${esc(p.corners_lambda)}</div></div><span class="mono" style="font-size:16px;font-weight:700">${esc(p.projected_score)}</span></div>`).join("")}
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    out.innerHTML = `<div class="surface-card empty-inline">Audit failed: ${esc(e.message)}</div>`;
+  }
+}
+
+// ============================================================
+// MEMORY, BANKROLL GUARDRAILS, CLV & NEURAL LEARNING
+// ============================================================
+
+function loadMemoryView() {
+  const data = ObsidianEngine.getAnalytics();
+  const s = data.summary, bk = data.bankroll;
+
+  // Anti-Tilt & Exposure Guardrail Banner
+  const guardEl = document.getElementById("tilt-guard-banner");
+  if (bk.warnings.length) {
+    guardEl.className = `guard-banner ${bk.drawdown_pct >= bk.max_drawdown_pct ? "danger" : ""}`;
+    guardEl.innerHTML = `<div>${bk.warnings.map(w => esc(w)).join("<br/>")}</div>`;
+  } else {
+    guardEl.className = "hidden";
+  }
+
+  // Bankroll & Daily Exposure Bar
+  document.getElementById("bankroll-bar").innerHTML = `
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <div><span class="kpi-k">Current Bankroll</span><div class="mono" style="font-size:18px;font-weight:700">${bk.current_units}u <span class="text-muted" style="font-size:12px">(Start ${bk.starting_units}u)</span></div></div>
+      <div><span class="kpi-k">Drawdown</span><div class="mono ${bk.drawdown_pct >= bk.max_drawdown_pct ? "text-coral" : "text-emerald"}" style="font-size:18px;font-weight:700">-${bk.drawdown_pct}% <span class="text-muted" style="font-size:12px">/ ${bk.max_drawdown_pct}% max</span></div></div>
+      <div><span class="kpi-k">Today's Exposure</span><div class="mono ${bk.daily_exposure_pct >= bk.max_daily_pct ? "text-amber" : ""}" style="font-size:18px;font-weight:700">${bk.today_pending_units}u (${bk.daily_exposure_pct}%) <span class="text-muted" style="font-size:12px">/ ${bk.max_daily_pct}% cap</span></div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <label style="font-size:11.5px;color:var(--ink-secondary)">Start Units:</label>
+      <input id="bankroll-start-in" class="inline-odd-input" type="number" min="10" max="10000" value="${bk.starting_units}" />
+      <button id="btn-save-bankroll" class="btn btn-secondary btn-xs">Update</button>
+    </div>
+  `;
+  document.getElementById("btn-save-bankroll").addEventListener("click", () => {
+    const val = parseFloat(document.getElementById("bankroll-start-in").value);
+    if (val >= 10) { ObsidianEngine.setBankrollConfig({ starting_units: val }); showToast("Updated starting bankroll"); loadMemoryView(); }
+  });
+
+  document.getElementById("memory-kpis").innerHTML = `
+    <div class="kpi-card"><div class="kpi-k">Saved</div><div class="kpi-v">${s.total_saved}</div><div class="kpi-s">${s.pending} pending · ${s.settled} settled</div></div>
+    <div class="kpi-card"><div class="kpi-k">Hit Rate</div><div class="kpi-v ${s.hit_rate >= 55 ? "text-emerald" : ""}">${s.hit_rate}%</div><div class="kpi-s">${s.wins}W · ${s.losses}L · ${s.pushes}P</div></div>
+    <div class="kpi-card"><div class="kpi-k">Avg CLV</div><div class="kpi-v ${s.mean_clv > 0 ? "text-emerald" : s.mean_clv < 0 ? "text-coral" : ""}">${s.mean_clv !== null ? `${s.mean_clv > 0 ? "+" : ""}${s.mean_clv}%` : "—"}</div><div class="kpi-s">${s.clv_samples} closing prices</div></div>
+    <div class="kpi-card"><div class="kpi-k">Mean Brier</div><div class="kpi-v">${s.mean_brier ?? "—"}</div><div class="kpi-s">Skill ${s.skill_score !== null ? `${s.skill_score > 0 ? "+" : ""}${s.skill_score}%` : "—"}</div></div>
+    <div class="kpi-card"><div class="kpi-k">Unit P&amp;L</div><div class="kpi-v ${s.pnl_units > 0 ? "text-emerald" : s.pnl_units < 0 ? "text-coral" : ""}">${s.pnl_units > 0 ? "+" : ""}${s.pnl_units}u</div><div class="kpi-s">Staked ${s.total_staked}u</div></div>
+    <div class="kpi-card"><div class="kpi-k">ROI</div><div class="kpi-v ${s.roi_pct > 0 ? "text-emerald" : s.roi_pct < 0 ? "text-coral" : ""}">${s.roi_pct > 0 ? "+" : ""}${s.roi_pct}%</div><div class="kpi-s">Settled yield</div></div>
+  `;
+
+  document.getElementById("calibration-table-wrap").innerHTML = `
+    <table>
+      <thead><tr><th>Family</th><th>Bets</th><th>Pred</th><th>Actual</th><th>Brier</th><th>Shift</th><th>Policy</th></tr></thead>
+      <tbody>${data.by_family.map(f => `<tr><td><strong>${esc(f.family)}</strong></td><td class="mono">${f.bets}</td><td class="mono">${f.avg_pred !== null ? f.avg_pred + "%" : "—"}</td><td class="mono">${f.hit_rate !== null ? f.hit_rate + "%" : "—"}</td><td class="mono">${f.brier ?? "—"}</td><td class="mono">${f.prob_shift_pct > 0 ? "+" : ""}${f.prob_shift_pct}%</td><td>${f.blocked ? `<span class="tag tag-coral">HAIRCUT</span>` : `<span class="tag tag-emerald">ACTIVE</span>`}</td></tr>`).join("")}</tbody>
+    </table>
+  `;
+  const w = data.weights;
+  document.getElementById("last-trained-label").textContent = w.last_trained_at ? `Updated ${new Date(w.last_trained_at).toLocaleString()}` : "Factory prior";
+  document.getElementById("weights-panel").innerHTML = `<div class="lambda-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:0"><div class="lambda-tile"><div class="k">Home Advantage</div><div class="v">${w.home_advantage}</div></div><div class="lambda-tile"><div class="k">Goal λ Scale</div><div class="v">${w.goal_lambda_scale}</div></div><div class="lambda-tile"><div class="k">Corner λ Scale</div><div class="v text-ice">${w.corner_lambda_scale}</div></div><div class="lambda-tile"><div class="k">Dixon-Coles ρ</div><div class="v">${w.dixon_coles_rho}</div></div></div>`;
+  document.getElementById("learning-logs").innerHTML = data.logs.length ? data.logs.map(l => `<div class="log-entry"><div class="log-ts">${new Date(l.created_at).toLocaleString()} · n=${l.settled_count}</div><div>${esc(l.summary)}</div></div>`).join("") : `<div class="empty-inline" style="padding:12px">No calibration cycles yet.</div>`;
+  renderPredictionsLedger();
+  refreshStatus();
+}
+
+function renderPredictionsLedger() {
+  const wrap = document.getElementById("predictions-table-wrap");
+  const preds = ObsidianEngine.listPredictions(state.ledgerFilter);
+  if (!preds.length) { wrap.innerHTML = `<div class="empty-inline">No saved predictions in this filter.</div>`; return; }
+  wrap.innerHTML = `
+    <table>
+      <thead><tr><th>Date</th><th>Fixture</th><th>Market</th><th>Prob / Odds</th><th>CLV</th><th>Score</th><th>Status</th><th>P&amp;L</th><th style="text-align:right">Actions</th></tr></thead>
+      <tbody>${preds.map(p => `
+        <tr>
+          <td class="mono text-muted">${esc(p.match_date)}</td>
+          <td><strong>${esc(p.home_team)} vs ${esc(p.away_team)}</strong></td>
+          <td><strong>${esc(p.market_label)}</strong></td>
+          <td class="mono">${p.model_prob}% · ${p.bookmaker_odds ? "@" + Number(p.bookmaker_odds).toFixed(2) : "Fair " + Number(p.fair_odds).toFixed(2)}</td>
+          <td class="mono ${p.clv_pct > 0 ? "text-emerald" : p.clv_pct < 0 ? "text-coral" : "text-muted"}">${p.clv_pct !== null && p.clv_pct !== undefined ? `${p.clv_pct > 0 ? "+" : ""}${p.clv_pct}%` : "—"}</td>
+          <td class="mono">${p.actual_home_goals !== null ? `${p.actual_home_goals}–${p.actual_away_goals}` : `Proj ${p.projected_score || "—"}`}</td>
+          <td><span class="tag ${(p.status === "WON" || p.status === "HALF_WON") ? "tag-emerald" : (p.status === "LOST" || p.status === "HALF_LOST") ? "tag-coral" : p.status === "PUSH" ? "tag-ice" : "tag-amber"}">${p.status}</span></td>
+          <td class="mono">${p.pnl_units !== null ? `${p.pnl_units > 0 ? "+" : ""}${p.pnl_units}u` : "—"}</td>
+          <td style="text-align:right"><button class="btn btn-secondary btn-xs" data-open-settle="${p.id}">Settle</button> <button class="btn btn-ghost btn-xs" data-del-pred="${p.id}">&times;</button></td>
+        </tr>
+      `).join("")}</tbody>
+    </table>
+  `;
+  wrap.querySelectorAll("[data-open-settle]").forEach(b => b.addEventListener("click", () => {
+    const p = preds.find(x => x.id === +b.dataset.openSettle);
+    if (!p) return;
+    state.settlingPredId = p.id;
+    document.getElementById("settle-modal-info").textContent = `${p.home_team} vs ${p.away_team} — ${p.market_label}`;
+    ["settle-hg", "settle-ag", "settle-hc", "settle-ac", "settle-1hg", "settle-close-odds"].forEach(id => document.getElementById(id).value = "");
+    document.getElementById("settle-modal").classList.remove("hidden");
+  }));
+  wrap.querySelectorAll("[data-del-pred]").forEach(b => b.addEventListener("click", () => { ObsidianEngine.deletePrediction(b.dataset.delPred); showToast("Deleted & recalibrated"); loadMemoryView(); }));
+}
+
+function submitManualSettle(directStatus) {
+  if (!state.settlingPredId) return;
+  const vInt = id => { const x = document.getElementById(id).value; return x !== "" ? parseInt(x, 10) : null; };
+  const vFlt = id => { const x = document.getElementById(id).value; return x !== "" ? parseFloat(x) : null; };
+  try {
+    const r = ObsidianEngine.settleManual(state.settlingPredId, {
+      home_goals: vInt("settle-hg"), away_goals: vInt("settle-ag"),
+      home_corners: vInt("settle-hc"), away_corners: vInt("settle-ac"),
+      goals_1h: vInt("settle-1hg"), closing_odds: vFlt("settle-close-odds"),
+      explicit_status: directStatus
+    });
+    document.getElementById("settle-modal").classList.add("hidden");
+    showToast(`Settled ${r.status} (${r.pnl_units > 0 ? "+" : ""}${r.pnl_units}u)${r.clv_pct !== null ? ` · CLV ${r.clv_pct > 0 ? "+" : ""}${r.clv_pct}%` : ""}`);
+    loadMemoryView();
+  } catch (e) { showToast(e.message); }
+}
+
+async function runAutoSettle() {
+  showToast("Checking FotMob & ESPN for finished scores, 1H goals, corners & CLV...");
+  const r = await ObsidianEngine.autoSettlePending();
+  showToast(`Checked ${r.checked} pending · Auto-settled ${r.settled_count} matches`);
+  loadMemoryView();
+}
+
+</script>
+</body>
+</html>
