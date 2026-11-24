@@ -4,8 +4,10 @@ on:
   schedule:
     # 09:00 AMT (Armenia UTC+4) / 12:00 WIB (Indonesia UTC+7) — Morning Auto-Settle + 5W1H + Daily Radar
     - cron: "0 5 * * *"
-    # 18:30 AMT (Armenia UTC+4) / 21:30 WIB (Indonesia UTC+7) — Evening Pre-Kickoff XI & Steam Update
+    # 18:30 AMT (Armenia UTC+4) / 21:30 WIB (Indonesia UTC+7) — Evening Steam & Pre-Match Radar
     - cron: "30 14 * * *"
+    # 20:50 AMT (Armenia UTC+4) / 23:50 WIB (Indonesia UTC+7) — T-60' Confirmed XI Check for European Kickoffs
+    - cron: "50 16 * * *"
   workflow_dispatch:
 
 permissions:
@@ -27,6 +29,8 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          OBSIDIAN_GATE_URL: ${{ secrets.OBSIDIAN_GATE_URL }}
+          BOT_SYNC_SECRET: ${{ secrets.BOT_SYNC_SECRET }}
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
           SCAN_LIMIT: "14"
