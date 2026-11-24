@@ -178,9 +178,13 @@ async function sendTelegram(token, chatId, htmlText) {
     if (cur) chunks.push(cur);
   }
 
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const cleanToken = String(token || "").replace(/^["']|["']$/g, "").trim();
+  const cleanChatId = String(chatId || "").replace(/^["']|["']$/g, "").trim();
+
   for (let i = 0; i < chunks.length; i++) {
     const body = {
-      chat_id: chatId,
+      chat_id: cleanChatId,
       text: chunks[i],
       parse_mode: "HTML",
       disable_web_page_preview: true,
@@ -190,15 +194,29 @@ async function sendTelegram(token, chatId, htmlText) {
         inline_keyboard: [[{ text: "Buka Dashboard Obsidian V18.5", url: DASHBOARD_URL }]],
       };
     }
-    const resp = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const json = await resp.json();
-    if (!resp.ok || !json.ok) {
+
+    let sent = false;
+    for (let attempt = 1; attempt <= 4; attempt++) {
+      const resp = await fetch(`https://api.telegram.org/bot${cleanToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const json = await resp.json().catch(() => ({}));
+      if (resp.ok && json.ok) {
+        sent = true;
+        break;
+      }
+      if (resp.status === 429 && attempt < 4) {
+        const waitSec = Math.min(90, Math.max(5, Number(json?.parameters?.retry_after || 15) + 2));
+        console.warn(`[Telegram 429] Rate limited on shared runner IP — waiting ${waitSec}s before retry ${attempt + 1}/4...`);
+        await sleep(waitSec * 1000);
+        continue;
+      }
       throw new Error(`Telegram sendMessage failed (${resp.status}): ${JSON.stringify(json)}`);
     }
+    if (!sent) throw new Error("Telegram sendMessage failed after 4 attempts.");
+    if (i < chunks.length - 1) await sleep(1200);
   }
   return { ok: true, chunks: chunks.length };
 }
