@@ -78,8 +78,8 @@ async function fetchNewsIntelForMatch(homeName, awayName, newsApiKey) {
       const title = (art.title || "").trim();
       const desc = (art.description || "").trim();
       if (!title || title === "[Removed]") continue;
-      const combo = `${title} ${desc}`.toLowerCase();
-      if (!combo.includes(hLow) && !combo.includes(aLow)) continue;
+      const titleLow = title.toLowerCase();
+      if (!titleLow.includes(hLow) && !titleLow.includes(aLow)) continue;
       const key = title.toLowerCase().slice(0, 50);
       if (seen.has(key)) continue;
       seen.add(key);
@@ -180,11 +180,21 @@ async function sendTelegram(token, chatId, htmlText) {
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const cleanToken = String(token || "").replace(/^["']|["']$/g, "").trim();
-  const cleanChatId = String(chatId || "").replace(/^["']|["']$/g, "").trim();
+  const chatIds = String(chatId || "")
+    .replace(/^["']|["']$/g, "")
+    .split(/[\s,;]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (!chatIds.length) {
+    console.log("TELEGRAM_CHAT_ID empty — skipping Telegram send.");
+    return { skipped: true };
+  }
 
   // Safe diagnostic (prints zero secrets): token SHAPE only + bot identity + webhook state
   const shapeOk = /^\d{6,12}:[A-Za-z0-9_-]{30,}$/.test(cleanToken);
-  console.log(`[Telegram Token Shape] len=${cleanToken.length} format=${shapeOk ? "OK" : "INVALID"} whitespace=${/\s/.test(String(token))} quotes=${/["']/.test(String(token))} | chat_id_numeric=${/^-?\d+$/.test(cleanChatId)}`);
+  const idsValid = chatIds.every((id) => /^-?\d+$/.test(id) || /^@[A-Za-z0-9_]{4,}$/.test(id));
+  console.log(`[Telegram Token Shape] len=${cleanToken.length} format=${shapeOk ? "OK" : "INVALID"} whitespace=${/\s/.test(String(token))} quotes=${/["']/.test(String(token))} | recipients=${chatIds.length} valid=${idsValid}`);
   try {
     const meR = await fetch(`https://api.telegram.org/bot${cleanToken}/getMe`);
     const meJ = await meR.json().catch(() => ({}));
@@ -201,48 +211,66 @@ async function sendTelegram(token, chatId, htmlText) {
     if (String(e?.message || "").startsWith("Telegram token")) throw e;
   }
 
-  for (let i = 0; i < chunks.length; i++) {
-    let sent = false;
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      // On retry after 429, drop inline_keyboard & use plain dashboard link in case Telegram throttles URL buttons on new bots
-      const useButton = attempt === 1 && i === chunks.length - 1;
-      const textOut = (!useButton && i === chunks.length - 1)
-        ? `${chunks[i]}\n\n🔗 ${DASHBOARD_URL}`
-        : chunks[i];
-      const body = {
-        chat_id: cleanChatId,
-        text: textOut,
-        parse_mode: "HTML",
-        disable_web_page_preview: true,
-      };
-      if (useButton) {
-        body.reply_markup = {
-          inline_keyboard: [[{ text: "Buka Dashboard Obsidian V18.5", url: DASHBOARD_URL }]],
+  const results = [];
+  for (let rIdx = 0; rIdx < chatIds.length; rIdx++) {
+    const targetId = chatIds[rIdx];
+    let recipientOk = true;
+    let lastErr = null;
+    for (let i = 0; i < chunks.length; i++) {
+      let sent = false;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        // On retry after 429, drop inline_keyboard & use plain dashboard link in case Telegram throttles URL buttons on new bots
+        const useButton = attempt === 1 && i === chunks.length - 1;
+        const textOut = (!useButton && i === chunks.length - 1)
+          ? `${chunks[i]}\n\n🔗 ${DASHBOARD_URL}`
+          : chunks[i];
+        const body = {
+          chat_id: targetId,
+          text: textOut,
+          parse_mode: "HTML",
+          disable_web_page_preview: true,
         };
-      }
+        if (useButton) {
+          body.reply_markup = {
+            inline_keyboard: [[{ text: "Buka Dashboard Obsidian V18.5", url: DASHBOARD_URL }]],
+          };
+        }
 
-      const resp = await fetch(`https://api.telegram.org/bot${cleanToken}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const json = await resp.json().catch(() => ({}));
-      if (resp.ok && json.ok) {
-        sent = true;
+        const resp = await fetch(`https://api.telegram.org/bot${cleanToken}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const json = await resp.json().catch(() => ({}));
+        if (resp.ok && json.ok) {
+          sent = true;
+          break;
+        }
+        if (resp.status === 429 && attempt < 3) {
+          const waitSec = Math.min(75, Math.max(5, Number(json?.parameters?.retry_after || 20) + 5));
+          console.warn(`[Telegram 429] Recipient #${rIdx + 1} rate limited (retry_after=${json?.parameters?.retry_after}) — waiting ${waitSec}s before retry ${attempt + 1}/3...`);
+          await sleep(waitSec * 1000);
+          continue;
+        }
+        lastErr = `HTTP ${resp.status}: ${json?.description || JSON.stringify(json)}`;
         break;
       }
-      if (resp.status === 429 && attempt < 3) {
-        const waitSec = Math.min(75, Math.max(5, Number(json?.parameters?.retry_after || 20) + 5));
-        console.warn(`[Telegram 429] Rate limited (retry_after=${json?.parameters?.retry_after}) — waiting ${waitSec}s before retry ${attempt + 1}/3 (plain link mode)...`);
-        await sleep(waitSec * 1000);
-        continue;
+      if (!sent) {
+        recipientOk = false;
+        console.warn(`[Telegram] Recipient #${rIdx + 1} failed: ${lastErr || "unknown error"}`);
+        break;
       }
-      throw new Error(`Telegram sendMessage failed (${resp.status}): ${JSON.stringify(json)}`);
+      if (i < chunks.length - 1) await sleep(1200);
     }
-    if (!sent) throw new Error("Telegram sendMessage failed after 3 attempts.");
-    if (i < chunks.length - 1) await sleep(1500);
+    results.push({ recipient: rIdx + 1, ok: recipientOk, ...(lastErr ? { error: lastErr } : {}) });
+    if (rIdx < chatIds.length - 1) await sleep(1200);
   }
-  return { ok: true, chunks: chunks.length };
+
+  const delivered = results.filter((r) => r.ok).length;
+  if (delivered === 0) {
+    throw new Error(`Telegram sendMessage failed for all ${chatIds.length} recipient(s): ${results[0]?.error || "unknown"}`);
+  }
+  return { ok: delivered === chatIds.length, delivered, total: chatIds.length, chunks: chunks.length };
 }
 
 function rcShort(code) {
@@ -338,6 +366,7 @@ async function main() {
     tier_code: a.verdict.tier_code,
     stake_units: a.verdict.stake_units,
     projected_score: a.goal_model.projected_score,
+    total_lambda: a.goal_model.total_lambda,
   });
 
   const topAnchors = (scanRes.anchors || []).slice(0, 6).map((a) => {
@@ -444,7 +473,7 @@ async function main() {
         : "";
       lines.push(
         `\n<b>${idx + 1}. [${escHtml(p.league)}]</b> · <code>${escHtml(p.kickoff_dual)}</code>\n` +
-        `   ${escHtml(p.home)} vs ${escHtml(p.away)} (Proj ${escHtml(p.projected_score)} · ${xiTag})\n` +
+        `   ${escHtml(p.home)} vs ${escHtml(p.away)} (${p.total_lambda}λ · Mode ${escHtml(p.projected_score)} · ${xiTag})\n` +
         `   🎯 <b>${escHtml(p.market)}</b> — <b>${p.model_prob}%</b>\n` +
         `   💰 ${escHtml(oddsStr)} · Stake <b>${p.stake_units}u</b>${newsLine}`
       );
@@ -473,11 +502,32 @@ async function main() {
 
   const msg = lines.join("\n");
   try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), msg); } catch {}
+
+  let targetChatIds = (process.env.TELEGRAM_CHAT_ID || "").trim();
+  const gateUrl = (process.env.OBSIDIAN_GATE_URL || "").trim().replace(/\/$/, "");
+  const syncSecret = (process.env.BOT_SYNC_SECRET || "").trim();
+  if (gateUrl && syncSecret) {
+    try {
+      const subResp = await fetch(`${gateUrl}/api/subscribers`, {
+        headers: { Authorization: `Bearer ${syncSecret}` },
+      });
+      const subJson = await subResp.json().catch(() => ({}));
+      if (subResp.ok && subJson.ok && Array.isArray(subJson.chat_ids) && subJson.chat_ids.length) {
+        targetChatIds = subJson.chat_ids.join(",");
+        console.log(`[Access Gate] Synced ${subJson.chat_ids.length} authorized Telegram recipient(s) from Cloudflare KV.`);
+      } else {
+        console.warn(`[Access Gate] Subscriber sync returned HTTP ${subResp.status}; falling back to TELEGRAM_CHAT_ID.`);
+      }
+    } catch (e) {
+      console.warn(`[Access Gate] Subscriber sync error (${e?.message || e}); falling back to TELEGRAM_CHAT_ID.`);
+    }
+  }
+
   let tgRes;
   try {
     tgRes = await sendTelegram(
       (process.env.TELEGRAM_BOT_TOKEN || "").trim(),
-      (process.env.TELEGRAM_CHAT_ID || "").trim(),
+      targetChatIds,
       msg
     );
   } catch (e) {
