@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-11-24T07:48:01.719Z",
+  "generated_at": "2026-11-24T08:39:57.020Z",
   "calls_used": 6,
   "by_match": {
     "5836947": {
       "home": "Cardiff City",
       "away": "Preston North End",
-      "fetched_at": "2026-11-24T07:48:08.332Z",
+      "fetched_at": "2026-11-24T08:40:03.525Z",
       "risk_level": "CLEAR",
       "signals": [
         "TEAM_NEWS"
@@ -23,7 +23,7 @@
     "6106243": {
       "home": "Real Madrid",
       "away": "PSV Eindhoven",
-      "fetched_at": "2026-11-24T07:48:08.486Z",
+      "fetched_at": "2026-11-24T08:40:03.661Z",
       "risk_level": "CLEAR",
       "signals": [
         "TEAM_NEWS"
@@ -35,31 +35,6 @@
           "published_at": "2026-11-23T06:18:03Z",
           "url": "https://www.bbc.com/sport/football/articles/c6p9dym309nxo",
           "tag": "TEAM_NEWS"
-        },
-        {
-          "title": "Bayern Munich News: Brajan Gruda likely not in FC Bayern’s plans; Donyell Malen linked to Bayern; Real Madrid angling for Nico Paz; and MORE!",
-          "source": "Bavarian Football Works",
-          "published_at": "2026-11-23T05:00:00Z",
-          "url": "https://www.bavarianfootballworks.com/transfer-rumors/284012/bayern-munich-gruda-malen-psg-real-madrid-kane-trent-alexander-arnoldas-roma-paz-como",
-          "tag": "TEAM_NEWS"
-        }
-      ]
-    },
-    "6106339": {
-      "home": "Galatasaray",
-      "away": "Aston Villa",
-      "fetched_at": "2026-11-24T07:48:08.398Z",
-      "risk_level": "BOOST",
-      "signals": [
-        "SQUAD_BOOST"
-      ],
-      "headlines": [
-        {
-          "title": "Manchester City host Napoli in the Champions League for the second season in a row as Kevin De Bruyne again returns to the Etihad Stadium in another shade of blue.",
-          "source": "Cityxtra.co.uk",
-          "published_at": "2026-11-23T06:30:00Z",
-          "url": "https://cityxtra.co.uk/CITYXTRA/match-coverage/predicted-xi-manchester-city-vs-napoli-uefa-champions-league",
-          "tag": "SQUAD_BOOST"
         }
       ]
     }
