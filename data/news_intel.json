@@ -1,39 +1,80 @@
 {
-  "generated_at": "2026-11-24T08:39:57.020Z",
+  "generated_at": "2026-11-24T13:54:31.529Z",
   "calls_used": 6,
   "by_match": {
-    "5836947": {
-      "home": "Cardiff City",
-      "away": "Preston North End",
-      "fetched_at": "2026-11-24T08:40:03.525Z",
-      "risk_level": "CLEAR",
+    "6106256": {
+      "home": "Manchester City",
+      "away": "Napoli",
+      "fetched_at": "2026-11-24T13:54:41.637Z",
+      "risk_level": "ALERT",
       "signals": [
+        "TEAM_NEWS",
+        "INJURY_SHOCK"
+      ],
+      "headlines": [
+        {
+          "title": "Maresca: Man City need one thing against Napoli, I ‘still follow’ my favourite Italian club",
+          "source": "Football Italia",
+          "published_at": "2026-11-23T13:17:42Z",
+          "url": "https://football-italia.net/maresca-man-city-1-thing-napoli-favourite-team/",
+          "tag": "TEAM_NEWS"
+        },
+        {
+          "title": "Enzo Maresca Press Conference: Matheus Nunes Fitness Update Ahead of Napoli UEFA Champions League Clash",
+          "source": "Cityxtra.co.uk",
+          "published_at": "2026-11-23T13:04:28Z",
+          "url": "https://cityxtra.co.uk/news/enzo-maresca-press-conference-matheus-nunes-fitness-update-ahead-of-napoli-uefa-champions-league-clash",
+          "tag": "TEAM_NEWS"
+        },
+        {
+          "title": "Napoli visit Man City without 11 players as Vergara faces lengthy layoff",
+          "source": "Football Italia",
+          "published_at": "2026-11-23T12:31:30Z",
+          "url": "https://football-italia.net/napoli-visit-man-city-11-players-out-vergara/",
+          "tag": "INJURY_SHOCK"
+        }
+      ]
+    },
+    "6106259": {
+      "home": "Arsenal",
+      "away": "Borussia Dortmund",
+      "fetched_at": "2026-11-24T13:54:41.981Z",
+      "risk_level": "BOOST",
+      "signals": [
+        "SQUAD_BOOST",
         "TEAM_NEWS"
       ],
       "headlines": [
         {
-          "title": "Norwich City side becoming ‘better and better’ says Clement",
-          "source": "Hayters.com",
-          "published_at": "2026-11-21T17:14:00Z",
-          "url": "https://hayters.com/norwich-city-side-becoming-better-and-better-says-clement/",
+          "title": "Arsenal's struggles explained - and why they should have signed Putellas",
+          "source": "Sky Sports",
+          "published_at": "2026-11-23T13:46:00Z",
+          "url": "https://www.skysports.com/football/news/13615572/arsenals-shocking-wsl-season-analysed-no-home-win-a-lack-of-goals-and-a-disenfranchised-fanbase",
+          "tag": "SQUAD_BOOST"
+        },
+        {
+          "title": "Champions League predictions: Joy for Arsenal, Man City and Liverpool but more frustration for Pochettino’s United",
+          "source": "101 Great Goals",
+          "published_at": "2026-11-23T12:46:41Z",
+          "url": "https://www.101greatgoals.com/football/champions-league/champions-league-predictions-joy-arsenal-man-city-liverpool-frustration-again-for-pochettinos-united/",
           "tag": "TEAM_NEWS"
         }
       ]
     },
-    "6106243": {
-      "home": "Real Madrid",
-      "away": "PSV Eindhoven",
-      "fetched_at": "2026-11-24T08:40:03.661Z",
+    "6106412": {
+      "home": "Como",
+      "away": "AEK Athens",
+      "fetched_at": "2026-11-24T13:54:41.405Z",
       "risk_level": "CLEAR",
       "signals": [
         "TEAM_NEWS"
       ],
       "headlines": [
         {
-          "title": "One of football's most-hyped 16-year-olds - what next for JJ Gabriel?",
-          "source": "BBC News",
-          "published_at": "2026-11-23T06:18:03Z",
-          "url": "https://www.bbc.com/sport/football/articles/c6p9dym309nxo",
+          "title": "What is the secret behind Como’s rise, and can they sustain their success?",
+          "source": "Football Italia",
+          "published_at": "2026-11-23T07:32:37Z",
+          "url": "https://football-italia.net/what-is-the-secret-behind-como-rise/",
           "tag": "TEAM_NEWS"
         }
       ]

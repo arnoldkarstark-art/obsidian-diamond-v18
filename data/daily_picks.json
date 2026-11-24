@@ -1,89 +1,31 @@
 {
-  "generated_at": "2026-11-24T08:39:57.020Z",
+  "generated_at": "2026-11-24T13:54:31.529Z",
   "date_label": "2026-11-24",
   "scanned": 14,
   "top_anchors": [
     {
-      "match_id": "6106325",
+      "match_id": "6106412",
       "league": "Champions League",
-      "home": "RB Leipzig",
-      "away": "Lens",
+      "home": "Como",
+      "away": "AEK Athens",
       "kickoff_utc": "2026-11-24T20:00:00.000Z",
       "kickoff_dual": "00:00 AMT / 03:00 WIB",
       "xi_confirmed": false,
-      "market": "Over 2.5 Total Goals",
-      "model_prob": 74,
-      "fair_odds": 1.35,
-      "bookmaker_odds": 1.769,
-      "edge_pct": 20.35,
-      "tier": "TIER 2: VALUE HUNTER",
-      "tier_code": "TIER_2",
-      "stake_units": 1.88,
-      "projected_score": "3–1"
-    },
-    {
-      "match_id": "5836947",
-      "league": "Championship",
-      "home": "Cardiff City",
-      "away": "Preston North End",
-      "kickoff_utc": "2026-11-24T19:45:00.000Z",
-      "kickoff_dual": "23:45 AMT / 02:45 WIB (+1)",
-      "xi_confirmed": false,
-      "market": "Over 2.5 Total Goals",
-      "model_prob": 67.3,
-      "fair_odds": 1.49,
-      "bookmaker_odds": 2.05,
-      "edge_pct": 20.95,
-      "tier": "TIER 2: VALUE HUNTER",
-      "tier_code": "TIER_2",
-      "stake_units": 1.88,
-      "projected_score": "2–1",
-      "news_risk_level": "CLEAR",
-      "news_signals": [
-        "TEAM_NEWS"
-      ],
-      "news_headline": "Norwich City side becoming ‘better and better’ says Clement"
-    },
-    {
-      "match_id": "6106339",
-      "league": "Champions League",
-      "home": "Galatasaray",
-      "away": "Aston Villa",
-      "kickoff_utc": "2026-11-24T17:45:00.000Z",
-      "kickoff_dual": "21:45 AMT / 00:45 WIB (+1)",
-      "xi_confirmed": false,
-      "market": "Over 2.5 Total Goals",
-      "model_prob": 63.3,
-      "fair_odds": 1.58,
-      "bookmaker_odds": 2.2,
-      "edge_pct": 20.2,
-      "tier": "TIER 2: VALUE HUNTER",
-      "tier_code": "TIER_2",
-      "stake_units": 1.88,
-      "projected_score": "2–0"
-    },
-    {
-      "match_id": "6106243",
-      "league": "Champions League",
-      "home": "Real Madrid",
-      "away": "PSV Eindhoven",
-      "kickoff_utc": "2026-11-24T20:00:00.000Z",
-      "kickoff_dual": "00:00 AMT / 03:00 WIB",
-      "xi_confirmed": false,
-      "market": "Over 2.5 Total Goals",
-      "model_prob": 66.2,
-      "fair_odds": 1.51,
-      "bookmaker_odds": 1.952,
-      "edge_pct": 17.8,
+      "market": "Under 3.5 Total Goals",
+      "model_prob": 66.8,
+      "fair_odds": 1.5,
+      "bookmaker_odds": 1.909,
+      "edge_pct": 16.76,
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
       "stake_units": 1.88,
       "projected_score": "1–1",
+      "total_lambda": 2.58,
       "news_risk_level": "CLEAR",
       "news_signals": [
         "TEAM_NEWS"
       ],
-      "news_headline": "One of football's most-hyped 16-year-olds - what next for JJ Gabriel?"
+      "news_headline": "What is the secret behind Como’s rise, and can they sustain their success?"
     },
     {
       "match_id": "6106307",
@@ -94,14 +36,40 @@
       "kickoff_dual": "00:00 AMT / 03:00 WIB",
       "xi_confirmed": false,
       "market": "Over 2.5 Total Goals",
-      "model_prob": 66.8,
-      "fair_odds": 1.5,
-      "bookmaker_odds": 1.625,
-      "edge_pct": 8.23,
+      "model_prob": 66.3,
+      "fair_odds": 1.51,
+      "bookmaker_odds": 1.667,
+      "edge_pct": 9.43,
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
-      "stake_units": 1.88,
-      "projected_score": "1–2"
+      "stake_units": 1.19,
+      "projected_score": "1–2",
+      "total_lambda": 3.64
+    },
+    {
+      "match_id": "6106256",
+      "league": "Champions League",
+      "home": "Manchester City",
+      "away": "Napoli",
+      "kickoff_utc": "2026-11-24T20:00:00.000Z",
+      "kickoff_dual": "00:00 AMT / 03:00 WIB",
+      "xi_confirmed": false,
+      "market": "Over 2.0 Asian Goals (Push on 2)",
+      "model_prob": 82.2,
+      "fair_odds": 1.22,
+      "bookmaker_odds": null,
+      "edge_pct": null,
+      "tier": "TIER 2: VALUE HUNTER",
+      "tier_code": "TIER_2",
+      "stake_units": 1.25,
+      "projected_score": "1–1",
+      "total_lambda": 3.36,
+      "news_risk_level": "ALERT",
+      "news_signals": [
+        "TEAM_NEWS",
+        "INJURY_SHOCK"
+      ],
+      "news_headline": "Maresca: Man City need one thing against Napoli, I ‘still follow’ my favourite Italian club"
     },
     {
       "match_id": "6106317",
@@ -119,7 +87,52 @@
       "tier": "TIER 1: TITANIUM ANCHOR",
       "tier_code": "TIER_1",
       "stake_units": 3,
-      "projected_score": "1–1"
+      "projected_score": "1–1",
+      "total_lambda": 3.53
+    },
+    {
+      "match_id": "6106325",
+      "league": "Champions League",
+      "home": "RB Leipzig",
+      "away": "Lens",
+      "kickoff_utc": "2026-11-24T20:00:00.000Z",
+      "kickoff_dual": "00:00 AMT / 03:00 WIB",
+      "xi_confirmed": false,
+      "market": "Over 3.5 Total Goals",
+      "model_prob": 63.8,
+      "fair_odds": 1.57,
+      "bookmaker_odds": 1.769,
+      "edge_pct": 10.09,
+      "tier": "TIER 2: VALUE HUNTER",
+      "tier_code": "TIER_2",
+      "stake_units": 1.25,
+      "projected_score": "3–1",
+      "total_lambda": 4.65
+    },
+    {
+      "match_id": "6106259",
+      "league": "Champions League",
+      "home": "Arsenal",
+      "away": "Borussia Dortmund",
+      "kickoff_utc": "2026-11-24T20:00:00.000Z",
+      "kickoff_dual": "00:00 AMT / 03:00 WIB",
+      "xi_confirmed": false,
+      "market": "Borussia Dortmund Asian Handicap +1.0",
+      "model_prob": 77.7,
+      "fair_odds": 1.29,
+      "bookmaker_odds": null,
+      "edge_pct": null,
+      "tier": "TIER 2: VALUE HUNTER",
+      "tier_code": "TIER_2",
+      "stake_units": 1.88,
+      "projected_score": "1–1",
+      "total_lambda": 2.35,
+      "news_risk_level": "BOOST",
+      "news_signals": [
+        "SQUAD_BOOST",
+        "TEAM_NEWS"
+      ],
+      "news_headline": "Arsenal's struggles explained - and why they should have signed Putellas"
     }
   ],
   "top_corners": [
@@ -138,8 +151,9 @@
       "edge_pct": null,
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
-      "stake_units": 1.88,
-      "projected_score": "1–2"
+      "stake_units": 1.19,
+      "projected_score": "1–2",
+      "total_lambda": 3.64
     },
     {
       "match_id": "6106412",
@@ -157,7 +171,8 @@
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
       "stake_units": 1.88,
-      "projected_score": "1–1"
+      "projected_score": "1–1",
+      "total_lambda": 2.58
     },
     {
       "match_id": "6106243",
@@ -175,45 +190,29 @@
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
       "stake_units": 1.88,
-      "projected_score": "1–1"
+      "projected_score": "1–1",
+      "total_lambda": 3.85
     }
   ],
   "top_goals": [
     {
-      "match_id": "6106325",
+      "match_id": "6106412",
       "league": "Champions League",
-      "home": "RB Leipzig",
-      "away": "Lens",
+      "home": "Como",
+      "away": "AEK Athens",
       "kickoff_utc": "2026-11-24T20:00:00.000Z",
       "kickoff_dual": "00:00 AMT / 03:00 WIB",
       "xi_confirmed": false,
-      "market": "Over 2.5 Total Goals",
-      "model_prob": 74,
-      "fair_odds": 1.35,
-      "bookmaker_odds": 1.769,
-      "edge_pct": 20.35,
+      "market": "Under 3.5 Total Goals",
+      "model_prob": 66.8,
+      "fair_odds": 1.5,
+      "bookmaker_odds": 1.909,
+      "edge_pct": 16.76,
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
       "stake_units": 1.88,
-      "projected_score": "3–1"
-    },
-    {
-      "match_id": "5836947",
-      "league": "Championship",
-      "home": "Cardiff City",
-      "away": "Preston North End",
-      "kickoff_utc": "2026-11-24T19:45:00.000Z",
-      "kickoff_dual": "23:45 AMT / 02:45 WIB (+1)",
-      "xi_confirmed": false,
-      "market": "Over 2.5 Total Goals",
-      "model_prob": 67.3,
-      "fair_odds": 1.49,
-      "bookmaker_odds": 2.05,
-      "edge_pct": 20.95,
-      "tier": "TIER 2: VALUE HUNTER",
-      "tier_code": "TIER_2",
-      "stake_units": 1.88,
-      "projected_score": "2–1"
+      "projected_score": "1–1",
+      "total_lambda": 2.58
     },
     {
       "match_id": "6106307",
@@ -224,14 +223,34 @@
       "kickoff_dual": "00:00 AMT / 03:00 WIB",
       "xi_confirmed": false,
       "market": "Over 2.5 Total Goals",
-      "model_prob": 66.8,
-      "fair_odds": 1.5,
-      "bookmaker_odds": 1.625,
-      "edge_pct": 8.23,
+      "model_prob": 66.3,
+      "fair_odds": 1.51,
+      "bookmaker_odds": 1.667,
+      "edge_pct": 9.43,
+      "tier": "TIER 2: VALUE HUNTER",
+      "tier_code": "TIER_2",
+      "stake_units": 1.19,
+      "projected_score": "1–2",
+      "total_lambda": 3.64
+    },
+    {
+      "match_id": "5836950",
+      "league": "Championship",
+      "home": "Norwich City",
+      "away": "Queens Park Rangers",
+      "kickoff_utc": "2026-11-24T19:45:00.000Z",
+      "kickoff_dual": "23:45 AMT / 02:45 WIB (+1)",
+      "xi_confirmed": false,
+      "market": "Over 2.0 Asian Goals (Push on 2)",
+      "model_prob": 75.6,
+      "fair_odds": 1.32,
+      "bookmaker_odds": null,
+      "edge_pct": null,
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
       "stake_units": 1.88,
-      "projected_score": "1–2"
+      "projected_score": "1–1",
+      "total_lambda": 3.01
     }
   ],
   "top_btts": [
@@ -244,14 +263,15 @@
       "kickoff_dual": "00:00 AMT / 03:00 WIB",
       "xi_confirmed": false,
       "market": "BTTS — YES",
-      "model_prob": 73.8,
-      "fair_odds": 1.35,
+      "model_prob": 73.6,
+      "fair_odds": 1.36,
       "bookmaker_odds": null,
       "edge_pct": null,
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
-      "stake_units": 1.88,
-      "projected_score": "3–1"
+      "stake_units": 1.25,
+      "projected_score": "3–1",
+      "total_lambda": 4.65
     },
     {
       "match_id": "6106243",
@@ -269,7 +289,8 @@
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
       "stake_units": 1.88,
-      "projected_score": "1–1"
+      "projected_score": "1–1",
+      "total_lambda": 3.85
     }
   ]
 }
