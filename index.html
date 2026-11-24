@@ -1676,11 +1676,138 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   color: var(--ink-tertiary);
 }
 
+/* ---- Sovereign Access Gate ---- */
+.auth-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(9, 9, 11, 0.88);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.auth-gate.hidden { display: none; }
+.auth-card {
+  width: 100%;
+  max-width: 390px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 26px 24px 22px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.78), var(--highlight-top);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.auth-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink-primary);
+}
+.auth-sub {
+  font-size: 11.5px;
+  color: var(--ink-tertiary);
+  letter-spacing: 0.02em;
+}
+.auth-desc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-secondary);
+  margin: 0;
+}
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-secondary);
+}
+.auth-field input {
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--ink-primary);
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+.auth-field input:focus {
+  border-color: var(--ice);
+  background: rgba(255, 255, 255, 0.085);
+}
+.auth-error {
+  font-size: 12px;
+  color: var(--coral);
+  background: var(--coral-bg);
+  border: 1px solid rgba(255, 69, 58, 0.28);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.auth-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 11px 14px;
+  font-size: 13.5px;
+  margin-top: 2px;
+}
+.auth-hint {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--ink-tertiary);
+  text-align: center;
+}
+.auth-hint code {
+  font-family: var(--font-mono);
+  color: var(--ink-secondary);
+}
+
 
 
 </style>
 </head>
 <body>
+  <!-- Sovereign Access Gate Overlay (active when OBSIDIAN_AUTH_GATE_URL is configured) -->
+  <div id="auth-gate" class="auth-gate hidden" role="dialog" aria-modal="true" aria-label="Obsidian Sovereign Access">
+    <form id="auth-gate-form" class="auth-card" autocomplete="off">
+      <div class="auth-brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L21 9.5L12 22L3 9.5L12 2Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+            <path d="M3 9.5H21" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
+            <path d="M12 2L8.5 9.5L12 22L15.5 9.5L12 2Z" stroke="currentColor" stroke-width="1.4" opacity="0.65"/>
+          </svg>
+        </div>
+        <div>
+          <div class="auth-title">OBSIDIAN V18.5</div>
+          <div class="auth-sub">Sovereign Access Gate</div>
+        </div>
+      </div>
+      <p class="auth-desc">Authorized members only. Enter your Telegram ID and personal Access Code issued by the Obsidian Telegram Bot.</p>
+      <label class="auth-field">
+        <span>Telegram ID</span>
+        <input id="auth-tg-id" type="text" inputmode="numeric" placeholder="e.g. 6720326248" required />
+      </label>
+      <label class="auth-field">
+        <span>Access Code</span>
+        <input id="auth-code" type="password" placeholder="e.g. OB-7K4M9P" required />
+      </label>
+      <div id="auth-error" class="auth-error hidden"></div>
+      <button id="auth-submit" type="submit" class="btn-primary auth-btn">Unlock Dashboard</button>
+      <div class="auth-hint">Need access? Send <code>/start</code> to the Obsidian Telegram Bot and share your ID with the Owner.</div>
+    </form>
+  </div>
+
   <!-- Frosted Apple-style Navigation Bar -->
   <header class="topbar" role="banner">
     <div class="topbar-left">
@@ -1715,6 +1842,11 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
         <span>FotMob · ESPN</span>
         <span class="sep">|</span>
         <span id="header-af-quota" class="mono">AF 0/100</span>
+      </button>
+      <button id="btn-signout" class="status-trigger hidden" title="Sign out of Sovereign Access Gate">
+        <span id="auth-user-label">Member</span>
+        <span class="sep">|</span>
+        <span>Lock</span>
       </button>
     </div>
   </header>
@@ -2965,7 +3097,16 @@ const ObsidianEngine = (() => {
 
     const oddsMap = {};
     if (mh) { oddsMap["1x2_home"] = [odds.home_win, mh]; oddsMap["1x2_draw"] = [odds.draw, md]; oddsMap["1x2_away"] = [odds.away_win, ma]; }
-    if (mo) { oddsMap["over_2_5"] = [odds.over, mo]; oddsMap["under_2_5"] = [odds.under, mu]; }
+    if (mo) {
+      const ouLine = Number(odds.ou_line);
+      if (ouLine === 2.5) { oddsMap["over_2_5"] = [odds.over, mo]; oddsMap["under_2_5"] = [odds.under, mu]; }
+      else if (ouLine === 3.5) { oddsMap["over_3_5"] = [odds.over, mo]; oddsMap["under_3_5"] = [odds.under, mu]; }
+      else if (ouLine === 1.5) { oddsMap["over_1_5"] = [odds.over, mo]; }
+      else if (ouLine === 2.0) { oddsMap["over_2_0_asian"] = [odds.over, mo]; }
+      else if (ouLine === 2.25) { oddsMap["over_2_25"] = [odds.over, mo]; }
+      else if (ouLine === 2.75) { oddsMap["under_2_75"] = [odds.under, mu]; }
+      else if (ouLine === 3.0) { oddsMap["under_3_0_asian"] = [odds.under, mu]; }
+    }
     const [pby, pbn] = devig2(odds.btts_yes, odds.btts_no);
     if (pby) { oddsMap["btts_yes"] = [odds.btts_yes, pby]; oddsMap["btts_no"] = [odds.btts_no, pbn]; }
     const [pco, pcu] = devig2(odds.corners_over, odds.corners_under);
@@ -3075,9 +3216,18 @@ const ObsidianEngine = (() => {
     } else if (primary.confidence < 68) {
       tier = "TIER 3: HIGH-VARIANCE PIVOT"; tierCode = "TIER_3"; stake = 1.0; cmd = "PIVOT";
     }
+    // Kelly-bounded sizing when live bookmaker odds exist (prevents flat over-staking on thin EV)
+    if (stake > 0 && primary.bookmaker_odds) {
+      if (primary.edge_pct !== null && primary.edge_pct <= 0) {
+        stake = Math.min(stake, 0.5);
+      } else if (primary.kelly_units > 0) {
+        stake = Math.min(stake, Math.max(0.5, primary.kelly_units));
+      }
+    }
     // Lineup & Doubtful Tier-S stake protection
-    if (stake > 0 && doubtS) stake = +(stake * 0.5).toFixed(2);
-    else if (stake > 0 && !xiConfirmed) stake = +(stake * 0.75).toFixed(2);
+    if (stake > 0 && doubtS) stake = Math.max(0.25, +(stake * 0.5).toFixed(2));
+    else if (stake > 0 && !xiConfirmed) stake = Math.max(0.25, +(stake * 0.75).toFixed(2));
+    else if (stake > 0) stake = +stake.toFixed(2);
 
     const chaos = Math.round(clamp(25 + (volatileComp ? 18 : 0) + (driftTrap ? 14 : 0) + (balanced ? 12 : 0) + (fatigue.length ? 10 : 0) + (doubtS ? 10 : 0) + (dataConf < 65 ? 15 : 0), 12, 94));
     const sw = [
@@ -3860,6 +4010,11 @@ const ObsidianEngine = (() => {
 </script>
   <script>
 /* OBSIDIAN DIAMOND V18.5 SOVEREIGN PRO — Live UI Controller */
+
+// Paste your deployed Cloudflare Worker URL here (e.g. "https://obsidian-gate.yourname.workers.dev")
+// Leave empty "" while unlocked; once set, the Sovereign Access Gate locks the web dashboard.
+const OBSIDIAN_AUTH_GATE_URL = "";
+const AUTH_SESSION_KEY = "obsidian_v18_web_session";
 
 const state = {
   currentDate: todayISO(0),
@@ -5148,6 +5303,121 @@ async function runSilentAutoSettle() {
   } catch {}
   finally { silentSettleInFlight = false; }
 }
+
+function initAuthGate() {
+  const gateUrl = String(OBSIDIAN_AUTH_GATE_URL || "").trim().replace(/\/$/, "");
+  if (!gateUrl) return; // Unlocked mode until Cloudflare Worker URL is configured
+
+  const overlay = document.getElementById("auth-gate");
+  const form = document.getElementById("auth-gate-form");
+  const tgInput = document.getElementById("auth-tg-id");
+  const codeInput = document.getElementById("auth-code");
+  const errEl = document.getElementById("auth-error");
+  const submitBtn = document.getElementById("auth-submit");
+  const signOutBtn = document.getElementById("btn-signout");
+  const userLabel = document.getElementById("auth-user-label");
+  if (!overlay || !form) return;
+
+  const showError = (msg) => {
+    if (!errEl) return;
+    if (!msg) { errEl.classList.add("hidden"); errEl.textContent = ""; return; }
+    errEl.textContent = msg;
+    errEl.classList.remove("hidden");
+  };
+
+  const lockUI = (reason) => {
+    overlay.classList.remove("hidden");
+    signOutBtn?.classList.add("hidden");
+    if (reason) showError(reason);
+  };
+
+  const unlockUI = (user) => {
+    overlay.classList.add("hidden");
+    showError("");
+    if (userLabel && user?.name) {
+      userLabel.textContent = user.role === "owner" ? `${user.name} · Owner` : user.name;
+    }
+    signOutBtn?.classList.remove("hidden");
+  };
+
+  const verifyCurrentSession = async (isPeriodic = false) => {
+    const token = localStorage.getItem(AUTH_SESSION_KEY) || "";
+    if (!token) {
+      lockUI("");
+      return false;
+    }
+    try {
+      const resp = await fetch(`${gateUrl}/api/auth/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_token: token }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (resp.ok && data.ok) {
+        unlockUI(data.user);
+        return true;
+      }
+      localStorage.removeItem(AUTH_SESSION_KEY);
+      lockUI(isPeriodic ? "Your access was revoked by the Owner." : "");
+      return false;
+    } catch {
+      if (!isPeriodic) lockUI("Unable to reach Access Gate. Check connection and try again.");
+      return false;
+    }
+  };
+
+  // Start locked until session is verified
+  lockUI("");
+  verifyCurrentSession(false);
+  setInterval(() => verifyCurrentSession(true), 5 * 60 * 1000);
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    showError("");
+    const telegram_id = (tgInput?.value || "").trim();
+    const access_code = (codeInput?.value || "").trim().toUpperCase();
+    if (!telegram_id || !access_code) {
+      showError("Enter both your Telegram ID and Access Code.");
+      return;
+    }
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Verifying..."; }
+    try {
+      const resp = await fetch(`${gateUrl}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ telegram_id, access_code }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (resp.ok && data.ok && data.session_token) {
+        localStorage.setItem(AUTH_SESSION_KEY, data.session_token);
+        if (codeInput) codeInput.value = "";
+        unlockUI(data.user);
+        showToast(`Welcome, ${data.user?.name || "Member"}`);
+      } else {
+        showError(data.error || "Access denied. Check your Telegram ID & Access Code.");
+      }
+    } catch {
+      showError("Network error reaching Access Gate.");
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Unlock Dashboard"; }
+    }
+  });
+
+  signOutBtn?.addEventListener("click", async () => {
+    const token = localStorage.getItem(AUTH_SESSION_KEY) || "";
+    localStorage.removeItem(AUTH_SESSION_KEY);
+    if (token) {
+      fetch(`${gateUrl}/api/auth/logout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_token: token }),
+      }).catch(() => {});
+    }
+    lockUI("");
+    showToast("Dashboard locked");
+  });
+}
+
 
 </script>
 </body>
