@@ -1474,6 +1474,151 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   border-color: transparent;
 }
 
+/* ---- Apple Dark Custom Scrollbars ---- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ---- Autonomous 5W1H Post-Mortem & Historical Factor Styles ---- */
+.ledger-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.rc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.rc-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.rc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+}
+.rc-track {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+.rc-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--coral);
+}
+.rc-fill.warn { background: var(--amber); }
+
+.pm-feed {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 960px) {
+  .pm-feed { grid-template-columns: 1fr; }
+}
+.pm-card {
+  background: rgba(255, 255, 255, 0.028);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  padding: 15px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pm-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--border-hairline);
+}
+.pm-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+.pm-meta {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin-top: 2px;
+}
+.pm-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pm-row {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.pm-k {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-tertiary);
+  padding-top: 1px;
+}
+.pm-v {
+  color: var(--ink-secondary);
+}
+.pm-v strong {
+  color: var(--ink-primary);
+}
+.pm-why {
+  color: var(--ink-primary);
+  font-weight: 500;
+}
+.pm-how {
+  color: var(--ice);
+}
+.src-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 5px;
+  letter-spacing: 0.04em;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+.src-badge.auto {
+  background: rgba(100, 210, 255, 0.14);
+  color: var(--ice);
+}
+.src-badge.manual {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--ink-secondary);
+}
+
+
 </style>
 </head>
 <body>
@@ -1525,11 +1670,15 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
     <div style="display:flex;flex-direction:column;gap:6px;">
       <label style="font-size:11px;color:var(--ink-secondary)">Optional API-Football Fallback Key (stored only on this device):</label>
       <div style="display:flex;gap:6px;">
-        <input id="af-key-input" type="password" placeholder="Only used if FotMob/ESPN miss odds" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid var(--border-subtle);border-radius:8px;padding:6px 9px;color:var(--ink-primary);font-size:12px;font-family:var(--font-mono)" />
+        <input id="af-key-input" type="password" placeholder="Paste API-Football key (stays local)" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid var(--border-subtle);border-radius:8px;padding:6px 9px;color:var(--ink-primary);font-size:12px;font-family:var(--font-mono)" />
         <button id="btn-save-af-key" class="btn btn-secondary btn-xs">Save</button>
       </div>
+      <label style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-secondary);cursor:pointer;margin-top:4px;">
+        <input id="af-autofill-chk" type="checkbox" />
+        <span>Auto-fill missing Odds / Injuries / XI via API-Football (cached 6h)</span>
+      </label>
     </div>
-    <p class="popover-foot">FotMob &amp; ESPN run 100% free &amp; live directly from your browser with zero quota.</p>
+    <p class="popover-foot">FotMob &amp; ESPN always run first (0 quota). API-Football only fills real DATA GAPs (max 95/100/day).</p>
   </aside>
 
   <!-- Main Workspace -->
@@ -1642,8 +1791,8 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
       <div class="page-container">
         <div class="page-head">
           <div>
-            <h1 class="page-title">Memory, Bankroll &amp; Neural Calibration</h1>
-            <p class="page-sub">Tracks Brier Score, Closing Line Value (CLV), Bankroll Drawdown, and auto-settles completed matches from FotMob final scores &amp; corners.</p>
+            <h1 class="page-title">Autonomous Memory, 5W1H &amp; Neural Learning</h1>
+            <p class="page-sub">Auto-records every analyzed fixture, settles completed scores automatically next day, runs 5W1H root-cause post-mortems, and learns historical factor penalties.</p>
           </div>
           <div class="page-actions">
             <button id="btn-auto-settle" class="btn btn-primary">Auto-Settle Completed</button>
@@ -1680,15 +1829,52 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
           </div>
         </div>
 
+        <div class="two-col-grid" style="margin-top: 20px;">
+          <div class="surface-card">
+            <div class="card-head">
+              <h2>Historical Factor Attribution</h2>
+              <span class="muted-tag">Win Rate &amp; Brier by Pre-Match Factor</span>
+            </div>
+            <div id="factor-attribution-wrap" class="table-wrap"></div>
+          </div>
+
+          <div class="surface-card">
+            <div class="card-head">
+              <h2>Loss Root-Cause Breakdown (WHY)</h2>
+              <span class="muted-tag">5W1H Miss Taxonomy</span>
+            </div>
+            <div id="root-causes-wrap"></div>
+          </div>
+        </div>
+
         <div class="surface-card" style="margin-top: 20px;">
           <div class="card-head">
-            <h2>Saved Predictions Ledger</h2>
-            <div class="state-pills" id="ledger-filters">
-              <button class="state-pill active" data-pstatus="ALL">All</button>
-              <button class="state-pill" data-pstatus="PENDING">Pending</button>
-              <button class="state-pill" data-pstatus="WON">Won</button>
-              <button class="state-pill" data-pstatus="LOST">Lost</button>
-              <button class="state-pill" data-pstatus="PUSH">Push</button>
+            <h2>5W1H Autonomous Post-Mortem Audit</h2>
+            <div class="state-pills" id="pm-filters">
+              <button class="state-pill active" data-pmfilter="ALL">All Settled</button>
+              <button class="state-pill" data-pmfilter="MISS">Misses Only</button>
+              <button class="state-pill" data-pmfilter="WIN">Wins Only</button>
+            </div>
+          </div>
+          <div id="post-mortem-feed" class="pm-feed"></div>
+        </div>
+
+        <div class="surface-card" style="margin-top: 20px;">
+          <div class="card-head">
+            <h2>Predictions Ledger (Auto + Manual)</h2>
+            <div class="ledger-controls">
+              <div class="state-pills" id="source-filters">
+                <button class="state-pill active" data-psource="ALL">All Sources</button>
+                <button class="state-pill" data-psource="AUTO">Auto-Tracked</button>
+                <button class="state-pill" data-psource="MANUAL">Manual</button>
+              </div>
+              <div class="state-pills" id="ledger-filters">
+                <button class="state-pill active" data-pstatus="ALL">All</button>
+                <button class="state-pill" data-pstatus="PENDING">Pending</button>
+                <button class="state-pill" data-pstatus="WON">Won</button>
+                <button class="state-pill" data-pstatus="LOST">Lost</button>
+                <button class="state-pill" data-pstatus="PUSH">Push</button>
+              </div>
             </div>
           </div>
           <div id="predictions-table-wrap" class="table-wrap"></div>
@@ -1771,6 +1957,7 @@ const ObsidianEngine = (() => {
       "Team Totals": { prob_shift: 0, confidence_mult: 1, blocked: false, samples: 0, brier: null, roi: null },
       "Result & AH": { prob_shift: 0, confidence_mult: 1, blocked: false, samples: 0, brier: null, roi: null }
     },
+    factor_penalties: { pre_xi: 0, data_gap: 0, fatigue: 0 },
     total_settled: 0,
     last_trained_at: null
   };
@@ -1909,11 +2096,19 @@ const ObsidianEngine = (() => {
     return f <= 0 ? 0 : Math.min(5, +(f * 0.25 * 40).toFixed(2));
   }
 
+  const knownMatches = new Map();
+
   // ---- Live Data Fetchers ----
   async function fetchMatchesByDate(dateIso, forceRefresh = false) {
     const compact = dateIso.replace(/-/g, "");
     const ck = `matches:${compact}`;
-    if (!forceRefresh) { const hit = cacheGet(ck); if (hit) return hit; }
+    if (!forceRefresh) {
+      const hit = cacheGet(ck);
+      if (hit) {
+        (hit.leagues || []).forEach(lg => (lg.matches || []).forEach(m => knownMatches.set(m.match_id, m)));
+        return hit;
+      }
+    }
 
     try {
       const data = await fetchJson(`${FOTMOB_BASE}/matches?date=${compact}`);
@@ -1930,7 +2125,7 @@ const ObsidianEngine = (() => {
           if (isLive) liveCount++;
           const liveMin = st.liveTime ? (st.liveTime.short || st.liveTime.long || "") : "";
           const reason = st.reason ? (st.reason.short || "") : "";
-          ms.push({
+          const item = {
             match_id: String(m.id), source: "fotmob", league_id: String(lgId), league_name: lg.name || "Competition",
             country_code: lg.ccode || "", date: dateIso, kickoff_utc: st.utcTime || "",
             state: isLive ? "LIVE" : finished ? "FT" : cancelled ? "CANC" : "UPCOMING",
@@ -1940,7 +2135,9 @@ const ObsidianEngine = (() => {
             away_id: String(m.away?.id || ""), away_name: m.away?.name || "Away",
             away_score: (started || finished) ? m.away?.score : null, away_logo: crestUrl(m.away?.id),
             is_priority: PRIORITY_LEAGUES.has(Number(lgId))
-          });
+          };
+          knownMatches.set(item.match_id, item);
+          ms.push(item);
           total++;
         }
         if (ms.length) {
@@ -1970,14 +2167,16 @@ const ObsidianEngine = (() => {
         const slug = ev.season?.slug || "espn-soccer";
         const lgName = slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
         if (!map[slug]) map[slug] = { league_id: slug, league_name: lgName, is_priority: true, matches: [] };
-        map[slug].matches.push({
+        const eItem = {
           match_id: `espn:${ev.id}`, source: "espn", league_id: slug, league_name: lgName,
           date: dateIso, kickoff_utc: ev.date || "", state: isLive ? "LIVE" : finished ? "FT" : "UPCOMING",
           is_live: isLive, finished, live_minute: isLive ? (ev.status?.displayClock || "LIVE") : "", status_label: stType.shortDetail || "",
           home_id: String(hc.id || ""), home_name: hc.team?.displayName || "Home", home_score: (isLive || finished) ? parseInt(hc.score, 10) : null, home_logo: hc.team?.logo || "",
           away_id: String(ac.id || ""), away_name: ac.team?.displayName || "Away", away_score: (isLive || finished) ? parseInt(ac.score, 10) : null, away_logo: ac.team?.logo || "",
           is_priority: true
-        });
+        };
+        knownMatches.set(eItem.match_id, eItem);
+        map[slug].matches.push(eItem);
         total++;
       }
       const res = { date: dateIso, source: "espn", total_matches: total, live_count: liveCount, leagues: Object.values(map), fetched_at: new Date().toISOString() };
@@ -2148,51 +2347,142 @@ const ObsidianEngine = (() => {
     return null;
   }
 
-  async function fetchApiFootballOddsFallback(homeName, awayName, dateIso) {
+  const STORE_AF_AUTO = "obsidian_v18_af_auto";
+  function getAfAutoFill() { return localStorage.getItem(STORE_AF_AUTO) === "1"; }
+  function setAfAutoFill(v) { localStorage.setItem(STORE_AF_AUTO, v ? "1" : "0"); }
+
+  function afCacheGet(k) {
+    const m = cacheGet(k);
+    if (m) return m;
+    try {
+      const raw = localStorage.getItem(`afcache:${k}`);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (parsed.exp < Date.now()) { localStorage.removeItem(`afcache:${k}`); return null; }
+      cacheSet(k, parsed.val, Math.floor((parsed.exp - Date.now()) / 1000));
+      return parsed.val;
+    } catch { return null; }
+  }
+  function afCacheSet(k, val, ttlSec = 21600) {
+    cacheSet(k, val, ttlSec);
+    try { localStorage.setItem(`afcache:${k}`, JSON.stringify({ val, exp: Date.now() + ttlSec * 1000 })); } catch {}
+  }
+
+  async function fetchApiFootballEnrichment(homeName, awayName, dateIso, gaps = {}) {
     const key = getAfKey();
     if (!key) return null;
     if (getUsage().api_football >= 95) return null;
+    const headers = { "x-apisports-key": key };
     try {
+      // 1. Shared daily fixture index (1 call/day cached 6h across ALL matches!)
       const ckDay = `afDay:${dateIso}`;
-      let day = cacheGet(ckDay);
+      let day = afCacheGet(ckDay);
       if (!day) {
-        day = await fetchJson(`${AF_BASE}/fixtures?date=${dateIso}`, { "x-apisports-key": key });
+        day = await fetchJson(`${AF_BASE}/fixtures?date=${dateIso}`, headers);
         recordCall("api_football");
-        cacheSet(ckDay, day, 21600);
+        afCacheSet(ckDay, day, 21600);
       }
-      const match = (day.response || []).find(it => namesMatch(homeName, it.teams?.home?.name) && namesMatch(awayName, it.teams?.away?.name));
+      const match = (day.response || []).find(it =>
+        namesMatch(homeName, it.teams?.home?.name) && namesMatch(awayName, it.teams?.away?.name)
+      );
       if (!match) return null;
+
       const fid = match.fixture?.id;
-      const ckO = `afOdds:${fid}`;
-      let od = cacheGet(ckO);
-      if (!od) {
-        od = await fetchJson(`${AF_BASE}/odds?fixture=${fid}`, { "x-apisports-key": key });
-        recordCall("api_football");
-        cacheSet(ckO, od, 21600);
+      const result = {
+        fixture_id: fid,
+        referee: match.fixture?.referee || null,
+        venue: match.fixture?.venue?.name || null,
+        odds: null,
+        home_injuries: [],
+        away_injuries: [],
+        home_formation: null,
+        away_formation: null,
+        xi_confirmed: false,
+        filled: []
+      };
+      if (result.referee) result.filled.push("Ref");
+
+      // 2. Odds — ONLY if ESPN had no odds
+      if (gaps.needOdds && getUsage().api_football < 95) {
+        const ckO = `afOdds:${fid}`;
+        let od = afCacheGet(ckO);
+        if (!od) {
+          od = await fetchJson(`${AF_BASE}/odds?fixture=${fid}`, headers);
+          recordCall("api_football");
+          afCacheSet(ckO, od, 21600);
+        }
+        const bets = od.response?.[0]?.bookmakers?.[0]?.bets || [];
+        const parsed = { provider: "API-Football Consensus", source: "api_football" };
+        for (const b of bets) {
+          const bn = (b.name || "").toLowerCase();
+          for (const v of (b.values || [])) {
+            const val = String(v.value || ""), odd = parseNum(v.odd);
+            if (bn === "match winner") {
+              if (val.toLowerCase() === "home") parsed.home_win = odd;
+              if (val.toLowerCase() === "draw") parsed.draw = odd;
+              if (val.toLowerCase() === "away") parsed.away_win = odd;
+            } else if (bn.includes("goals over/under")) {
+              if (val === "Over 2.5") { parsed.ou_line = 2.5; parsed.over = odd; }
+              if (val === "Under 2.5") parsed.under = odd;
+            } else if (bn.includes("both teams score")) {
+              if (val.toLowerCase() === "yes") parsed.btts_yes = odd;
+              if (val.toLowerCase() === "no") parsed.btts_no = odd;
+            } else if (bn.includes("corners over under")) {
+              if (val === "Over 9.5") parsed.corners_over = odd;
+              if (val === "Under 9.5") parsed.corners_under = odd;
+            }
+          }
+        }
+        if (Object.keys(parsed).length > 2) { result.odds = parsed; result.filled.push("Odds"); }
       }
-      const bets = od.response?.[0]?.bookmakers?.[0]?.bets || [];
-      const out = { provider: "API-Football Consensus", source: "api_football" };
-      for (const b of bets) {
-        const bn = (b.name || "").toLowerCase();
-        for (const v of (b.values || [])) {
-          const val = String(v.value || ""), odd = parseNum(v.odd);
-          if (bn === "match winner") {
-            if (val.toLowerCase() === "home") out.home_win = odd;
-            if (val.toLowerCase() === "draw") out.draw = odd;
-            if (val.toLowerCase() === "away") out.away_win = odd;
-          } else if (bn.includes("goals over/under")) {
-            if (val === "Over 2.5") { out.ou_line = 2.5; out.over = odd; }
-            if (val === "Under 2.5") out.under = odd;
-          } else if (bn.includes("both teams score")) {
-            if (val.toLowerCase() === "yes") out.btts_yes = odd;
-            if (val.toLowerCase() === "no") out.btts_no = odd;
-          } else if (bn.includes("corners over under")) {
-            if (val === "Over 9.5") out.corners_over = odd;
-            if (val === "Under 9.5") out.corners_under = odd;
+
+      // 3. Injuries (STAR_WATCHLIST) — ONLY if FotMob didn't provide unavailable list
+      if (gaps.needInjuries && getUsage().api_football < 95) {
+        const ckI = `afInj:${fid}`;
+        let inj = afCacheGet(ckI);
+        if (!inj) {
+          inj = await fetchJson(`${AF_BASE}/injuries?fixture=${fid}`, headers);
+          recordCall("api_football");
+          afCacheSet(ckI, inj, 21600);
+        }
+        const seen = new Set();
+        for (const row of (inj.response || [])) {
+          const pname = row.player?.name;
+          if (!pname || seen.has(pname)) continue;
+          seen.add(pname);
+          const tname = row.team?.name || "";
+          const ptype = String(row.player?.type || "Missing Fixture");
+          const isDoubt = ptype.toLowerCase().includes("question") || ptype.toLowerCase().includes("doubt");
+          const entry = { name: pname, tier: "Tier A", status: isDoubt ? "DOUBTFUL" : "OUT", reason: row.player?.reason || ptype };
+          if (namesMatch(homeName, tname)) result.home_injuries.push(entry);
+          else if (namesMatch(awayName, tname)) result.away_injuries.push(entry);
+        }
+        if (result.home_injuries.length || result.away_injuries.length) result.filled.push("Injuries");
+      }
+
+      // 4. Confirmed Lineups & Formations — ONLY if lineup wasn't already confirmed
+      if (gaps.needLineups && getUsage().api_football < 95) {
+        const ckL = `afLu:${fid}`;
+        let lu = afCacheGet(ckL);
+        if (!lu) {
+          lu = await fetchJson(`${AF_BASE}/fixtures/lineups?fixture=${fid}`, headers);
+          recordCall("api_football");
+          afCacheSet(ckL, lu, 3600);
+        }
+        const teamsLu = lu.response || [];
+        if (teamsLu.length >= 2) {
+          const hL = teamsLu.find(x => namesMatch(homeName, x.team?.name)) || teamsLu[0];
+          const aL = teamsLu.find(x => namesMatch(awayName, x.team?.name)) || teamsLu[1];
+          if (hL?.formation) result.home_formation = hL.formation;
+          if (aL?.formation) result.away_formation = aL.formation;
+          if ((hL?.startXI || []).length >= 11 && (aL?.startXI || []).length >= 11) {
+            result.xi_confirmed = true;
+            result.filled.push("Confirmed XI");
           }
         }
       }
-      return Object.keys(out).length > 2 ? out : null;
+
+      return result;
     } catch { return null; }
   }
 
@@ -2288,25 +2578,70 @@ const ObsidianEngine = (() => {
     return wS > 0 ? [gfS / wS, gaS / wS, recent.length] : [null, null, 0];
   }
 
-  // ---- Main Fixture Analyzer (V18.5 Sovereign Pro) ----
-  async function analyzeMatchById(matchId, { customOdds = null, fallbackAf = false, forceRefresh = false, marketAnchored = true } = {}) {
-    const raw = await fetchMatchDetailsRaw(matchId, forceRefresh);
-    const gen = raw.general || {}, hdr = raw.header || {}, content = raw.content || {};
-    const hId = String(gen.homeTeam?.id || ""), aId = String(gen.awayTeam?.id || "");
-    const hName = gen.homeTeam?.name || "Home", aName = gen.awayTeam?.name || "Away";
-    const lgId = String(gen.parentLeagueId || gen.leagueId || ""), lgName = gen.leagueName || "Competition";
-    const koUtc = gen.matchTimeUTCDate || hdr.status?.utcTime || "";
-    const matchDate = koUtc ? koUtc.slice(0, 10) : new Date().toISOString().slice(0, 10);
+  function extractStandingsFromTeam(teamRaw, teamId) {
+    const res = {};
+    const tblArr = teamRaw?.overview?.table || teamRaw?.table || [];
+    const list = Array.isArray(tblArr) ? tblArr : [tblArr];
+    for (const entry of list) {
+      const blk = entry?.data?.table || entry?.table || entry;
+      if (!blk) continue;
+      for (const sp of ["all", "home", "away"]) {
+        const rows = blk[sp] || [];
+        if (!Array.isArray(rows)) continue;
+        const r = rows.find(x => String(x.id) === String(teamId));
+        if (r) {
+          const pts = String(r.scoresStr || "0-0").split("-");
+          res[sp] = { idx: r.idx, played: +(r.played || 0), gf: +(pts[0] || 0), ga: +(pts[1] || 0), pts: +(r.pts || 0), total_teams: rows.length };
+        }
+      }
+    }
+    return res;
+  }
+
+  // ---- Main Fixture Analyzer (V18.5 Sovereign Pro — 100% Browser CORS-Resilient) ----
+  async function analyzeMatchById(matchId, { matchStub = null, customOdds = null, fallbackAf = false, forceRefresh = false, marketAnchored = true } = {}) {
+    const stub = matchStub || knownMatches.get(String(matchId)) || null;
+    const isEspnId = String(matchId).startsWith("espn:");
+    let raw = null;
+    if (!isEspnId) {
+      try {
+        raw = await fetchMatchDetailsRaw(matchId, forceRefresh);
+      } catch {
+        // Browser CORS on matchDetails — gracefully fall back to FotMob teams (ACAO=*) + Stats CDN (ACAO=*) + ESPN (ACAO=*)!
+        raw = null;
+      }
+    }
+    if (!raw && !stub) {
+      throw new Error(`Match ${matchId} telemetry unavailable — refresh the fixture list and retry.`);
+    }
+
+    const gen = raw?.general || {}, hdr = raw?.header || {}, content = raw?.content || {};
+    const hId = String(gen.homeTeam?.id || stub?.home_id || "");
+    const aId = String(gen.awayTeam?.id || stub?.away_id || "");
+    const hName = gen.homeTeam?.name || stub?.home_name || "Home";
+    const aName = gen.awayTeam?.name || stub?.away_name || "Away";
+    const lgId = String(gen.parentLeagueId || gen.leagueId || stub?.league_id || "");
+    const lgName = gen.leagueName || stub?.league_name || "Competition";
+    const koUtc = gen.matchTimeUTCDate || hdr.status?.utcTime || stub?.kickoff_utc || "";
+    const matchDate = koUtc ? koUtc.slice(0, 10) : (stub?.date || new Date().toISOString().slice(0, 10));
 
     const st = hdr.status || {};
-    const finished = !!st.finished, started = !!st.started, isLive = started && !finished && !st.cancelled;
+    const finished = raw ? !!st.finished : !!stub?.finished;
+    const started = raw ? !!st.started : (!!stub?.is_live || !!stub?.finished);
+    const isLive = raw ? (started && !finished && !st.cancelled) : !!stub?.is_live;
     let liveMin = null;
-    if (isLive && st.liveTime?.short) { const mm = String(st.liveTime.short).match(/(\d+)/); if (mm) liveMin = +mm[1]; }
-    const hScore = (started || finished) ? hdr.teams?.[0]?.score ?? null : null;
-    const aScore = (started || finished) ? hdr.teams?.[1]?.score ?? null : null;
+    if (isLive) {
+      const lt = st.liveTime?.short || stub?.live_minute || "";
+      const mm = String(lt).match(/(\d+)/);
+      if (mm) liveMin = +mm[1];
+    }
+    const hScore = raw ? ((started || finished) ? hdr.teams?.[0]?.score ?? null : null) : (stub?.home_score ?? null);
+    const aScore = raw ? ((started || finished) ? hdr.teams?.[1]?.score ?? null : null) : (stub?.away_score ?? null);
 
     const [hTeamRaw, aTeamRaw, espnOdds] = await Promise.all([
-      fetchTeamRaw(hId), fetchTeamRaw(aId), fetchEspnOdds(hName, aName, matchDate)
+      isEspnId ? Promise.resolve(null) : fetchTeamRaw(hId),
+      isEspnId ? Promise.resolve(null) : fetchTeamRaw(aId),
+      fetchEspnOdds(hName, aName, matchDate)
     ]);
 
     const hRest = extractRestAndRecent(hTeamRaw, hId, koUtc, matchId);
@@ -2316,16 +2651,19 @@ const ObsidianEngine = (() => {
     if (hRest.season_id && hRest.primary_league_id === lgId) seasonId = hRest.season_id;
     else if (aRest.season_id && aRest.primary_league_id === lgId) seasonId = aRest.season_id;
     else if (hRest.season_id) { seasonId = hRest.season_id; statsLgId = hRest.primary_league_id || lgId; }
+    else if (aRest.season_id) { seasonId = aRest.season_id; statsLgId = aRest.primary_league_id || lgId; }
 
     const { byTeam: lgStats, baseline: leagueBaseline } = await fetchLeagueStats(statsLgId, seasonId);
-    const hSS = lgStats[hId] || {}, aSS = lgStats[aId] || {};
+    let hSS = lgStats[hId] || {}, aSS = lgStats[aId] || {};
 
-    let odds = espnOdds ? { ...espnOdds } : {};
-    const sourcesUsed = ["FotMob"];
-    if (espnOdds) sourcesUsed.push("ESPN Odds");
-    else if (fallbackAf) {
-      const af = await fetchApiFootballOddsFallback(hName, aName, matchDate);
-      if (af) { odds = af; sourcesUsed.push("API-Football Fallback"); }
+    // In continental cups (e.g. Champions League), teams come from different domestic leagues — also pull away team's domestic season xG/Corners if missing!
+    if (!Object.keys(aSS).length && aRest.season_id && aRest.primary_league_id && aRest.primary_league_id !== statsLgId) {
+      const awayDom = await fetchLeagueStats(aRest.primary_league_id, aRest.season_id);
+      if (awayDom.byTeam[aId]) aSS = awayDom.byTeam[aId];
+    }
+    if (!Object.keys(hSS).length && hRest.season_id && hRest.primary_league_id && hRest.primary_league_id !== statsLgId) {
+      const homeDom = await fetchLeagueStats(hRest.primary_league_id, hRest.season_id);
+      if (homeDom.byTeam[hId]) hSS = homeDom.byTeam[hId];
     }
 
     const parseUnav = lu => (lu?.unavailable || []).map(p => {
@@ -2334,10 +2672,34 @@ const ObsidianEngine = (() => {
       const er = String(p.unavailability?.expectedReturn || "");
       return { name: p.name || "Player", tier, status: er.toLowerCase().includes("doubt") ? "DOUBTFUL" : "OUT" };
     });
-    const hLu = content.lineup?.homeTeam || {}, aLu = content.lineup?.awayTeam || {};
-    const hUnav = parseUnav(hLu), aUnav = parseUnav(aLu);
-    const hTbl = extractStandings(raw, hId), aTbl = extractStandings(raw, aId);
-    const liveStats = extractLiveStats(raw);
+    const hLu = { ...(content.lineup?.homeTeam || {}), formation: content.lineup?.homeTeam?.formation || hTeamRaw?.overview?.lastLineupStats?.formation || null };
+    const aLu = { ...(content.lineup?.awayTeam || {}), formation: content.lineup?.awayTeam?.formation || aTeamRaw?.overview?.lastLineupStats?.formation || null };
+    let hUnav = parseUnav(hLu), aUnav = parseUnav(aLu);
+    const hTbl = raw ? extractStandings(raw, hId) : extractStandingsFromTeam(hTeamRaw, hId);
+    const aTbl = raw ? extractStandings(raw, aId) : extractStandingsFromTeam(aTeamRaw, aId);
+    const liveStats = raw ? extractLiveStats(raw) : {};
+
+    let odds = espnOdds ? { ...espnOdds } : {};
+    const sourcesUsed = [raw ? "FotMob" : (hTeamRaw || aTeamRaw ? "FotMob Teams+CDN" : "ESPN")];
+    if (espnOdds) sourcesUsed.push("ESPN Odds");
+
+    // STRICT FALLBACK ENRICHMENT: Only invokes API-Football when requested (or Auto-Fill enabled) AND real DATA GAPs exist!
+    let afEnrich = null;
+    const luTypeRaw0 = String(content.lineup?.lineupType || "").toLowerCase();
+    const needOdds = !espnOdds;
+    const needInjuries = !raw && hUnav.length === 0 && aUnav.length === 0;
+    const needLineups = !luTypeRaw0.includes("confirm");
+    if ((fallbackAf || getAfAutoFill()) && (needOdds || needInjuries || needLineups)) {
+      afEnrich = await fetchApiFootballEnrichment(hName, aName, matchDate, { needOdds, needInjuries, needLineups });
+      if (afEnrich) {
+        if (afEnrich.odds && !espnOdds) odds = afEnrich.odds;
+        if (afEnrich.home_injuries.length && !hUnav.length) hUnav = afEnrich.home_injuries;
+        if (afEnrich.away_injuries.length && !aUnav.length) aUnav = afEnrich.away_injuries;
+        if (afEnrich.home_formation && !hLu.formation) hLu.formation = afEnrich.home_formation;
+        if (afEnrich.away_formation && !aLu.formation) aLu.formation = afEnrich.away_formation;
+        sourcesUsed.push(`API-FB (${afEnrich.filled.join("+") || "Meta"})`);
+      }
+    }
 
     const buildMetrics = (ss, tbl, rest, unav, isHome) => {
       const xg = statPM(ss, "xg"), xga = statPM(ss, "xga"), cor = statPM(ss, "corners");
@@ -2376,8 +2738,8 @@ const ObsidianEngine = (() => {
 
     // Lineup Confirmation Status (T-60' Gate)
     const luTypeRaw = String(content.lineup?.lineupType || "").toLowerCase();
-    const xiStatus = luTypeRaw.includes("confirm") ? "CONFIRMED XI" : hLu.formation ? "PROJECTED XI (WAIT T-60')" : "LINEUP DATA GAP";
-    const xiConfirmed = xiStatus === "CONFIRMED XI";
+    const xiConfirmed = luTypeRaw.includes("confirm") || !!afEnrich?.xi_confirmed;
+    const xiStatus = xiConfirmed ? "CONFIRMED XI" : hLu.formation ? "PROJECTED XI (WAIT T-60')" : "LINEUP DATA GAP";
     const lineupConf = xiConfirmed ? 94 : hLu.formation ? 74 : 55;
 
     let dp = 0;
@@ -2600,6 +2962,10 @@ const ObsidianEngine = (() => {
       if ((c.key === "over_2_5" || c.key === "over_3_5") && (mirassol || volatileComp)) { pen += 18; vr.push("Mirassol/Volatile suppresses Over"); }
       if (c.family === "Corners" && !hasCData) { pen += 14; vr.push("Season corner table DATA GAP"); }
       if (cal.blocked) { pen += 18; vr.push("Auto Edge-Policy Haircut"); }
+      const fp = weights.factor_penalties || {};
+      if (!xiConfirmed && fp.pre_xi > 0) { pen += fp.pre_xi; vr.push(`Learned Pre-XI Haircut (-${fp.pre_xi})`); }
+      if ((hm.xg_pm === null || am.xg_pm === null) && fp.data_gap > 0) { pen += fp.data_gap; vr.push(`Learned xG-Gap Haircut (-${fp.data_gap})`); }
+      if (fatigue.length > 0 && fp.fatigue > 0) { pen += fp.fatigue; vr.push(`Learned Fatigue Haircut (-${fp.fatigue})`); }
       const usab = (p >= 0.56 && p <= 0.78) ? 14 : (p >= 0.50 && p < 0.56) ? 8 : (p > 0.78 && p <= 0.85) ? 6 : (p > 0.85 ? -6 : -18);
       const eb = edge === null ? 0 : edge >= 5 ? 14 : edge >= 2.5 ? 9 : edge >= 1 ? 4 : edge <= -3 ? -16 : edge <= -1 ? -9 : 0;
       const pb = Math.min(6, c.push * 22);
@@ -2652,10 +3018,12 @@ const ObsidianEngine = (() => {
     ];
 
     const infoBox = content.matchFacts?.infoBox || {};
-    const venue = typeof infoBox.Stadium === "object" ? (infoBox.Stadium?.name || "DATA GAP") : (infoBox.Stadium || "DATA GAP");
-    const referee = typeof infoBox.Referee === "object" ? (infoBox.Referee?.text || "DATA GAP") : (infoBox.Referee || "DATA GAP");
+    const venueRaw = typeof infoBox.Stadium === "object" ? infoBox.Stadium?.name : infoBox.Stadium;
+    const venue = venueRaw || afEnrich?.venue || hTeamRaw?.overview?.venue?.widget?.name || "DATA GAP";
+    const refRaw = typeof infoBox.Referee === "object" ? infoBox.Referee?.text : infoBox.Referee;
+    const referee = refRaw || afEnrich?.referee || "DATA GAP";
 
-    return {
+    const resultObj = {
       match_id: String(matchId), sources_used: sourcesUsed, league_id: lgId, league_name: lgName,
       league_baseline: leagueBaseline, market_anchored: marketAnchored, xi_status: xiStatus, xi_confirmed: xiConfirmed,
       venue, referee, kickoff_utc: koUtc, match_date: matchDate,
@@ -2702,6 +3070,12 @@ const ObsidianEngine = (() => {
       },
       active_learning_weights: { home_advantage: weights.home_advantage, goal_lambda_scale: weights.goal_lambda_scale, corner_lambda_scale: weights.corner_lambda_scale, dixon_coles_rho: weights.dixon_coles_rho, total_settled: weights.total_settled || 0 }
     };
+
+    // Autonomous Memory: auto-record every upcoming/live analysis so next-day scans auto-settle & learn 5W1H!
+    if (!resultObj.finished) {
+      autoRecordPrediction(resultObj);
+    }
+    return resultObj;
   }
 
   // ---- Daily Top Picks Auto-Scanner ----
@@ -2785,6 +3159,7 @@ const ObsidianEngine = (() => {
     for (const k of Object.keys(DEFAULT_WEIGHTS.market_calibration)) {
       if (!w.market_calibration[k]) w.market_calibration[k] = { ...DEFAULT_WEIGHTS.market_calibration[k] };
     }
+    w.factor_penalties = { ...DEFAULT_WEIGHTS.factor_penalties, ...(w.factor_penalties || {}) };
     return w;
   }
   function resetWeights() {
@@ -2792,22 +3167,99 @@ const ObsidianEngine = (() => {
     saveLS(STORE_WEIGHTS, fresh);
     return fresh;
   }
-  function listPredictions(status = "ALL") {
+  function listPredictions(status = "ALL", sourceFilter = "ALL") {
     const all = loadLS(STORE_PREDS, []);
-    return status === "ALL" ? all : all.filter(p => p.status === status || (status === "WON" && p.status === "HALF_WON") || (status === "LOST" && p.status === "HALF_LOST"));
+    return all.filter(p => {
+      const okSt = status === "ALL" || p.status === status || (status === "WON" && p.status === "HALF_WON") || (status === "LOST" && p.status === "HALF_LOST");
+      const src = p.source_type || "MANUAL";
+      const okSrc = sourceFilter === "ALL" || src === sourceFilter;
+      return okSt && okSrc;
+    });
   }
+
+  function buildFactorSnapshot(a) {
+    const fWarns = (a.filters || []).filter(f => f.status === "WARN" || f.status === "FAIL").map(f => f.name);
+    return {
+      xi_confirmed: !!a.xi_confirmed,
+      xi_status: a.xi_status || "DATA GAP",
+      has_xg_data: a.home.metrics.xg_pm !== null && a.away.metrics.xg_pm !== null,
+      has_corner_data: !!a.corners_model?.has_season_data,
+      market_anchored: !!a.market_anchored,
+      fatigue_flagged: !!(a.home.metrics.european_hangover || a.home.metrics.wed_sat_fatigue || a.away.metrics.european_hangover || a.away.metrics.wed_sat_fatigue),
+      home_rest_days: a.home.metrics.rest_days,
+      away_rest_days: a.away.metrics.rest_days,
+      star_absences: (a.star_watchlist || []).map(s => `${s.player} (${s.team}, ${s.tier})`),
+      filter_warnings: fWarns,
+      chaos_index: a.risk_audit?.chaos_index ?? null,
+      data_confidence: a.risk_audit?.data_confidence ?? null,
+      venue: a.venue || "DATA GAP",
+      referee: a.referee || "DATA GAP",
+      league_avg_goals: a.league_baseline?.avg_goals ?? 1.38
+    };
+  }
+
+  function autoRecordPrediction(a) {
+    try {
+      const all = loadLS(STORE_PREDS, []);
+      const v = a.verdict;
+      const factors = buildFactorSnapshot(a);
+      const existingIdx = all.findIndex(p => String(p.match_id) === String(a.match_id) && p.source_type === "AUTO");
+      if (existingIdx >= 0) {
+        // Only update pre-match snapshot if still PENDING (e.g. when Confirmed XI drops!)
+        if (all[existingIdx].status === "PENDING") {
+          all[existingIdx] = {
+            ...all[existingIdx],
+            market_family: v.market_family, market_key: v.market_key, market_label: v.primary_bet,
+            model_prob: v.model_prob, raw_prob: v.raw_prob, fair_odds: v.fair_odds,
+            bookmaker_odds: v.bookmaker_odds || all[existingIdx].bookmaker_odds,
+            confidence: v.confidence, tier: v.tier,
+            stake_units: Math.max(0.5, v.stake_units || 1.0),
+            home_lambda: a.goal_model.home_lambda, away_lambda: a.goal_model.away_lambda,
+            home_corners_lambda: a.corners_model.home_corners_lambda, away_corners_lambda: a.corners_model.away_corners_lambda,
+            projected_score: a.goal_model.projected_score,
+            factors, updated_at: new Date().toISOString()
+          };
+          saveLS(STORE_PREDS, all);
+        }
+        return all[existingIdx].id;
+      }
+      const item = {
+        id: Date.now() + Math.floor(Math.random() * 999),
+        source_type: "AUTO",
+        match_id: String(a.match_id), match_date: a.match_date, kickoff_utc: a.kickoff_utc,
+        league_name: a.league_name, home_team: a.home.name, away_team: a.away.name,
+        home_team_id: a.home.id, away_team_id: a.away.id,
+        market_family: v.market_family, market_key: v.market_key, market_label: v.primary_bet,
+        model_prob: v.model_prob, raw_prob: v.raw_prob, fair_odds: v.fair_odds,
+        bookmaker_odds: v.bookmaker_odds || null, confidence: v.confidence, tier: v.tier,
+        stake_units: Math.max(0.5, v.stake_units || 1.0),
+        home_lambda: a.goal_model.home_lambda, away_lambda: a.goal_model.away_lambda,
+        home_corners_lambda: a.corners_model.home_corners_lambda, away_corners_lambda: a.corners_model.away_corners_lambda,
+        projected_score: a.goal_model.projected_score,
+        factors, status: "PENDING", closing_odds: null, clv_pct: null,
+        actual_home_goals: null, actual_away_goals: null, actual_home_corners: null, actual_away_corners: null,
+        actual_1h_goals: null, pnl_units: null, brier_score: null, post_mortem: null,
+        created_at: new Date().toISOString()
+      };
+      all.unshift(item);
+      // Cap stored ledger at 600 latest entries to keep localStorage fast
+      saveLS(STORE_PREDS, all.slice(0, 600));
+      return item.id;
+    } catch { return null; }
+  }
+
   function savePrediction(pred) {
     const all = loadLS(STORE_PREDS, []);
     const item = {
-      ...pred, id: Date.now(), status: "PENDING",
+      ...pred, id: Date.now(), source_type: "MANUAL", status: "PENDING",
       closing_odds: null, clv_pct: null,
       actual_home_goals: null, actual_away_goals: null,
       actual_home_corners: null, actual_away_corners: null,
-      actual_1h_goals: null, pnl_units: null, brier_score: null,
+      actual_1h_goals: null, pnl_units: null, brier_score: null, post_mortem: null,
       created_at: new Date().toISOString()
     };
     all.unshift(item);
-    saveLS(STORE_PREDS, all);
+    saveLS(STORE_PREDS, all.slice(0, 600));
     return item.id;
   }
   function deletePrediction(id) {
@@ -2858,6 +3310,73 @@ const ObsidianEngine = (() => {
     return map[key] ? map[key]() : null;
   }
 
+  function generate5W1H(p, st, hg, ag, hc, ac) {
+    const f = p.factors || {};
+    const expTot = (p.home_lambda || 1.3) + (p.away_lambda || 1.2);
+    const actTot = (hg !== null && ag !== null) ? (hg + ag) : null;
+    const hDiff = (hg !== null && p.home_lambda) ? +(hg - p.home_lambda).toFixed(2) : null;
+    const aDiff = (ag !== null && p.away_lambda) ? +(ag - p.away_lambda).toFixed(2) : null;
+    const totDiff = (actTot !== null) ? +(actTot - expTot).toFixed(2) : null;
+    const expC = (p.home_corners_lambda || 4.8) + (p.away_corners_lambda || 4.4);
+    const cDiff = (hc !== null && ac !== null) ? +((hc + ac) - expC).toFixed(1) : null;
+
+    let rootCause = "HIERARCHY_TRIUMPH";
+    let whyText = `Prediksi tepat (${st}). Proses xG/λ (${p.home_lambda}–${p.away_lambda}) sejalan dengan skor aktual ${hg}–${ag}.`;
+    let howText = `Memperkuat kalibrasi positif untuk keluarga market ${p.market_family} & menjaga bobot λ stabil.`;
+
+    if (st === "PUSH") {
+      rootCause = "PROTECTED_REFUND";
+      whyText = `Proteksi garis Asia bekerja sempurna (PUSH di skor ${hg}–${ag}) sehingga modal kembali utuh.`;
+      howText = `Pertahankan prioritas Asian Push/DNB pada pertandingan dengan selisih λ rapat.`;
+    } else if (st === "LOST" || st === "HALF_LOST") {
+      const fWarns = f.filter_warnings || [];
+      const severeFilter = fWarns.find(x => x.includes("Trap") || x.includes("Balanced") || x.includes("Mirassol") || x.includes("France") || x.includes("Volatile"));
+      if (f.xi_confirmed === false || (f.star_absences || []).length >= 2) {
+        rootCause = "LINEUP_ROTATION_SHOCK";
+        whyText = `Prediksi dibuat sebelum XI resmi (${f.xi_status || "PROJECTED XI"})${(f.star_absences || []).length ? ` dengan absensi penting (${f.star_absences.slice(0, 2).join(", ")})` : ""} — perubahan komposisi starter memengaruhi output gol (${hg}–${ag} vs proj ${p.projected_score}).`;
+        howText = `Naikkan penalti Pre-XI & tunggu CONFIRMED XI di T-60' sebelum mengeksekusi stake penuh.`;
+      } else if (f.fatigue_flagged) {
+        rootCause = "FATIGUE_HANGOVER_SHOCK";
+        whyText = `Faktor kelelahan jadwal (European Hangover / <78 jam rest: ${f.home_rest_days ?? "?"}d vs ${f.away_rest_days ?? "?"}d) menurunkan tempo/fokus dibanding rata-rata musim.`;
+        howText = `Perketat bobot penalti kelelahan & hindari Over/Clean Sheet ketat pada tim jadwal padat.`;
+      } else if (severeFilter) {
+        rootCause = "FILTER_WARNING_IGNORED";
+        whyText = `Titanium Filter sudah memberi peringatan (${severeFilter}), namun varians pertandingan mengalahkan proyeksi ${p.model_prob}%.`;
+        howText = `Tingkatkan penalti skor kualitas pada market yang memicu filter ${severeFilter}.`;
+      } else if (f.has_xg_data === false || (p.market_family === "Corners" && f.has_corner_data === false)) {
+        rootCause = "DATA_GAP_UNDER_SAMPLE";
+        whyText = `Kompetisi ini memiliki DATA GAP pada tabel xG/Corners musim sehingga model terlalu mengandalkan sampel hasil singkat.`;
+        howText = `Terapkan Data-Gap Haircut (turunkan confidence & stake) pada liga tanpa tabel xG lengkap.`;
+      } else if (totDiff !== null && Math.abs(totDiff) >= 1.6) {
+        rootCause = "OVERCONFIDENT_LAMBDA_BIAS";
+        whyText = `Deviasi intensitas gol cukup lebar: aktual ${actTot} gol vs proyeksi ${expTot.toFixed(2)} λ (selisih ${totDiff > 0 ? "+" : ""}${totDiff} gol).`;
+        howText = `Empirical Bayes otomatis menggeser prob_shift ${p.market_family} & menyetel Goal λ Scale.`;
+      } else {
+        rootCause = "BLACK_SWAN_VARIANCE";
+        whyText = `Seluruh telemetry & filter pra-match valid (${p.model_prob}%), meleset murni karena varians normal sepak bola / finishing klinis / kartu merah (skor ${hg}–${ag}).`;
+        howText = `Jangan overfitting — Empirical Bayes hanya memberi koreksi shrinkage ringan (prior weight = 10).`;
+      }
+    }
+
+    const whoDriver = (hDiff !== null && aDiff !== null)
+      ? (Math.abs(hDiff) >= Math.abs(aDiff)
+          ? `${p.home_team} (${hg} gol vs ${p.home_lambda} λ, ${hDiff >= 0 ? "+" : ""}${hDiff})`
+          : `${p.away_team} (${ag} gol vs ${p.away_lambda} λ, ${aDiff >= 0 ? "+" : ""}${aDiff})`)
+      : `${p.home_team} vs ${p.away_team}`;
+
+    return {
+      root_cause: rootCause,
+      goal_residual: totDiff,
+      corner_residual: cDiff,
+      what: `${p.market_label} (${p.model_prob}%, Fair ${p.fair_odds}) -> ${st}. Skor aktual ${hg ?? "?"}–${ag ?? "?"} vs proyeksi ${p.projected_score || "—"}${cDiff !== null ? ` · Corners ${hc + ac} (selisih ${cDiff > 0 ? "+" : ""}${cDiff})` : ""}.`,
+      who: `Deviasi terbesar di ${whoDriver}${(f.star_absences || []).length ? ` · Absen: ${f.star_absences.slice(0, 2).join(", ")}` : ""}.`,
+      when: `${p.match_date} · Status XI: ${f.xi_status || "DATA GAP"} · Rest: ${f.home_rest_days ?? "?"}d vs ${f.away_rest_days ?? "?"}d.`,
+      where: `${p.league_name} (${f.venue || "DATA GAP"} · Ref: ${f.referee || "DATA GAP"}).`,
+      why: whyText,
+      how: howText
+    };
+  }
+
   function applySettlement(p, st, hg, ag, hc, ac, g1h, closingOdds) {
     const takenOdds = (p.bookmaker_odds && p.bookmaker_odds > 1.01) ? p.bookmaker_odds : Math.max(1.05, p.fair_odds * 0.96);
     const prob = clamp(p.model_prob / 100, 0.01, 0.99);
@@ -2872,10 +3391,12 @@ const ObsidianEngine = (() => {
     p.actual_1h_goals = g1h;
     p.pnl_units = +pnl.toFixed(3);
     p.brier_score = brier !== null ? +brier.toFixed(5) : null;
+    p.settled_at = new Date().toISOString();
     if (closingOdds && closingOdds > 1.01 && p.bookmaker_odds && p.bookmaker_odds > 1.01) {
       p.closing_odds = +closingOdds;
       p.clv_pct = +(((1 / closingOdds) - (1 / p.bookmaker_odds)) * 100).toFixed(2);
     }
+    p.post_mortem = generate5W1H(p, st, hg, ag, hc, ac);
   }
 
   function settleManual(id, { home_goals, away_goals, home_corners, away_corners, goals_1h, closing_odds, explicit_status }) {
@@ -2898,20 +3419,69 @@ const ObsidianEngine = (() => {
     const all = loadLS(STORE_PREDS, []);
     const pending = all.filter(p => p.status === "PENDING");
     let settledCount = 0;
+    const nowMs = Date.now();
+    const dateSlateCache = new Map();
+
+    async function findScoreInDateSlate(dateStr, matchId) {
+      if (!dateStr) return null;
+      if (!dateSlateCache.has(dateStr)) {
+        try {
+          const slate = await fetchMatchesByDate(dateStr, true);
+          const flat = (slate.leagues || []).flatMap(l => l.matches || []);
+          dateSlateCache.set(dateStr, flat);
+        } catch {
+          dateSlateCache.set(dateStr, []);
+        }
+      }
+      const m = (dateSlateCache.get(dateStr) || []).find(x => String(x.match_id) === String(matchId));
+      if (m && m.finished && m.home_score !== null && m.away_score !== null) {
+        return { hg: +m.home_score, ag: +m.away_score };
+      }
+      return null;
+    }
+
     for (const p of pending) {
-      if (String(p.match_id).startsWith("espn:")) continue;
+      // Skip future fixtures or fixtures still likely in play (<95 min past kickoff)
+      if (p.kickoff_utc) {
+        const koMs = Date.parse(p.kickoff_utc);
+        if (!Number.isNaN(koMs) && koMs > nowMs - 95 * 60 * 1000) continue;
+      }
       try {
-        const raw = await fetchMatchDetailsRaw(p.match_id, true);
-        if (!raw?.header?.status?.finished) continue;
-        const ts = raw.header.teams || [];
-        if (ts.length < 2 || ts[0].score === null || ts[1].score === null) continue;
-        const hg = +ts[0].score, ag = +ts[1].score;
-        const ls = extractLiveStats(raw);
-        const hc = ls.corners?.[0] ?? null, ac = ls.corners?.[1] ?? null;
-        const g1h = extractHalfTimeGoals(raw);
+        let hg = null, ag = null, hc = null, ac = null, g1h = null;
+        if (!String(p.match_id).startsWith("espn:")) {
+          try {
+            const raw = await fetchMatchDetailsRaw(p.match_id, true);
+            if (raw?.header?.status?.finished) {
+              const ts = raw.header.teams || [];
+              if (ts.length >= 2 && ts[0].score !== null && ts[1].score !== null) {
+                hg = +ts[0].score; ag = +ts[1].score;
+                const ls = extractLiveStats(raw);
+                hc = ls.corners?.[0] ?? null; ac = ls.corners?.[1] ?? null;
+                g1h = extractHalfTimeGoals(raw);
+              }
+            }
+          } catch {
+            // CORS fallback #1: FotMob teams endpoint (ACAO=*)
+            if (p.home_team_id) {
+              try {
+                const tr = await fetchTeamRaw(p.home_team_id);
+                const fxs = tr?.fixtures?.allFixtures?.fixtures || [];
+                const fx = fxs.find(f => String(f.id) === String(p.match_id) && f.status?.finished);
+                if (fx && fx.home?.score !== null && fx.away?.score !== null) {
+                  hg = +fx.home.score; ag = +fx.away.score;
+                }
+              } catch {}
+            }
+          }
+        }
+        // CORS fallback #2 (also covers ESPN matches & cup fixtures): FotMob/ESPN Date Scoreboard (ACAO=*)
+        if (hg === null || ag === null) {
+          const fromDate = await findScoreInDateSlate(p.match_date, p.match_id);
+          if (fromDate) { hg = fromDate.hg; ag = fromDate.ag; }
+        }
+        if (hg === null || ag === null) continue;
         const st = gradeMarket(p.market_key, hg, ag, hc, ac, g1h);
         if (!st) continue;
-        // Also attempt closing odds lookup from ESPN for automatic CLV!
         let closeOdd = null;
         try {
           const eo = await fetchEspnOdds(p.home_team, p.away_team, p.match_date);
@@ -2939,11 +3509,11 @@ const ObsidianEngine = (() => {
     if (!np.length) { saveLS(STORE_WEIGHTS, w); return { updated: false, reason: "No settled non-push bets yet." }; }
 
     const notes = [];
+    const scoreWin = r => r.status === "WON" ? 1 : r.status === "HALF_WON" ? 0.75 : r.status === "HALF_LOST" ? 0.25 : 0;
     for (const fam of Object.keys(DEFAULT_WEIGHTS.market_calibration)) {
       const rows = np.filter(p => p.market_family === fam);
       const n = rows.length;
       if (!n) { w.market_calibration[fam] = { ...DEFAULT_WEIGHTS.market_calibration[fam] }; continue; }
-      const scoreWin = r => r.status === "WON" ? 1 : r.status === "HALF_WON" ? 0.75 : r.status === "HALF_LOST" ? 0.25 : 0;
       const act = rows.reduce((s, r) => s + scoreWin(r), 0) / n;
       const avgP = rows.reduce((s, r) => s + (r.raw_prob || r.model_prob) / 100, 0) / n;
       const brier = rows.reduce((s, r) => s + (r.brier_score || 0), 0) / n;
@@ -2957,6 +3527,26 @@ const ObsidianEngine = (() => {
       else if (n >= 6 && roi > 5 && brier < 0.20) { cm = 1.05; notes.push(`${fam} boost`); }
       w.market_calibration[fam] = { prob_shift: shift, confidence_mult: cm, blocked, samples: n, brier: +brier.toFixed(4), roi: +roi.toFixed(1) };
     }
+
+    // Empirical Bayes Historical Factor Penalties (learns if Pre-XI, xG Data Gaps, or Fatigue systematically underperform!)
+    const learnFactorPen = (predFn, label) => {
+      const rows = np.filter(predFn);
+      if (rows.length < 3) return 0;
+      const act = rows.reduce((s, r) => s + scoreWin(r), 0) / rows.length;
+      const avgP = rows.reduce((s, r) => s + (r.raw_prob || r.model_prob) / 100, 0) / rows.length;
+      const deficit = avgP - act; // positive when factor underperforms expectation
+      if (deficit <= 0.04) return 0;
+      const shrunk = (rows.length / (rows.length + 8)) * deficit;
+      const pen = Math.round(clamp(shrunk * 55, 0, 12));
+      if (pen >= 2) notes.push(`${label} haircut -${pen}`);
+      return pen;
+    };
+    w.factor_penalties = {
+      pre_xi: learnFactorPen(p => p.factors?.xi_confirmed === false, "Pre-XI"),
+      data_gap: learnFactorPen(p => p.factors?.has_xg_data === false, "xG-Gap"),
+      fatigue: learnFactorPen(p => p.factors?.fatigue_flagged === true, "Fatigue")
+    };
+
     const sc = settled.filter(p => p.actual_home_goals !== null && p.home_lambda);
     if (sc.length >= 3) {
       const pT = sc.reduce((s, p) => s + p.home_lambda + p.away_lambda, 0);
@@ -2972,6 +3562,16 @@ const ObsidianEngine = (() => {
       w.corner_lambda_scale = +clamp(1 + sh * ((aC / Math.max(1, pC)) - 1) * 0.6, 0.86, 1.14).toFixed(4);
     }
     saveLS(STORE_WEIGHTS, w);
+
+    // Summarize top loss root cause in Evolution Log
+    const lossRC = {};
+    settled.filter(p => p.status === "LOST" || p.status === "HALF_LOST").forEach(p => {
+      const rc = p.post_mortem?.root_cause;
+      if (rc) lossRC[rc] = (lossRC[rc] || 0) + 1;
+    });
+    const topRC = Object.entries(lossRC).sort((a, b) => b[1] - a[1])[0];
+    if (topRC) notes.push(`Top Miss: ${topRC[0]} (${topRC[1]}x)`);
+
     const logs = loadLS(STORE_LOGS, []);
     const brier = +(np.reduce((s, r) => s + (r.brier_score || 0), 0) / np.length).toFixed(4);
     const pnl = +settled.reduce((s, r) => s + (r.pnl_units || 0), 0).toFixed(2);
@@ -3032,16 +3632,59 @@ const ObsidianEngine = (() => {
         blocked: !!c.blocked
       };
     });
+    // Historical Factor Attribution (which factors correlate with wins vs misses!)
+    const factorGroup = (label, predFn) => {
+      const grp = np.filter(predFn);
+      if (!grp.length) return { factor: label, bets: 0, hit_rate: null, brier: null };
+      const wCount = grp.filter(r => r.status === "WON" || r.status === "HALF_WON").length;
+      const bs = grp.filter(r => r.brier_score !== null).map(r => r.brier_score);
+      return {
+        factor: label,
+        bets: grp.length,
+        hit_rate: +((wCount / grp.length) * 100).toFixed(1),
+        brier: bs.length ? +(bs.reduce((a, b) => a + b, 0) / bs.length).toFixed(4) : null
+      };
+    };
+    const factor_attribution = [
+      factorGroup("Confirmed XI (T-60')", p => p.factors?.xi_confirmed === true),
+      factorGroup("Projected XI (Pre-Lineup)", p => p.factors?.xi_confirmed === false),
+      factorGroup("Full Season xG Telemetry", p => p.factors?.has_xg_data === true),
+      factorGroup("League xG DATA GAP", p => p.factors?.has_xg_data === false),
+      factorGroup("Zero Filter Warnings", p => Array.isArray(p.factors?.filter_warnings) && p.factors.filter_warnings.length === 0),
+      factorGroup("Filter WARN/FAIL Present", p => Array.isArray(p.factors?.filter_warnings) && p.factors.filter_warnings.length > 0),
+      factorGroup("Rested Teams", p => p.factors?.fatigue_flagged === false),
+      factorGroup("Fatigue / Euro Hangover", p => p.factors?.fatigue_flagged === true),
+      factorGroup("Bayesian Anchored (70/30)", p => p.factors?.market_anchored === true),
+      factorGroup("Pure Statistical Model", p => p.factors?.market_anchored === false)
+    ];
+
+    // Loss Root-Cause Breakdown
+    const lossRows = settled.filter(p => p.status === "LOST" || p.status === "HALF_LOST");
+    const rcCounts = {};
+    lossRows.forEach(p => {
+      const rc = p.post_mortem?.root_cause || "UNCLASSIFIED";
+      rcCounts[rc] = (rcCounts[rc] || 0) + 1;
+    });
+    const root_causes = Object.entries(rcCounts)
+      .map(([cause, count]) => ({ cause, count, pct: lossRows.length ? +((count / lossRows.length) * 100).toFixed(1) : 0 }))
+      .sort((a, b) => b.count - a.count);
+
+    const post_mortems = settled.filter(p => p.post_mortem).slice(0, 25);
+
     return {
       summary: {
-        total_saved: all.length, pending: all.length - settled.length, settled: settled.length,
+        total_saved: all.length,
+        auto_count: all.filter(p => p.source_type === "AUTO").length,
+        manual_count: all.filter(p => (p.source_type || "MANUAL") === "MANUAL").length,
+        pending: all.length - settled.length, settled: settled.length,
         wins, losses, pushes, hit_rate: np.length ? +((wins / np.length) * 100).toFixed(1) : 0,
         mean_brier: meanBrier, mean_clv: meanClv, clv_samples: clvs.length,
         skill_score: meanBrier !== null ? +((1 - meanBrier / 0.25) * 100).toFixed(1) : null,
         total_staked: +staked.toFixed(2), pnl_units: pnl, roi_pct: staked > 0 ? +((pnl / staked) * 100).toFixed(1) : 0
       },
       bankroll: { ...bcfg, current_units: +running.toFixed(2), peak_units: +peak.toFixed(2), drawdown_pct: drawdownPct, today_pending_units: +todayPendingUnits.toFixed(2), daily_exposure_pct: dailyExposurePct, warnings },
-      by_family: byFamily, weights: w, logs: loadLS(STORE_LOGS, [])
+      by_family: byFamily, factor_attribution, root_causes, post_mortems,
+      weights: w, logs: loadLS(STORE_LOGS, [])
     };
   }
 
@@ -3067,13 +3710,14 @@ const ObsidianEngine = (() => {
 
   return {
     fetchMatchesByDate, fetchMatchesNext7Days, analyzeMatchById, scanDailyTopPicks, auditSlip,
-    getUsage, getAfKey, setAfKey, getBankrollConfig, setBankrollConfig,
-    listPredictions, savePrediction, deletePrediction, settleManual, autoSettlePending,
+    getUsage, getAfKey, setAfKey, getAfAutoFill, setAfAutoFill, getBankrollConfig, setBankrollConfig,
+    buildFactorSnapshot, listPredictions, savePrediction, deletePrediction, settleManual, autoSettlePending,
     recalibrateWeights, resetWeights, getAnalytics, exportBackup, importBackup
   };
 })();
 
-
+</script>
+  <script>
 /* OBSIDIAN DIAMOND V18.5 SOVEREIGN PRO — Live UI Controller */
 
 const state = {
@@ -3090,6 +3734,8 @@ const state = {
   livePollTimer: null,
   slipLegs: [],
   ledgerFilter: "ALL",
+  ledgerSourceFilter: "ALL",
+  pmFilter: "ALL",
   settlingPredId: null,
 };
 
@@ -3184,6 +3830,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const datePicker = document.getElementById("date-picker");
   datePicker.value = state.currentDate;
   document.getElementById("af-key-input").value = ObsidianEngine.getAfKey();
+  const afAutoChk = document.getElementById("af-autofill-chk");
+  if (afAutoChk) {
+    afAutoChk.checked = ObsidianEngine.getAfAutoFill();
+    afAutoChk.addEventListener("change", () => {
+      ObsidianEngine.setAfAutoFill(afAutoChk.checked);
+      showToast(afAutoChk.checked ? "API-Football Auto-Fill Gaps ON (6h cache)" : "API-Football Manual-Only mode ON");
+      refreshStatus();
+    });
+  }
   buildDateRibbon(datePicker);
 
   document.querySelectorAll(".seg-btn").forEach((btn) => {
@@ -3290,6 +3945,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  document.querySelectorAll("#source-filters .state-pill").forEach((pill) => {
+    pill.addEventListener("click", () => {
+      document.querySelectorAll("#source-filters .state-pill").forEach((p) => p.classList.remove("active"));
+      pill.classList.add("active");
+      state.ledgerSourceFilter = pill.dataset.psource;
+      renderPredictionsLedger();
+    });
+  });
+
+  document.querySelectorAll("#pm-filters .state-pill").forEach((pill) => {
+    pill.addEventListener("click", () => {
+      document.querySelectorAll("#pm-filters .state-pill").forEach((p) => p.classList.remove("active"));
+      pill.classList.add("active");
+      state.pmFilter = pill.dataset.pmfilter;
+      renderPostMortemFeed(ObsidianEngine.getAnalytics().post_mortems);
+    });
+  });
+
   const closeSettle = () => document.getElementById("settle-modal").classList.add("hidden");
   document.getElementById("btn-close-settle").addEventListener("click", closeSettle);
   document.getElementById("btn-cancel-settle").addEventListener("click", closeSettle);
@@ -3300,6 +3973,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   refreshStatus();
   loadMatches(false, true);
+  // Autonomous next-day settlement & 5W1H learning in background on boot
+  setTimeout(runSilentAutoSettle, 2200);
 });
 
 function switchView(viewName) {
@@ -3456,6 +4131,7 @@ async function selectMatch(matchId, opts = {}) {
     const savedCustom = state.customOddsByMatch[matchId] || null;
     const data = await ObsidianEngine.analyzeMatchById(matchId, {
       ...opts,
+      matchStub: findMatchInSlate(matchId),
       customOdds: opts.customOdds || savedCustom,
       marketAnchored: state.marketAnchored
     });
@@ -3499,6 +4175,7 @@ function renderAnalysis(a) {
           <div class="meta-tags">
             ${stateBadge}
             ${xiBadge}
+            ${!a.finished ? `<span class="tag tag-ice" title="Auto-recorded to Memory for next-day 5W1H settlement">AUTO-LOGGED</span>` : ""}
             <span class="tag">${esc(a.league_name)}</span>
             <span class="tag tag-ice mono">Avg ${lb.avg_goals} xG · ${lb.avg_corners} C</span>
             ${a.sources_used.map(s => `<span class="tag">${esc(s)}</span>`).join("")}
@@ -3506,7 +4183,7 @@ function renderAnalysis(a) {
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
             ${a.is_live ? `<button id="btn-toggle-poll" class="toggle-chip ${state.liveAutoPoll ? "on" : ""}">Live 45s ${state.liveAutoPoll ? "ON" : "OFF"}</button>` : ""}
             <button id="btn-refresh-audit" class="btn btn-ghost btn-xs">Refresh</button>
-            <button id="btn-af-fallback" class="btn btn-ghost btn-xs">API-FB Fallback</button>
+            <button id="btn-af-fallback" class="btn btn-ghost btn-xs" title="Fill missing Odds, Injuries (STAR_WATCHLIST), Confirmed XI & Referee via API-Football (6h cache)">API-FB Enrich Gaps</button>
           </div>
         </div>
         <div class="scoreboard-grid">
@@ -3766,15 +4443,16 @@ function saveMarketToMemory(a, market, isPrimary) {
   const customMap = state.customOddsByMatch[a.match_id] || {};
   const bk = customMap[market.key] || market.bookmaker_odds || null;
   ObsidianEngine.savePrediction({
-    match_id: a.match_id, match_date: a.match_date, league_name: a.league_name,
-    home_team: a.home.name, away_team: a.away.name,
+    match_id: a.match_id, match_date: a.match_date, kickoff_utc: a.kickoff_utc, league_name: a.league_name,
+    home_team: a.home.name, away_team: a.away.name, home_team_id: a.home.id, away_team_id: a.away.id,
     market_family: market.family, market_key: market.key, market_label: market.label,
     model_prob: market.model_prob, raw_prob: market.raw_prob, fair_odds: market.fair_odds,
     bookmaker_odds: bk, confidence: market.confidence,
     stake_units: isPrimary ? Math.max(0.5, a.verdict.stake_units || 1.0) : (market.confidence >= 75 ? 2.0 : 1.0),
     home_lambda: a.goal_model.home_lambda, away_lambda: a.goal_model.away_lambda,
     home_corners_lambda: a.corners_model.home_corners_lambda, away_corners_lambda: a.corners_model.away_corners_lambda,
-    projected_score: a.goal_model.projected_score
+    projected_score: a.goal_model.projected_score,
+    factors: ObsidianEngine.buildFactorSnapshot(a)
   });
   showToast(`Saved "${market.label}"${bk ? ` @ ${bk.toFixed(2)}` : ""} to Memory`);
   refreshStatus();
@@ -3807,7 +4485,7 @@ async function runDailyScanner() {
       bar.style.width = `${pct}%`;
     });
 
-    stTxt.textContent = `Completed: ${res.scanned} priority fixtures analyzed (${state.currentDate})`;
+    stTxt.textContent = `Completed: ${res.scanned} priority fixtures analyzed & auto-logged (${state.currentDate})`;
 
     const renderPickCards = (items, title, badgeCls) => `
       <div class="surface-card" style="margin-bottom:18px;">
@@ -3858,6 +4536,7 @@ async function runDailyScanner() {
       });
     });
     refreshStatus();
+    runSilentAutoSettle();
   } catch (e) {
     out.innerHTML = `<div class="surface-card empty-inline">Scanner error: ${esc(e.message)}</div>`;
   }
@@ -3948,8 +4627,72 @@ async function runSlipAudit() {
 }
 
 // ============================================================
-// MEMORY, BANKROLL GUARDRAILS, CLV & NEURAL LEARNING
+// MEMORY, BANKROLL GUARDRAILS, 5W1H & NEURAL LEARNING
 // ============================================================
+
+function rcLabel(code) {
+  const map = {
+    HIERARCHY_TRIUMPH: "Hierarchy Triumph",
+    PROTECTED_REFUND: "Asian Push Shield",
+    LINEUP_ROTATION_SHOCK: "Lineup Rotation Shock",
+    FATIGUE_HANGOVER_SHOCK: "Fatigue / Hangover",
+    FILTER_WARNING_IGNORED: "Filter Warning Triggered",
+    DATA_GAP_UNDER_SAMPLE: "xG / Corner Data Gap",
+    OVERCONFIDENT_LAMBDA_BIAS: "Overconfident λ Bias",
+    BLACK_SWAN_VARIANCE: "Black Swan Variance"
+  };
+  return map[code] || code || "Unclassified";
+}
+
+function rcTagClass(code) {
+  if (code === "HIERARCHY_TRIUMPH") return "tag-emerald";
+  if (code === "PROTECTED_REFUND") return "tag-ice";
+  if (code === "BLACK_SWAN_VARIANCE") return "tag-amber";
+  return "tag-coral";
+}
+
+function renderPostMortemFeed(postMortems) {
+  const wrap = document.getElementById("post-mortem-feed");
+  if (!wrap) return;
+  const rows = (postMortems || []).filter(p => {
+    if (state.pmFilter === "MISS") return p.status === "LOST" || p.status === "HALF_LOST";
+    if (state.pmFilter === "WIN") return p.status === "WON" || p.status === "HALF_WON" || p.status === "PUSH";
+    return true;
+  });
+  if (!rows.length) {
+    wrap.innerHTML = `<div class="empty-inline" style="grid-column:1/-1">Belum ada post-mortem 5W1H pada filter ini. Setiap match yang selesai akan otomatis di-settle besoknya atau klik <strong>Auto-Settle Completed</strong>.</div>`;
+    return;
+  }
+  wrap.innerHTML = rows.map(p => {
+    const pm = p.post_mortem;
+    const isWin = p.status === "WON" || p.status === "HALF_WON";
+    const isPush = p.status === "PUSH";
+    const stCls = isWin ? "tag-emerald" : isPush ? "tag-ice" : "tag-coral";
+    const srcCls = (p.source_type === "AUTO") ? "auto" : "manual";
+    return `
+      <div class="pm-card">
+        <div class="pm-head">
+          <div>
+            <div class="pm-title">${esc(p.home_team)} vs ${esc(p.away_team)} <span class="src-badge ${srcCls}">${p.source_type === "AUTO" ? "AUTO" : "MANUAL"}</span></div>
+            <div class="pm-meta mono">${esc(p.match_date)} · ${esc(p.league_name)} · Actual ${p.actual_home_goals ?? "?"}–${p.actual_away_goals ?? "?"}</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
+            <span class="tag ${stCls}">${esc(p.status)}</span>
+            <span class="tag ${rcTagClass(pm.root_cause)}">${esc(rcLabel(pm.root_cause))}</span>
+          </div>
+        </div>
+        <div class="pm-grid">
+          <div class="pm-row"><span class="pm-k">WHAT</span><span class="pm-v">${esc(pm.what)}</span></div>
+          <div class="pm-row"><span class="pm-k">WHO</span><span class="pm-v">${esc(pm.who)}</span></div>
+          <div class="pm-row"><span class="pm-k">WHEN</span><span class="pm-v">${esc(pm.when)}</span></div>
+          <div class="pm-row"><span class="pm-k">WHERE</span><span class="pm-v">${esc(pm.where)}</span></div>
+          <div class="pm-row"><span class="pm-k">WHY</span><span class="pm-v pm-why">${esc(pm.why)}</span></div>
+          <div class="pm-row"><span class="pm-k">HOW</span><span class="pm-v pm-how">${esc(pm.how)}</span></div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
 
 function loadMemoryView() {
   const data = ObsidianEngine.getAnalytics();
@@ -3983,7 +4726,7 @@ function loadMemoryView() {
   });
 
   document.getElementById("memory-kpis").innerHTML = `
-    <div class="kpi-card"><div class="kpi-k">Saved</div><div class="kpi-v">${s.total_saved}</div><div class="kpi-s">${s.pending} pending · ${s.settled} settled</div></div>
+    <div class="kpi-card"><div class="kpi-k">Tracked</div><div class="kpi-v">${s.total_saved}</div><div class="kpi-s">${s.auto_count} auto · ${s.manual_count} manual (${s.pending} pend)</div></div>
     <div class="kpi-card"><div class="kpi-k">Hit Rate</div><div class="kpi-v ${s.hit_rate >= 55 ? "text-emerald" : ""}">${s.hit_rate}%</div><div class="kpi-s">${s.wins}W · ${s.losses}L · ${s.pushes}P</div></div>
     <div class="kpi-card"><div class="kpi-k">Avg CLV</div><div class="kpi-v ${s.mean_clv > 0 ? "text-emerald" : s.mean_clv < 0 ? "text-coral" : ""}">${s.mean_clv !== null ? `${s.mean_clv > 0 ? "+" : ""}${s.mean_clv}%` : "—"}</div><div class="kpi-s">${s.clv_samples} closing prices</div></div>
     <div class="kpi-card"><div class="kpi-k">Mean Brier</div><div class="kpi-v">${s.mean_brier ?? "—"}</div><div class="kpi-s">Skill ${s.skill_score !== null ? `${s.skill_score > 0 ? "+" : ""}${s.skill_score}%` : "—"}</div></div>
@@ -3998,33 +4741,89 @@ function loadMemoryView() {
     </table>
   `;
   const w = data.weights;
+  const fp = w.factor_penalties || { pre_xi: 0, data_gap: 0, fatigue: 0 };
   document.getElementById("last-trained-label").textContent = w.last_trained_at ? `Updated ${new Date(w.last_trained_at).toLocaleString()}` : "Factory prior";
-  document.getElementById("weights-panel").innerHTML = `<div class="lambda-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:0"><div class="lambda-tile"><div class="k">Home Advantage</div><div class="v">${w.home_advantage}</div></div><div class="lambda-tile"><div class="k">Goal λ Scale</div><div class="v">${w.goal_lambda_scale}</div></div><div class="lambda-tile"><div class="k">Corner λ Scale</div><div class="v text-ice">${w.corner_lambda_scale}</div></div><div class="lambda-tile"><div class="k">Dixon-Coles ρ</div><div class="v">${w.dixon_coles_rho}</div></div></div>`;
+  document.getElementById("weights-panel").innerHTML = `
+    <div class="lambda-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:10px">
+      <div class="lambda-tile"><div class="k">Home Advantage</div><div class="v">${w.home_advantage}</div></div>
+      <div class="lambda-tile"><div class="k">Goal λ Scale</div><div class="v">${w.goal_lambda_scale}</div></div>
+      <div class="lambda-tile"><div class="k">Corner λ Scale</div><div class="v text-ice">${w.corner_lambda_scale}</div></div>
+      <div class="lambda-tile"><div class="k">Dixon-Coles ρ</div><div class="v">${w.dixon_coles_rho}</div></div>
+    </div>
+    <div class="lambda-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:0">
+      <div class="lambda-tile"><div class="k">Pre-XI Penalty</div><div class="v ${fp.pre_xi > 0 ? "text-amber" : ""}">-${fp.pre_xi || 0}</div></div>
+      <div class="lambda-tile"><div class="k">xG-Gap Penalty</div><div class="v ${fp.data_gap > 0 ? "text-amber" : ""}">-${fp.data_gap || 0}</div></div>
+      <div class="lambda-tile"><div class="k">Fatigue Penalty</div><div class="v ${fp.fatigue > 0 ? "text-amber" : ""}">-${fp.fatigue || 0}</div></div>
+    </div>
+  `;
   document.getElementById("learning-logs").innerHTML = data.logs.length ? data.logs.map(l => `<div class="log-entry"><div class="log-ts">${new Date(l.created_at).toLocaleString()} · n=${l.settled_count}</div><div>${esc(l.summary)}</div></div>`).join("") : `<div class="empty-inline" style="padding:12px">No calibration cycles yet.</div>`;
+
+  // Historical Factor Attribution Table
+  const faWrap = document.getElementById("factor-attribution-wrap");
+  if (faWrap) {
+    faWrap.innerHTML = `
+      <table>
+        <thead><tr><th>Pre-Match Historical Factor</th><th>Settled</th><th>Hit Rate</th><th>Mean Brier</th></tr></thead>
+        <tbody>${(data.factor_attribution || []).map(f => `
+          <tr>
+            <td><strong>${esc(f.factor)}</strong></td>
+            <td class="mono">${f.bets}</td>
+            <td class="mono ${f.hit_rate === null ? "text-muted" : f.hit_rate >= 60 ? "text-emerald" : f.hit_rate < 48 ? "text-coral" : "text-amber"}">${f.hit_rate !== null ? f.hit_rate + "%" : "—"}</td>
+            <td class="mono">${f.brier ?? "—"}</td>
+          </tr>
+        `).join("")}</tbody>
+      </table>
+    `;
+  }
+
+  // Loss Root-Cause Breakdown Bars
+  const rcWrap = document.getElementById("root-causes-wrap");
+  if (rcWrap) {
+    const rcs = data.root_causes || [];
+    if (!rcs.length) {
+      rcWrap.innerHTML = `<div class="empty-inline" style="padding:22px 10px">Belum ada prediksi meleset yang ter-settle. Saat ada miss, engine otomatis mengklasifikasi akar penyebab (Lineup Shock, Fatigue, Filter Warning, Data Gap, λ Bias, atau Black Swan).</div>`;
+    } else {
+      rcWrap.innerHTML = `<div class="rc-list">${rcs.map(r => `
+        <div class="rc-item">
+          <div class="rc-head">
+            <span><strong>${esc(rcLabel(r.cause))}</strong></span>
+            <span class="mono text-muted">${r.count}x (${r.pct}%)</span>
+          </div>
+          <div class="rc-track"><div class="rc-fill ${r.cause === "BLACK_SWAN_VARIANCE" ? "warn" : ""}" style="width:${Math.min(100, r.pct)}%"></div></div>
+        </div>
+      `).join("")}</div>`;
+    }
+  }
+
+  renderPostMortemFeed(data.post_mortems);
   renderPredictionsLedger();
   refreshStatus();
 }
 
 function renderPredictionsLedger() {
   const wrap = document.getElementById("predictions-table-wrap");
-  const preds = ObsidianEngine.listPredictions(state.ledgerFilter);
-  if (!preds.length) { wrap.innerHTML = `<div class="empty-inline">No saved predictions in this filter.</div>`; return; }
+  const preds = ObsidianEngine.listPredictions(state.ledgerFilter, state.ledgerSourceFilter);
+  if (!preds.length) { wrap.innerHTML = `<div class="empty-inline">No predictions in this filter.</div>`; return; }
   wrap.innerHTML = `
     <table>
-      <thead><tr><th>Date</th><th>Fixture</th><th>Market</th><th>Prob / Odds</th><th>CLV</th><th>Score</th><th>Status</th><th>P&amp;L</th><th style="text-align:right">Actions</th></tr></thead>
-      <tbody>${preds.map(p => `
+      <thead><tr><th>Date</th><th>Fixture</th><th>Market</th><th>Prob / Odds</th><th>CLV</th><th>Score</th><th>Status / 5W1H</th><th>P&amp;L</th><th style="text-align:right">Actions</th></tr></thead>
+      <tbody>${preds.map(p => {
+        const srcCls = (p.source_type === "AUTO") ? "auto" : "manual";
+        const rcTag = p.post_mortem?.root_cause ? `<div style="margin-top:4px"><span class="muted-tag">${esc(rcLabel(p.post_mortem.root_cause))}</span></div>` : "";
+        return `
         <tr>
           <td class="mono text-muted">${esc(p.match_date)}</td>
-          <td><strong>${esc(p.home_team)} vs ${esc(p.away_team)}</strong></td>
+          <td><strong>${esc(p.home_team)} vs ${esc(p.away_team)}</strong><span class="src-badge ${srcCls}">${p.source_type === "AUTO" ? "AUTO" : "MAN"}</span></td>
           <td><strong>${esc(p.market_label)}</strong></td>
           <td class="mono">${p.model_prob}% · ${p.bookmaker_odds ? "@" + Number(p.bookmaker_odds).toFixed(2) : "Fair " + Number(p.fair_odds).toFixed(2)}</td>
           <td class="mono ${p.clv_pct > 0 ? "text-emerald" : p.clv_pct < 0 ? "text-coral" : "text-muted"}">${p.clv_pct !== null && p.clv_pct !== undefined ? `${p.clv_pct > 0 ? "+" : ""}${p.clv_pct}%` : "—"}</td>
           <td class="mono">${p.actual_home_goals !== null ? `${p.actual_home_goals}–${p.actual_away_goals}` : `Proj ${p.projected_score || "—"}`}</td>
-          <td><span class="tag ${(p.status === "WON" || p.status === "HALF_WON") ? "tag-emerald" : (p.status === "LOST" || p.status === "HALF_LOST") ? "tag-coral" : p.status === "PUSH" ? "tag-ice" : "tag-amber"}">${p.status}</span></td>
+          <td><span class="tag ${(p.status === "WON" || p.status === "HALF_WON") ? "tag-emerald" : (p.status === "LOST" || p.status === "HALF_LOST") ? "tag-coral" : p.status === "PUSH" ? "tag-ice" : "tag-amber"}">${p.status}</span>${rcTag}</td>
           <td class="mono">${p.pnl_units !== null ? `${p.pnl_units > 0 ? "+" : ""}${p.pnl_units}u` : "—"}</td>
           <td style="text-align:right"><button class="btn btn-secondary btn-xs" data-open-settle="${p.id}">Settle</button> <button class="btn btn-ghost btn-xs" data-del-pred="${p.id}">&times;</button></td>
         </tr>
-      `).join("")}</tbody>
+      `;
+      }).join("")}</tbody>
     </table>
   `;
   wrap.querySelectorAll("[data-open-settle]").forEach(b => b.addEventListener("click", () => {
@@ -4050,16 +4849,33 @@ function submitManualSettle(directStatus) {
       explicit_status: directStatus
     });
     document.getElementById("settle-modal").classList.add("hidden");
-    showToast(`Settled ${r.status} (${r.pnl_units > 0 ? "+" : ""}${r.pnl_units}u)${r.clv_pct !== null ? ` · CLV ${r.clv_pct > 0 ? "+" : ""}${r.clv_pct}%` : ""}`);
+    showToast(`Settled ${r.status} (${r.pnl_units > 0 ? "+" : ""}${r.pnl_units}u)${r.clv_pct !== null ? ` · CLV ${r.clv_pct > 0 ? "+" : ""}${r.clv_pct}%` : ""} · 5W1H learned`);
     loadMemoryView();
   } catch (e) { showToast(e.message); }
 }
 
 async function runAutoSettle() {
-  showToast("Checking FotMob & ESPN for finished scores, 1H goals, corners & CLV...");
+  showToast("Checking FotMob & ESPN for finished scores, 1H goals, corners & 5W1H...");
   const r = await ObsidianEngine.autoSettlePending();
-  showToast(`Checked ${r.checked} pending · Auto-settled ${r.settled_count} matches`);
+  showToast(`Checked ${r.checked} pending · Auto-settled ${r.settled_count} matches (5W1H & weights updated)`);
   loadMemoryView();
+}
+
+let silentSettleInFlight = false;
+async function runSilentAutoSettle() {
+  if (silentSettleInFlight) return;
+  const pending = ObsidianEngine.listPredictions("PENDING");
+  if (!pending.length) return;
+  silentSettleInFlight = true;
+  try {
+    const r = await ObsidianEngine.autoSettlePending();
+    if (r.settled_count > 0) {
+      showToast(`Auto-settled ${r.settled_count} completed prediction${r.settled_count > 1 ? "s" : ""} · 5W1H & weights updated`);
+      refreshStatus();
+      if (document.getElementById("view-memory")?.classList.contains("active")) loadMemoryView();
+    }
+  } catch {}
+  finally { silentSettleInFlight = false; }
 }
 
 </script>
