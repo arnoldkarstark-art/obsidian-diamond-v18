@@ -1,17 +1,23 @@
 {
-  "generated_at": "2026-11-24T13:54:31.529Z",
+  "generated_at": "2026-11-24T14:22:44.204Z",
   "calls_used": 6,
   "by_match": {
     "6106256": {
       "home": "Manchester City",
       "away": "Napoli",
-      "fetched_at": "2026-11-24T13:54:41.637Z",
-      "risk_level": "ALERT",
+      "fetched_at": "2026-11-24T14:22:53.516Z",
+      "risk_level": "CLEAR",
       "signals": [
-        "TEAM_NEWS",
-        "INJURY_SHOCK"
+        "TEAM_NEWS"
       ],
       "headlines": [
+        {
+          "title": "Manchester City v Napoli: Preview, expected line-ups, stats and where to watch",
+          "source": "101 Great Goals",
+          "published_at": "2026-11-23T14:16:15Z",
+          "url": "https://www.101greatgoals.com/match-previews/champions-league-matches/manchester-city-napoli-preview-expected-line-ups-stats-stream-where-to-watch/",
+          "tag": "TEAM_NEWS"
+        },
         {
           "title": "Maresca: Man City need one thing against Napoli, I ‘still follow’ my favourite Italian club",
           "source": "Football Italia",
@@ -25,38 +31,31 @@
           "published_at": "2026-11-23T13:04:28Z",
           "url": "https://cityxtra.co.uk/news/enzo-maresca-press-conference-matheus-nunes-fitness-update-ahead-of-napoli-uefa-champions-league-clash",
           "tag": "TEAM_NEWS"
-        },
-        {
-          "title": "Napoli visit Man City without 11 players as Vergara faces lengthy layoff",
-          "source": "Football Italia",
-          "published_at": "2026-11-23T12:31:30Z",
-          "url": "https://football-italia.net/napoli-visit-man-city-11-players-out-vergara/",
-          "tag": "INJURY_SHOCK"
         }
       ]
     },
     "6106259": {
       "home": "Arsenal",
       "away": "Borussia Dortmund",
-      "fetched_at": "2026-11-24T13:54:41.981Z",
-      "risk_level": "BOOST",
+      "fetched_at": "2026-11-24T14:22:53.890Z",
+      "risk_level": "ALERT",
       "signals": [
-        "SQUAD_BOOST",
+        "INJURY_SHOCK",
         "TEAM_NEWS"
       ],
       "headlines": [
         {
-          "title": "Arsenal's struggles explained - and why they should have signed Putellas",
-          "source": "Sky Sports",
-          "published_at": "2026-11-23T13:46:00Z",
-          "url": "https://www.skysports.com/football/news/13615572/arsenals-shocking-wsl-season-analysed-no-home-win-a-lack-of-goals-and-a-disenfranchised-fanbase",
-          "tag": "SQUAD_BOOST"
+          "title": "David Raya to miss Arsenal's Champions League tie against Borussia Dortmund after worrying injury against Newcastle - but Mikel Arteta insists No 1 WILL be fit for Man City clash",
+          "source": "Dailymail.com",
+          "published_at": "2026-11-23T14:10:01Z",
+          "url": "https://www.dailymail.com/sport/football/article-16312993/David-Raya-miss-Arsenals-Champions-League-tie-against-Borussia-Dortmund-worrying-injury-against-Newcastle-Mikel-Arteta-insists-No-1-fit-Man-City-clash.html",
+          "tag": "INJURY_SHOCK"
         },
         {
-          "title": "Champions League predictions: Joy for Arsenal, Man City and Liverpool but more frustration for Pochettino’s United",
-          "source": "101 Great Goals",
-          "published_at": "2026-11-23T12:46:41Z",
-          "url": "https://www.101greatgoals.com/football/champions-league/champions-league-predictions-joy-arsenal-man-city-liverpool-frustration-again-for-pochettinos-united/",
+          "title": "Arsenal now expected to seal January move for skilfull star",
+          "source": "Just Arsenal News",
+          "published_at": "2026-11-23T14:00:00Z",
+          "url": "https://www.justarsenal.com/arsenal-now-expected-to-seal-january-move-for-skilfull-star/426371",
           "tag": "TEAM_NEWS"
         }
       ]
@@ -64,7 +63,7 @@
     "6106412": {
       "home": "Como",
       "away": "AEK Athens",
-      "fetched_at": "2026-11-24T13:54:41.405Z",
+      "fetched_at": "2026-11-24T14:22:53.251Z",
       "risk_level": "CLEAR",
       "signals": [
         "TEAM_NEWS"

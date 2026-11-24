@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T13:54:31.529Z",
+  "generated_at": "2026-11-24T14:22:44.204Z",
   "date_label": "2026-11-24",
   "scanned": 14,
   "top_anchors": [
@@ -36,13 +36,13 @@
       "kickoff_dual": "00:00 AMT / 03:00 WIB",
       "xi_confirmed": false,
       "market": "Over 2.5 Total Goals",
-      "model_prob": 66.3,
+      "model_prob": 66.1,
       "fair_odds": 1.51,
-      "bookmaker_odds": 1.667,
-      "edge_pct": 9.43,
+      "bookmaker_odds": 1.69,
+      "edge_pct": 10.06,
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
-      "stake_units": 1.19,
+      "stake_units": 1.26,
       "projected_score": "1–2",
       "total_lambda": 3.64
     },
@@ -64,12 +64,11 @@
       "stake_units": 1.25,
       "projected_score": "1–1",
       "total_lambda": 3.36,
-      "news_risk_level": "ALERT",
+      "news_risk_level": "CLEAR",
       "news_signals": [
-        "TEAM_NEWS",
-        "INJURY_SHOCK"
+        "TEAM_NEWS"
       ],
-      "news_headline": "Maresca: Man City need one thing against Napoli, I ‘still follow’ my favourite Italian club"
+      "news_headline": "Manchester City v Napoli: Preview, expected line-ups, stats and where to watch"
     },
     {
       "match_id": "6106317",
@@ -127,12 +126,12 @@
       "stake_units": 1.88,
       "projected_score": "1–1",
       "total_lambda": 2.35,
-      "news_risk_level": "BOOST",
+      "news_risk_level": "ALERT",
       "news_signals": [
-        "SQUAD_BOOST",
+        "INJURY_SHOCK",
         "TEAM_NEWS"
       ],
-      "news_headline": "Arsenal's struggles explained - and why they should have signed Putellas"
+      "news_headline": "David Raya to miss Arsenal's Champions League tie against Borussia Dortmund after worrying injury against Newcastle - but Mikel Arteta insists No 1 WILL be fit for Man City clash"
     }
   ],
   "top_corners": [
@@ -151,7 +150,7 @@
       "edge_pct": null,
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
-      "stake_units": 1.19,
+      "stake_units": 1.26,
       "projected_score": "1–2",
       "total_lambda": 3.64
     },
@@ -223,13 +222,13 @@
       "kickoff_dual": "00:00 AMT / 03:00 WIB",
       "xi_confirmed": false,
       "market": "Over 2.5 Total Goals",
-      "model_prob": 66.3,
+      "model_prob": 66.1,
       "fair_odds": 1.51,
-      "bookmaker_odds": 1.667,
-      "edge_pct": 9.43,
+      "bookmaker_odds": 1.69,
+      "edge_pct": 10.06,
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
-      "stake_units": 1.19,
+      "stake_units": 1.26,
       "projected_score": "1–2",
       "total_lambda": 3.64
     },
