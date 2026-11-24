@@ -33,11 +33,14 @@ jobs:
         run: node scripts/auto_bot.mjs
 
       - name: Commit updated Memory, News Intel & Daily Picks for Browser Auto-Sync
+        if: always()
         run: |
           git config user.name "Obsidian V18 Bot"
           git config user.email "obsidian-bot@users.noreply.github.com"
-          git add data/memory.json data/daily_picks.json data/news_intel.json
-          if ! git diff --cached --quiet; then
-            git commit -m "chore(auto): update memory.json (5W1H), news intel & daily picks [skip ci]"
-            git push
+          if [ -d data ]; then
+            git add data/memory.json data/daily_picks.json data/news_intel.json || true
+            if ! git diff --cached --quiet; then
+              git commit -m "chore(auto): update memory.json (5W1H), news intel & daily picks [skip ci]"
+              git push
+            fi
           fi
