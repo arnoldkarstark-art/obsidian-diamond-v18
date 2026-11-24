@@ -1,0 +1,43 @@
+name: Obsidian V18.5 Autonomous Radar & Telegram Bot
+
+on:
+  schedule:
+    # 09:00 AMT (Armenia UTC+4) / 12:00 WIB (Indonesia UTC+7) — Morning Auto-Settle + 5W1H + Daily Radar
+    - cron: "0 5 * * *"
+    # 18:30 AMT (Armenia UTC+4) / 21:30 WIB (Indonesia UTC+7) — Evening Pre-Kickoff XI & Steam Update
+    - cron: "30 14 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-obsidian-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run Autonomous Auto-Settle, 5W1H Learner, NewsAPI & Telegram Report
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          SCAN_LIMIT: "14"
+        run: node scripts/auto_bot.mjs
+
+      - name: Commit updated Memory, News Intel & Daily Picks for Browser Auto-Sync
+        run: |
+          git config user.name "Obsidian V18 Bot"
+          git config user.email "obsidian-bot@users.noreply.github.com"
+          git add data/memory.json data/daily_picks.json data/news_intel.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(auto): update memory.json (5W1H), news intel & daily picks [skip ci]"
+            git push
+          fi

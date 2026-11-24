@@ -406,9 +406,9 @@ html, body {
 .match-row {
   position: relative;
   display: grid;
-  grid-template-columns: 46px minmax(0, 1fr) auto;
+  grid-template-columns: 68px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   padding: 10px 10px;
   border-radius: 11px;
   cursor: pointer;
@@ -429,10 +429,29 @@ html, body {
 
 .match-time {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--ink-tertiary);
-  text-align: center;
-  line-height: 1.25;
+  text-align: left;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.match-time .tz-amt { color: var(--ink-secondary); display: block; }
+.match-time .tz-wib { color: var(--ice); opacity: 0.85; display: block; font-size: 10px; }
+.dual-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--border-hairline);
+  font-size: 11px;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+.dual-clock .clk-wib { color: var(--ice); }
+@media (max-width: 960px) {
+  .dual-clock { display: none; }
 }
 
 .match-time.live {
@@ -1618,6 +1637,46 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   color: var(--ink-secondary);
 }
 
+/* ---- Pre-Match Breaking News (NewsAPI) ---- */
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.news-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-hairline);
+  text-decoration: none;
+  color: inherit;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+.news-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-subtle);
+}
+.news-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.news-title {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-primary);
+  line-height: 1.4;
+}
+.news-meta {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+}
+
+
 
 </style>
 </head>
@@ -1650,6 +1709,7 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
     </nav>
 
     <div class="topbar-right">
+      <div id="dual-clock" class="dual-clock mono" title="Armenia Time (UTC+4) · Waktu Indonesia Barat (UTC+7)">AMT --:-- · WIB --:--</div>
       <button id="btn-sources" class="status-trigger" title="Data Pipeline & Optional Fallback Key">
         <span class="dot dot-ok"></span>
         <span>FotMob · ESPN</span>
@@ -1845,6 +1905,14 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
             </div>
             <div id="root-causes-wrap"></div>
           </div>
+        </div>
+
+        <div class="surface-card" style="margin-top: 20px;">
+          <div class="card-head">
+            <h2>Per-League Historical Performance</h2>
+            <span class="muted-tag">Hit Rate, Brier &amp; ROI by Competition</span>
+          </div>
+          <div id="league-attribution-wrap" class="table-wrap"></div>
         </div>
 
         <div class="surface-card" style="margin-top: 20px;">
@@ -3205,13 +3273,22 @@ const ObsidianEngine = (() => {
       const factors = buildFactorSnapshot(a);
       const existingIdx = all.findIndex(p => String(p.match_id) === String(a.match_id) && p.source_type === "AUTO");
       if (existingIdx >= 0) {
-        // Only update pre-match snapshot if still PENDING (e.g. when Confirmed XI drops!)
+        // Only update pre-match snapshot if still PENDING (e.g. when Confirmed XI drops or odds steam!)
         if (all[existingIdx].status === "PENDING") {
+          const prev = all[existingIdx];
+          const openOdd = prev.opening_odds || prev.bookmaker_odds || v.bookmaker_odds || null;
+          const curOdd = v.bookmaker_odds || prev.bookmaker_odds || null;
+          const sameKey = prev.market_key === v.market_key;
+          const steamPct = (sameKey && openOdd > 1.01 && curOdd > 1.01)
+            ? +(((1 / curOdd) - (1 / openOdd)) * 100).toFixed(2)
+            : (prev.steam_pct ?? null);
           all[existingIdx] = {
-            ...all[existingIdx],
+            ...prev,
             market_family: v.market_family, market_key: v.market_key, market_label: v.primary_bet,
             model_prob: v.model_prob, raw_prob: v.raw_prob, fair_odds: v.fair_odds,
-            bookmaker_odds: v.bookmaker_odds || all[existingIdx].bookmaker_odds,
+            opening_odds: sameKey ? openOdd : (v.bookmaker_odds || null),
+            bookmaker_odds: curOdd,
+            steam_pct: steamPct,
             confidence: v.confidence, tier: v.tier,
             stake_units: Math.max(0.5, v.stake_units || 1.0),
             home_lambda: a.goal_model.home_lambda, away_lambda: a.goal_model.away_lambda,
@@ -3231,7 +3308,8 @@ const ObsidianEngine = (() => {
         home_team_id: a.home.id, away_team_id: a.away.id,
         market_family: v.market_family, market_key: v.market_key, market_label: v.primary_bet,
         model_prob: v.model_prob, raw_prob: v.raw_prob, fair_odds: v.fair_odds,
-        bookmaker_odds: v.bookmaker_odds || null, confidence: v.confidence, tier: v.tier,
+        opening_odds: v.bookmaker_odds || null,
+        bookmaker_odds: v.bookmaker_odds || null, steam_pct: null, confidence: v.confidence, tier: v.tier,
         stake_units: Math.max(0.5, v.stake_units || 1.0),
         home_lambda: a.goal_model.home_lambda, away_lambda: a.goal_model.away_lambda,
         home_corners_lambda: a.corners_model.home_corners_lambda, away_corners_lambda: a.corners_model.away_corners_lambda,
@@ -3364,13 +3442,25 @@ const ObsidianEngine = (() => {
           : `${p.away_team} (${ag} gol vs ${p.away_lambda} λ, ${aDiff >= 0 ? "+" : ""}${aDiff})`)
       : `${p.home_team} vs ${p.away_team}`;
 
+    let koStr = "";
+    if (p.kickoff_utc) {
+      try {
+        const d = new Date(p.kickoff_utc);
+        if (!Number.isNaN(d.getTime())) {
+          const amt = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Yerevan", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
+          const wib = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
+          koStr = ` (${amt} AMT / ${wib} WIB)`;
+        }
+      } catch {}
+    }
+
     return {
       root_cause: rootCause,
       goal_residual: totDiff,
       corner_residual: cDiff,
       what: `${p.market_label} (${p.model_prob}%, Fair ${p.fair_odds}) -> ${st}. Skor aktual ${hg ?? "?"}–${ag ?? "?"} vs proyeksi ${p.projected_score || "—"}${cDiff !== null ? ` · Corners ${hc + ac} (selisih ${cDiff > 0 ? "+" : ""}${cDiff})` : ""}.`,
       who: `Deviasi terbesar di ${whoDriver}${(f.star_absences || []).length ? ` · Absen: ${f.star_absences.slice(0, 2).join(", ")}` : ""}.`,
-      when: `${p.match_date} · Status XI: ${f.xi_status || "DATA GAP"} · Rest: ${f.home_rest_days ?? "?"}d vs ${f.away_rest_days ?? "?"}d.`,
+      when: `${p.match_date}${koStr} · Status XI: ${f.xi_status || "DATA GAP"} · Rest: ${f.home_rest_days ?? "?"}d vs ${f.away_rest_days ?? "?"}d.`,
       where: `${p.league_name} (${f.venue || "DATA GAP"} · Ref: ${f.referee || "DATA GAP"}).`,
       why: whyText,
       how: howText
@@ -3671,6 +3761,26 @@ const ObsidianEngine = (() => {
 
     const post_mortems = settled.filter(p => p.post_mortem).slice(0, 25);
 
+    // Per-League Historical Performance Breakdown
+    const leagueMap = {};
+    np.forEach(p => {
+      const lg = p.league_name || "Unknown League";
+      if (!leagueMap[lg]) leagueMap[lg] = [];
+      leagueMap[lg].push(p);
+    });
+    const by_league = Object.entries(leagueMap).map(([league, rows]) => {
+      const lw = rows.filter(r => r.status === "WON" || r.status === "HALF_WON").length;
+      const ls = rows.reduce((s, r) => s + r.stake_units, 0);
+      const lp = +rows.reduce((s, r) => s + (r.pnl_units || 0), 0).toFixed(2);
+      const lb = rows.filter(r => r.brier_score !== null).map(r => r.brier_score);
+      return {
+        league, bets: rows.length, wins: lw,
+        hit_rate: +((lw / rows.length) * 100).toFixed(1),
+        brier: lb.length ? +(lb.reduce((a, b) => a + b, 0) / lb.length).toFixed(4) : null,
+        roi: ls > 0 ? +((lp / ls) * 100).toFixed(1) : null
+      };
+    }).sort((a, b) => b.bets - a.bets || (b.roi ?? -999) - (a.roi ?? -999)).slice(0, 12);
+
     return {
       summary: {
         total_saved: all.length,
@@ -3683,9 +3793,40 @@ const ObsidianEngine = (() => {
         total_staked: +staked.toFixed(2), pnl_units: pnl, roi_pct: staked > 0 ? +((pnl / staked) * 100).toFixed(1) : 0
       },
       bankroll: { ...bcfg, current_units: +running.toFixed(2), peak_units: +peak.toFixed(2), drawdown_pct: drawdownPct, today_pending_units: +todayPendingUnits.toFixed(2), daily_exposure_pct: dailyExposurePct, warnings },
-      by_family: byFamily, factor_attribution, root_causes, post_mortems,
+      by_family: byFamily, by_league, factor_attribution, root_causes, post_mortems,
       weights: w, logs: loadLS(STORE_LOGS, [])
     };
+  }
+
+  function mergeCloudMemory(cloudObj) {
+    if (!cloudObj || !Array.isArray(cloudObj.predictions)) return { added: 0, upgraded: 0 };
+    const local = loadLS(STORE_PREDS, []);
+    let added = 0, upgraded = 0;
+    const isSettled = st => ["WON", "HALF_WON", "LOST", "HALF_LOST", "PUSH"].includes(st);
+
+    for (const cp of cloudObj.predictions) {
+      const idx = local.findIndex(lp =>
+        (cp.source_type === "AUTO" && lp.source_type === "AUTO" && String(lp.match_id) === String(cp.match_id)) ||
+        (lp.id === cp.id)
+      );
+      if (idx === -1) {
+        local.push(cp);
+        added++;
+      } else {
+        const lp = local[idx];
+        // Upgrade local PENDING with cloud SETTLED (full corners/1H/5W1H from GitHub Actions!)
+        if (!isSettled(lp.status) && isSettled(cp.status)) {
+          local[idx] = { ...lp, ...cp };
+          upgraded++;
+        } else if (!isSettled(lp.status) && !isSettled(cp.status) && (cp.updated_at || "") > (lp.updated_at || "")) {
+          local[idx] = { ...lp, ...cp };
+        }
+      }
+    }
+    local.sort((a, b) => String(b.created_at || b.match_date || "").localeCompare(String(a.created_at || a.match_date || "")));
+    saveLS(STORE_PREDS, local.slice(0, 600));
+    if (added > 0 || upgraded > 0) recalibrateWeights();
+    return { added, upgraded, synced_at: cloudObj.exported_at || null };
   }
 
   function exportBackup() {
@@ -3712,7 +3853,7 @@ const ObsidianEngine = (() => {
     fetchMatchesByDate, fetchMatchesNext7Days, analyzeMatchById, scanDailyTopPicks, auditSlip,
     getUsage, getAfKey, setAfKey, getAfAutoFill, setAfAutoFill, getBankrollConfig, setBankrollConfig,
     buildFactorSnapshot, listPredictions, savePrediction, deletePrediction, settleManual, autoSettlePending,
-    recalibrateWeights, resetWeights, getAnalytics, exportBackup, importBackup
+    recalibrateWeights, resetWeights, getAnalytics, mergeCloudMemory, exportBackup, importBackup
   };
 })();
 
@@ -3737,6 +3878,7 @@ const state = {
   ledgerSourceFilter: "ALL",
   pmFilter: "ALL",
   settlingPredId: null,
+  newsIntelByMatch: {},
 };
 
 const SLIP_PICK_OPTIONS = [
@@ -3764,20 +3906,59 @@ const SLIP_PICK_OPTIONS = [
   { key: "away_cs_yes", label: "Away Clean Sheet" },
 ];
 
+const TZ_AMT = "Asia/Yerevan"; // Armenia Time (UTC+4)
+const TZ_WIB = "Asia/Jakarta"; // Indonesia WIB (UTC+7)
+
 function todayISO(offsetDays = 0) {
-  const d = new Date();
-  d.setDate(d.getDate() + offsetDays);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const d = new Date(Date.now() + offsetDays * 86400000);
+  try {
+    return new Intl.DateTimeFormat("en-CA", { timeZone: TZ_AMT, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+  } catch {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  }
 }
 
 function esc(str) {
   return String(str ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
+function fmtInTz(dateObj, tz) {
+  return new Intl.DateTimeFormat("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: false }).format(dateObj);
+}
+
+function dateKeyInTz(dateObj, tz) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(dateObj);
+}
+
 function fmtKickoff(utcStr) {
   if (!utcStr) return "--:--";
-  try { return new Date(utcStr).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false }); }
-  catch { return "--:--"; }
+  try {
+    const d = new Date(utcStr);
+    if (Number.isNaN(d.getTime())) return "--:--";
+    const amt = fmtInTz(d, TZ_AMT);
+    const wib = fmtInTz(d, TZ_WIB);
+    const nextDay = dateKeyInTz(d, TZ_WIB) !== dateKeyInTz(d, TZ_AMT) ? " (+1)" : "";
+    return `${amt} AMT · ${wib} WIB${nextDay}`;
+  } catch { return "--:--"; }
+}
+
+function fmtKickoffStack(utcStr) {
+  if (!utcStr) return "--:--";
+  try {
+    const d = new Date(utcStr);
+    if (Number.isNaN(d.getTime())) return "--:--";
+    const amt = fmtInTz(d, TZ_AMT);
+    const wib = fmtInTz(d, TZ_WIB);
+    const nextDay = dateKeyInTz(d, TZ_WIB) !== dateKeyInTz(d, TZ_AMT) ? "+" : "";
+    return `<span class="tz-amt">${amt} AMT</span><span class="tz-wib">${wib} WIB${nextDay}</span>`;
+  } catch { return "--:--"; }
+}
+
+function updateDualClock() {
+  const el = document.getElementById("dual-clock");
+  if (!el) return;
+  const now = new Date();
+  el.innerHTML = `<span>AMT ${fmtInTz(now, TZ_AMT)}</span><span style="opacity:.35">·</span><span class="clk-wib">WIB ${fmtInTz(now, TZ_WIB)}</span>`;
 }
 
 let toastTimer = null;
@@ -3798,9 +3979,8 @@ function buildDateRibbon(datePicker) {
     { offset: 0, label: "Today", active: true },
   ];
   for (let i = 1; i <= 7; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() + i);
-    const lbl = i === 1 ? "Tmrw" : d.toLocaleDateString(undefined, { weekday: "short", day: "numeric" });
+    const d = new Date(Date.now() + i * 86400000);
+    const lbl = i === 1 ? "Tmrw" : new Intl.DateTimeFormat("en-GB", { timeZone: TZ_AMT, weekday: "short", day: "numeric" }).format(d);
     chips.push({ offset: i, label: lbl });
   }
   ribbon.innerHTML = chips.map(c => c.mode === "7D"
@@ -3971,10 +4151,12 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => submitManualSettle(btn.dataset.directStatus));
   });
 
+  updateDualClock();
+  setInterval(updateDualClock, 30000);
   refreshStatus();
   loadMatches(false, true);
-  // Autonomous next-day settlement & 5W1H learning in background on boot
-  setTimeout(runSilentAutoSettle, 2200);
+  // Auto-sync GitHub Actions server memory (5W1H + exact corners/1H settlement) then run local check
+  syncFromCloudMemory().finally(() => setTimeout(runSilentAutoSettle, 2200));
 });
 
 function switchView(viewName) {
@@ -4067,7 +4249,7 @@ function renderMatchesList() {
     const rowsHtml = filtered.map((m) => {
       const isSelected = state.selectedMatchId === m.match_id;
       const inSlip = state.slipLegs.some((l) => l.match_id === m.match_id);
-      const timeLabel = m.is_live ? esc(m.live_minute || "LIVE") : m.finished ? esc(m.status_label || "FT") : fmtKickoff(m.kickoff_utc);
+      const timeLabel = m.is_live ? esc(m.live_minute || "LIVE") : m.finished ? esc(m.status_label || "FT") : fmtKickoffStack(m.kickoff_utc);
       return `
         <div class="match-row ${isSelected ? "selected" : ""}" data-match-id="${esc(m.match_id)}">
           <div class="match-time ${m.is_live ? "live" : ""}">${timeLabel}</div>
@@ -4243,6 +4425,8 @@ function renderAnalysis(a) {
           <div class="alt-box"><div class="alt-k">Avoid / Trap</div><div class="alt-v text-coral">${v.avoid ? `${esc(v.avoid.label)} <span class="mono">(${v.avoid.model_prob}%)</span>` : "—"}</div></div>
         </div>
       </div>
+
+      ${renderNewsIntelCard(a)}
 
       <div class="surface-card">
         <div class="card-head">
@@ -4795,6 +4979,31 @@ function loadMemoryView() {
     }
   }
 
+  // Per-League Historical Performance Table
+  const lgWrap = document.getElementById("league-attribution-wrap");
+  if (lgWrap) {
+    const lgs = data.by_league || [];
+    if (!lgs.length) {
+      lgWrap.innerHTML = `<div class="empty-inline" style="padding:14px">Belum ada data liga ter-settle. Setelah match selesai, performa per kompetisi otomatis muncul di sini.</div>`;
+    } else {
+      lgWrap.innerHTML = `
+        <table>
+          <thead><tr><th>League / Competition</th><th>Settled</th><th>Wins</th><th>Hit Rate</th><th>Mean Brier</th><th>ROI</th></tr></thead>
+          <tbody>${lgs.map(l => `
+            <tr>
+              <td><strong>${esc(l.league)}</strong></td>
+              <td class="mono">${l.bets}</td>
+              <td class="mono">${l.wins}</td>
+              <td class="mono ${l.hit_rate >= 60 ? "text-emerald" : l.hit_rate < 48 ? "text-coral" : "text-amber"}">${l.hit_rate}%</td>
+              <td class="mono">${l.brier ?? "—"}</td>
+              <td class="mono ${l.roi > 0 ? "text-emerald" : l.roi < 0 ? "text-coral" : ""}">${l.roi !== null ? `${l.roi > 0 ? "+" : ""}${l.roi}%` : "—"}</td>
+            </tr>
+          `).join("")}</tbody>
+        </table>
+      `;
+    }
+  }
+
   renderPostMortemFeed(data.post_mortems);
   renderPredictionsLedger();
   refreshStatus();
@@ -4806,17 +5015,22 @@ function renderPredictionsLedger() {
   if (!preds.length) { wrap.innerHTML = `<div class="empty-inline">No predictions in this filter.</div>`; return; }
   wrap.innerHTML = `
     <table>
-      <thead><tr><th>Date</th><th>Fixture</th><th>Market</th><th>Prob / Odds</th><th>CLV</th><th>Score</th><th>Status / 5W1H</th><th>P&amp;L</th><th style="text-align:right">Actions</th></tr></thead>
+      <thead><tr><th>Date</th><th>Fixture</th><th>Market</th><th>Prob / Odds</th><th>CLV / Steam</th><th>Score</th><th>Status / 5W1H</th><th>P&amp;L</th><th style="text-align:right">Actions</th></tr></thead>
       <tbody>${preds.map(p => {
         const srcCls = (p.source_type === "AUTO") ? "auto" : "manual";
         const rcTag = p.post_mortem?.root_cause ? `<div style="margin-top:4px"><span class="muted-tag">${esc(rcLabel(p.post_mortem.root_cause))}</span></div>` : "";
+        const steamBadge = (p.clv_pct !== null && p.clv_pct !== undefined)
+          ? `<span class="${p.clv_pct > 0 ? "text-emerald" : p.clv_pct < 0 ? "text-coral" : "text-muted"}">${p.clv_pct > 0 ? "+" : ""}${p.clv_pct}% CLV</span>`
+          : (p.steam_pct !== null && p.steam_pct !== undefined && Math.abs(p.steam_pct) >= 0.5)
+            ? `<span class="${p.steam_pct > 0 ? "text-emerald" : "text-amber"}">${p.steam_pct > 0 ? "STEAM +" : "DRIFT "}${p.steam_pct}%</span>`
+            : `<span class="text-muted">—</span>`;
         return `
         <tr>
           <td class="mono text-muted">${esc(p.match_date)}</td>
           <td><strong>${esc(p.home_team)} vs ${esc(p.away_team)}</strong><span class="src-badge ${srcCls}">${p.source_type === "AUTO" ? "AUTO" : "MAN"}</span></td>
           <td><strong>${esc(p.market_label)}</strong></td>
           <td class="mono">${p.model_prob}% · ${p.bookmaker_odds ? "@" + Number(p.bookmaker_odds).toFixed(2) : "Fair " + Number(p.fair_odds).toFixed(2)}</td>
-          <td class="mono ${p.clv_pct > 0 ? "text-emerald" : p.clv_pct < 0 ? "text-coral" : "text-muted"}">${p.clv_pct !== null && p.clv_pct !== undefined ? `${p.clv_pct > 0 ? "+" : ""}${p.clv_pct}%` : "—"}</td>
+          <td class="mono">${steamBadge}</td>
           <td class="mono">${p.actual_home_goals !== null ? `${p.actual_home_goals}–${p.actual_away_goals}` : `Proj ${p.projected_score || "—"}`}</td>
           <td><span class="tag ${(p.status === "WON" || p.status === "HALF_WON") ? "tag-emerald" : (p.status === "LOST" || p.status === "HALF_LOST") ? "tag-coral" : p.status === "PUSH" ? "tag-ice" : "tag-amber"}">${p.status}</span>${rcTag}</td>
           <td class="mono">${p.pnl_units !== null ? `${p.pnl_units > 0 ? "+" : ""}${p.pnl_units}u` : "—"}</td>
@@ -4855,10 +5069,67 @@ function submitManualSettle(directStatus) {
 }
 
 async function runAutoSettle() {
-  showToast("Checking FotMob & ESPN for finished scores, 1H goals, corners & 5W1H...");
+  showToast("Syncing Cloud Memory & checking FotMob/ESPN for finished scores & 5W1H...");
+  await syncFromCloudMemory(true);
   const r = await ObsidianEngine.autoSettlePending();
   showToast(`Checked ${r.checked} pending · Auto-settled ${r.settled_count} matches (5W1H & weights updated)`);
   loadMemoryView();
+}
+
+function renderNewsIntelCard(a) {
+  const intel = state.newsIntelByMatch[String(a.match_id)];
+  if (!intel || !intel.headlines?.length) return "";
+  const riskCls = intel.risk_level === "ALERT" ? "tag-coral" : intel.risk_level === "WATCH" ? "tag-amber" : intel.risk_level === "BOOST" ? "tag-emerald" : "tag-ice";
+  return `
+    <div class="surface-card">
+      <div class="card-head">
+        <h2>Pre-Match Breaking News &amp; Catalyst Intelligence</h2>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+          <span class="tag ${riskCls}">${esc(intel.risk_level)}</span>
+          ${(intel.signals || []).map(sig => `<span class="tag">${esc(sig.replace(/_/g, " "))}</span>`).join("")}
+          <span class="muted-tag">NewsAPI · Server-Synced</span>
+        </div>
+      </div>
+      <div class="news-list">
+        ${intel.headlines.map(h => `
+          <a class="news-row" href="${esc(h.url || "#")}" target="_blank" rel="noopener noreferrer">
+            <span class="tag ${h.tag === "INJURY_SHOCK" || h.tag === "MANAGER_CRISIS" || h.tag === "SUSPENSION_BAN" ? "tag-coral" : h.tag === "SQUAD_BOOST" ? "tag-emerald" : "tag-amber"}">${esc(h.tag.replace(/_/g, " "))}</span>
+            <div class="news-body">
+              <div class="news-title">${esc(h.title)}</div>
+              <div class="news-meta mono">${esc(h.source)}${h.published_at ? ` · ${fmtKickoff(h.published_at)}` : ""}</div>
+            </div>
+          </a>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+async function syncFromCloudMemory(silent = false) {
+  // Load server-fetched NewsAPI intel (bypasses NewsAPI browser CORS restriction cleanly)
+  try {
+    const nResp = await fetch(`./data/news_intel.json?t=${Date.now()}`, { cache: "no-store" });
+    if (nResp.ok) {
+      const nJson = await nResp.json();
+      if (nJson && nJson.by_match) {
+        state.newsIntelByMatch = nJson.by_match;
+        if (state.currentAnalysis) renderAnalysis(state.currentAnalysis);
+      }
+    }
+  } catch {}
+
+  try {
+    const resp = await fetch(`./data/memory.json?t=${Date.now()}`, { cache: "no-store" });
+    if (!resp.ok) return null;
+    const cloud = await resp.json();
+    const res = ObsidianEngine.mergeCloudMemory(cloud);
+    if ((res.added > 0 || res.upgraded > 0) && !silent) {
+      showToast(`Cloud Synced: +${res.added} auto-picks · ${res.upgraded} settled w/ 5W1H`);
+    }
+    refreshStatus();
+    if (document.getElementById("view-memory")?.classList.contains("active")) loadMemoryView();
+    return res;
+  } catch { return null; }
 }
 
 let silentSettleInFlight = false;
