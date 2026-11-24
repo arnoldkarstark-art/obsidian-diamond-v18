@@ -182,14 +182,24 @@ async function sendTelegram(token, chatId, htmlText) {
   const cleanToken = String(token || "").replace(/^["']|["']$/g, "").trim();
   const cleanChatId = String(chatId || "").replace(/^["']|["']$/g, "").trim();
 
-  // Safe diagnostic (prints zero secrets): confirms bot identity & whether an external webhook is attached
+  // Safe diagnostic (prints zero secrets): token SHAPE only + bot identity + webhook state
+  const shapeOk = /^\d{6,12}:[A-Za-z0-9_-]{30,}$/.test(cleanToken);
+  console.log(`[Telegram Token Shape] len=${cleanToken.length} format=${shapeOk ? "OK" : "INVALID"} whitespace=${/\s/.test(String(token))} quotes=${/["']/.test(String(token))} | chat_id_numeric=${/^-?\d+$/.test(cleanChatId)}`);
   try {
     const meR = await fetch(`https://api.telegram.org/bot${cleanToken}/getMe`);
     const meJ = await meR.json().catch(() => ({}));
     const whR = await fetch(`https://api.telegram.org/bot${cleanToken}/getWebhookInfo`);
     const whJ = await whR.json().catch(() => ({}));
-    console.log(`[Telegram Check] ok=${meJ.ok} bot=@${meJ.result?.username || "?"} | webhook=${whJ.result?.url ? "ACTIVE" : "none"} | pending_updates=${whJ.result?.pending_update_count ?? 0}`);
-  } catch {}
+    console.log(`[Telegram Check] getMe HTTP ${meR.status} ok=${meJ.ok} bot=@${meJ.result?.username || "?"} ${meJ.ok ? "" : `desc="${meJ.description || "?"}"`} | webhook=${whJ.result?.url ? "ACTIVE" : "none"} | pending_updates=${whJ.result?.pending_update_count ?? 0}`);
+    if (meR.status === 401 || meR.status === 404) {
+      throw new Error(`Telegram token rejected (getMe ${meR.status}) — token salah/sudah di-revoke. Update secret TELEGRAM_BOT_TOKEN.`);
+    }
+    if (meR.status === 429) {
+      throw new Error(`Telegram token throttled at TOKEN level (getMe 429, retry_after=${meJ?.parameters?.retry_after}). Bukan masalah pesan/IP — /revoke token di @BotFather atau buat bot baru, lalu update secret TELEGRAM_BOT_TOKEN.`);
+    }
+  } catch (e) {
+    if (String(e?.message || "").startsWith("Telegram token")) throw e;
+  }
 
   for (let i = 0; i < chunks.length; i++) {
     let sent = false;
@@ -462,13 +472,20 @@ async function main() {
   lines.push(`<i>Neural: Goal×${analytics.weights.goal_lambda_scale} · Corner×${analytics.weights.corner_lambda_scale} · Pre-XI -${fp.pre_xi || 0} · AF ${backupObj.usage.api_football}/100 · News ${newsCalls}q</i>`);
 
   const msg = lines.join("\n");
-  const tgRes = await sendTelegram(
-    (process.env.TELEGRAM_BOT_TOKEN || "").trim(),
-    (process.env.TELEGRAM_CHAT_ID || "").trim(),
-    msg
-  );
+  try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), msg); } catch {}
+  let tgRes;
+  try {
+    tgRes = await sendTelegram(
+      (process.env.TELEGRAM_BOT_TOKEN || "").trim(),
+      (process.env.TELEGRAM_CHAT_ID || "").trim(),
+      msg
+    );
+  } catch (e) {
+    tgRes = { ok: false, error: String(e?.message || e) };
+    console.warn(`::warning title=Telegram not delivered::${tgRes.error}`);
+  }
   console.log("[Telegram]", tgRes);
-  console.log("[Done] Saved data/memory.json, data/daily_picks.json & data/news_intel.json");
+  console.log("[Done] Saved data/memory.json, data/daily_picks.json, data/news_intel.json & data/last_report.txt");
 }
 
 main().catch((err) => {
