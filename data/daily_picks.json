@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T15:33:28.568Z",
+  "generated_at": "2026-11-24T17:37:21.058Z",
   "date_label": "2026-11-24",
   "scanned": 14,
   "top_anchors": [
@@ -12,10 +12,10 @@
       "kickoff_dual": "00:00 AMT / 03:00 WIB",
       "xi_confirmed": false,
       "market": "Under 3.5 Total Goals",
-      "model_prob": 66.8,
-      "fair_odds": 1.5,
-      "bookmaker_odds": 1.909,
-      "edge_pct": 16.76,
+      "model_prob": 66,
+      "fair_odds": 1.52,
+      "bookmaker_odds": 2,
+      "edge_pct": 18.6,
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
       "stake_units": 1.88,
@@ -63,12 +63,7 @@
       "tier_code": "TIER_2",
       "stake_units": 1.25,
       "projected_score": "1–1",
-      "total_lambda": 3.36,
-      "news_risk_level": "CLEAR",
-      "news_signals": [
-        "TEAM_NEWS"
-      ],
-      "news_headline": "Jeremy Doku relishing reunion with Manchester City legend Kevin De Bruyne ahead of Napoli Champions League clash"
+      "total_lambda": 3.36
     },
     {
       "match_id": "6106317",
@@ -106,7 +101,13 @@
       "tier_code": "TIER_2",
       "stake_units": 1.88,
       "projected_score": "1–1",
-      "total_lambda": 2.35
+      "total_lambda": 2.35,
+      "news_risk_level": "ALERT",
+      "news_signals": [
+        "INJURY_SHOCK",
+        "TEAM_NEWS"
+      ],
+      "news_headline": "Big positive for Arsenal: David Raya’s shoulder injury ‘not too serious’ a"
     },
     {
       "match_id": "5836947",
@@ -197,10 +198,10 @@
       "kickoff_dual": "00:00 AMT / 03:00 WIB",
       "xi_confirmed": false,
       "market": "Under 3.5 Total Goals",
-      "model_prob": 66.8,
-      "fair_odds": 1.5,
-      "bookmaker_odds": 1.909,
-      "edge_pct": 16.76,
+      "model_prob": 66,
+      "fair_odds": 1.52,
+      "bookmaker_odds": 2,
+      "edge_pct": 18.6,
       "tier": "TIER 2: VALUE HUNTER",
       "tier_code": "TIER_2",
       "stake_units": 1.88,
@@ -260,9 +261,9 @@
       "fair_odds": 1.35,
       "bookmaker_odds": null,
       "edge_pct": null,
-      "tier": "TIER 2: VALUE HUNTER",
-      "tier_code": "TIER_2",
-      "stake_units": 0.77,
+      "tier": "TIER 3: HIGH-VARIANCE PIVOT",
+      "tier_code": "TIER_3",
+      "stake_units": 0.72,
       "projected_score": "3–1",
       "total_lambda": 4.52
     },

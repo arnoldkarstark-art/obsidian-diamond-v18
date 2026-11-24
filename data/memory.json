@@ -1,6 +1,6 @@
 {
   "version": "OBSIDIAN_V18_5",
-  "exported_at": "2026-11-24T15:33:35.377Z",
+  "exported_at": "2026-11-24T17:37:29.407Z",
   "predictions": [
     {
       "id": 1795506488326,
@@ -48,7 +48,7 @@
         "chaos_index": 25,
         "data_confidence": 90,
         "venue": "Carrow Road",
-        "referee": "DATA GAP",
+        "referee": "Gavin Ward",
         "league_avg_goals": 1.47
       },
       "status": "PENDING",
@@ -63,7 +63,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:08.139Z",
-      "updated_at": "2026-11-24T15:33:35.376Z"
+      "updated_at": "2026-11-24T17:37:28.765Z"
     },
     {
       "id": 1795506488759,
@@ -82,9 +82,9 @@
       "model_prob": 73.8,
       "raw_prob": 73.8,
       "fair_odds": 1.36,
-      "opening_odds": null,
+      "opening_odds": 1.476,
       "bookmaker_odds": 1.476,
-      "steam_pct": -0.51,
+      "steam_pct": 0,
       "confidence": 74,
       "tier": "TIER 2: VALUE HUNTER",
       "stake_units": 1.88,
@@ -111,7 +111,7 @@
         "chaos_index": 35,
         "data_confidence": 90,
         "venue": "Riverside Stadium",
-        "referee": "DATA GAP",
+        "referee": "Tom Nield",
         "league_avg_goals": 1.47
       },
       "status": "PENDING",
@@ -126,7 +126,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:08.058Z",
-      "updated_at": "2026-11-24T15:33:35.006Z"
+      "updated_at": "2026-11-24T17:37:29.406Z"
     },
     {
       "id": 1795506487791,
@@ -145,9 +145,9 @@
       "model_prob": 71.5,
       "raw_prob": 71.5,
       "fair_odds": 1.4,
-      "opening_odds": null,
+      "opening_odds": 1.667,
       "bookmaker_odds": 1.667,
-      "steam_pct": 2.55,
+      "steam_pct": 0,
       "confidence": 78,
       "tier": "TIER 2: VALUE HUNTER",
       "stake_units": 1.88,
@@ -173,7 +173,7 @@
         "chaos_index": 35,
         "data_confidence": 90,
         "venue": "Ashton Gate Stadium",
-        "referee": "DATA GAP",
+        "referee": "Lewis Smith",
         "league_avg_goals": 1.47
       },
       "status": "PENDING",
@@ -188,7 +188,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:07.485Z",
-      "updated_at": "2026-11-24T15:33:34.246Z"
+      "updated_at": "2026-11-24T17:37:28.051Z"
     },
     {
       "id": 1795506487658,
@@ -236,7 +236,7 @@
         "chaos_index": 35,
         "data_confidence": 90,
         "venue": "Cardiff City Stadium",
-        "referee": "DATA GAP",
+        "referee": "David Webb",
         "league_avg_goals": 1.47
       },
       "status": "PENDING",
@@ -251,7 +251,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:07.357Z",
-      "updated_at": "2026-11-24T15:33:34.247Z"
+      "updated_at": "2026-11-24T17:37:28.106Z"
     },
     {
       "id": 1795506488136,
@@ -300,7 +300,7 @@
         "chaos_index": 47,
         "data_confidence": 90,
         "venue": "The Valley",
-        "referee": "DATA GAP",
+        "referee": "Oliver Langford",
         "league_avg_goals": 1.47
       },
       "status": "PENDING",
@@ -315,7 +315,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:07.246Z",
-      "updated_at": "2026-11-24T15:33:34.247Z"
+      "updated_at": "2026-11-24T17:37:28.054Z"
     },
     {
       "id": 1795506487616,
@@ -385,7 +385,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:06.894Z",
-      "updated_at": "2026-11-24T15:33:33.367Z"
+      "updated_at": "2026-11-24T17:37:26.482Z"
     },
     {
       "id": 1795506487759,
@@ -450,7 +450,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:06.892Z",
-      "updated_at": "2026-11-24T15:33:33.254Z"
+      "updated_at": "2026-11-24T17:37:26.480Z"
     },
     {
       "id": 1795506487014,
@@ -466,15 +466,15 @@
       "market_family": "Goals",
       "market_key": "over_3_5",
       "market_label": "Over 3.5 Total Goals",
-      "model_prob": 62.7,
+      "model_prob": 63.1,
       "raw_prob": 65.9,
-      "fair_odds": 1.6,
+      "fair_odds": 1.58,
       "opening_odds": 1.769,
-      "bookmaker_odds": 1.714,
-      "steam_pct": 1.81,
-      "confidence": 68,
-      "tier": "TIER 2: VALUE HUNTER",
-      "stake_units": 0.77,
+      "bookmaker_odds": 1.69,
+      "steam_pct": 2.64,
+      "confidence": 67,
+      "tier": "TIER 3: HIGH-VARIANCE PIVOT",
+      "stake_units": 0.72,
       "home_lambda": 3.05,
       "away_lambda": 1.47,
       "home_corners_lambda": 5.7,
@@ -518,7 +518,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:06.266Z",
-      "updated_at": "2026-11-24T15:33:32.857Z"
+      "updated_at": "2026-11-24T17:37:26.827Z"
     },
     {
       "id": 1795506486330,
@@ -534,13 +534,13 @@
       "market_family": "Goals",
       "market_key": "under_3_5",
       "market_label": "Under 3.5 Total Goals",
-      "model_prob": 66.8,
+      "model_prob": 66,
       "raw_prob": 73.9,
-      "fair_odds": 1.5,
+      "fair_odds": 1.52,
       "opening_odds": 1.909,
-      "bookmaker_odds": 1.909,
-      "steam_pct": 0,
-      "confidence": 76,
+      "bookmaker_odds": 2,
+      "steam_pct": -2.38,
+      "confidence": 75,
       "tier": "TIER 2: VALUE HUNTER",
       "stake_units": 1.88,
       "home_lambda": 1.44,
@@ -592,7 +592,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:05.440Z",
-      "updated_at": "2026-11-24T15:33:31.966Z"
+      "updated_at": "2026-11-24T17:37:25.065Z"
     },
     {
       "id": 1795506485178,
@@ -659,7 +659,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:04.874Z",
-      "updated_at": "2026-11-24T15:33:31.764Z"
+      "updated_at": "2026-11-24T17:37:25.039Z"
     },
     {
       "id": 1795506484621,
@@ -717,11 +717,7 @@
         "data_confidence": 90,
         "venue": "Etihad Stadium",
         "referee": "István Kovács",
-        "league_avg_goals": 1.48,
-        "news_risk_level": "CLEAR",
-        "news_alerts": [
-          "TEAM_NEWS"
-        ]
+        "league_avg_goals": 1.48
       },
       "status": "PENDING",
       "closing_odds": null,
@@ -735,7 +731,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:04.442Z",
-      "updated_at": "2026-11-24T15:33:31.722Z"
+      "updated_at": "2026-11-24T17:37:24.967Z"
     },
     {
       "id": 1795506484357,
@@ -791,7 +787,12 @@
         "data_confidence": 90,
         "venue": "Emirates Stadium",
         "referee": "Maurizio Mariani",
-        "league_avg_goals": 1.48
+        "league_avg_goals": 1.48,
+        "news_risk_level": "ALERT",
+        "news_alerts": [
+          "INJURY_SHOCK",
+          "TEAM_NEWS"
+        ]
       },
       "status": "PENDING",
       "closing_odds": null,
@@ -805,7 +806,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:03.560Z",
-      "updated_at": "2026-11-24T15:33:30.655Z"
+      "updated_at": "2026-11-24T17:37:22.873Z"
     },
     {
       "id": 1795506483967,
@@ -870,7 +871,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:03.342Z",
-      "updated_at": "2026-11-24T15:33:30.386Z"
+      "updated_at": "2026-11-24T17:37:23.643Z"
     },
     {
       "id": 1795506483795,
@@ -941,7 +942,7 @@
       "brier_score": null,
       "post_mortem": null,
       "created_at": "2026-11-24T07:48:03.270Z",
-      "updated_at": "2026-11-24T15:33:30.583Z"
+      "updated_at": "2026-11-24T17:37:23.517Z"
     }
   ],
   "weights": {
@@ -1029,8 +1030,8 @@
   "synced_by": "github_actions_auto_bot",
   "usage": {
     "date": "2026-11-24",
-    "fotmob": 351,
-    "espn": 18,
+    "fotmob": 409,
+    "espn": 21,
     "api_football": 0
   }
 }
