@@ -1393,12 +1393,13 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
     order: 3;
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
   .seg-btn {
     justify-content: center;
-    padding: 7px 4px;
-    font-size: 11.5px;
+    padding: 7px 2px;
+    font-size: 11px;
+    gap: 3px;
   }
   .popover {
     right: 12px;
@@ -1545,8 +1546,9 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   .radar-cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 780px) {
-  .segmented-nav { grid-template-columns: repeat(4, 1fr); }
-  .seg-btn { font-size: 11px; padding: 7px 3px; }
+  .segmented-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .seg-btn { font-size: 10.5px; padding: 7px 2px; gap: 3px; white-space: nowrap; }
+  .seg-btn .count-chip { font-size: 9.5px; padding: 1px 4px; }
   .radar-cards-grid { grid-template-columns: 1fr; }
 }
 
@@ -2396,6 +2398,296 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
 }
 .corner-chip.hot .cv { color: var(--gold); }
 
+/* ---- Auto-Parlay Lab (2–10 Legs · Recommended 1xBet Lineup) ---- */
+.parlay-deck {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.parlay-deck-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.parlay-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.parlay-ctrl-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: var(--ink-tertiary);
+}
+.parlay-leg-pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.leg-pill {
+  appearance: none;
+  min-width: 38px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--border-hairline);
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 180ms var(--ease-spring), background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+.leg-pill:hover {
+  background: rgba(56, 217, 255, 0.12);
+  border-color: rgba(56, 217, 255, 0.34);
+  color: var(--ink-primary);
+  transform: translateY(-1px);
+}
+.leg-pill.active {
+  background: linear-gradient(135deg, #f4f8fc 0%, #c8eeff 100%);
+  color: #050b14;
+  border-color: transparent;
+  box-shadow: 0 6px 20px rgba(56, 217, 255, 0.24);
+}
+.parlay-deck-subrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-hairline);
+}
+.parlay-stake-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--ink-secondary);
+}
+.parlay-stake-input {
+  width: 110px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid var(--border-subtle);
+  border-radius: 9px;
+  padding: 6px 10px;
+  color: var(--ink-primary);
+  font-size: 13px;
+  font-weight: 600;
+  outline: none;
+}
+.parlay-stake-input:focus {
+  border-color: var(--ice);
+  background: rgba(56, 217, 255, 0.08);
+}
+.parlay-xi-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ink-secondary);
+  cursor: pointer;
+}
+.parlay-xi-toggle strong { color: var(--ink-primary); }
+
+.parlay-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.parlay-risk-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 13px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(10, 17, 28, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--border-hairline);
+}
+.parlay-risk-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  color: var(--ink-secondary);
+}
+.parlay-actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.parlay-ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.parlay-leg-card {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1.35fr) minmax(220px, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(10, 18, 30, 0.74);
+  backdrop-filter: blur(20px) saturate(155%);
+  -webkit-backdrop-filter: blur(20px) saturate(155%);
+  border: 1px solid var(--border-hairline);
+  box-shadow: var(--highlight-top);
+  transition: transform 200ms var(--ease-spring), border-color 180ms ease, background 180ms ease;
+}
+.parlay-leg-card:hover {
+  border-color: rgba(136, 216, 255, 0.28);
+  background: rgba(13, 23, 38, 0.82);
+  transform: translateY(-1px);
+}
+.parlay-leg-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(56, 217, 255, 0.11);
+  border: 1px solid rgba(56, 217, 255, 0.22);
+  color: var(--ice);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.parlay-leg-match {
+  min-width: 0;
+  cursor: pointer;
+}
+.parlay-leg-topmeta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin-bottom: 4px;
+}
+.parlay-leg-teams {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+.parlay-leg-teams img {
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+}
+.parlay-leg-sub {
+  font-size: 11.5px;
+  color: var(--ink-secondary);
+  margin-top: 3px;
+}
+.parlay-leg-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.parlay-pick-badge {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--turf);
+}
+.parlay-market-select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid var(--border-hairline);
+  border-radius: 8px;
+  padding: 5px 8px;
+  color: var(--ink-secondary);
+  font-family: inherit;
+  font-size: 11.5px;
+  outline: none;
+  cursor: pointer;
+}
+.parlay-market-select:focus {
+  border-color: var(--ice);
+  color: var(--ink-primary);
+}
+.parlay-leg-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.parlay-prob-box {
+  text-align: right;
+  min-width: 82px;
+}
+.parlay-prob-val {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--emerald);
+}
+.parlay-odds-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-secondary);
+  margin-top: 2px;
+}
+.parlay-swap-btn {
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--border-hairline);
+  color: var(--ink-tertiary);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+.parlay-swap-btn:hover {
+  background: var(--coral-bg);
+  color: var(--coral);
+  border-color: rgba(255, 69, 58, 0.34);
+}
+
+@media (max-width: 900px) {
+  .parlay-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .parlay-leg-card {
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 10px;
+    padding: 13px;
+  }
+  .parlay-leg-pick,
+  .parlay-leg-stats {
+    grid-column: 1 / -1;
+  }
+  .parlay-leg-stats {
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-hairline);
+  }
+  .parlay-prob-box { text-align: left; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .orbit-ring, .orbit-ring-2, .view.active {
     animation: none !important;
@@ -2501,6 +2793,7 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
     <nav class="segmented-nav" role="tablist" aria-label="Workspace Views">
       <button id="nav-matches" class="seg-btn active" data-view="matches" role="tab" aria-selected="true">Matches</button>
       <button id="nav-scanner" class="seg-btn" data-view="scanner" role="tab" aria-selected="false">Daily Radar</button>
+      <button id="nav-parlay" class="seg-btn" data-view="parlay" role="tab" aria-selected="false">Parlay</button>
       <button id="nav-slip" class="seg-btn" data-view="slip" role="tab" aria-selected="false">
         Slip <span id="slip-badge" class="count-chip hidden">0</span>
       </button>
@@ -2599,7 +2892,8 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
             <h1>Engine Bola Command Center</h1>
             <p>Pilih pertandingan di panel kiri untuk audit lengkap Dixon-Coles xG, Confirmed Starting XI, radar 10–15+ Corners, dan pemetaan market 1xBet secara instan.</p>
             <div class="empty-cta-row">
-              <button id="btn-hero-radar" type="button" class="btn btn-primary">Buka Daily Radar</button>
+              <button id="btn-hero-parlay" type="button" class="btn btn-primary">Auto Parlay (2–10 Leg)</button>
+              <button id="btn-hero-radar" type="button" class="btn btn-secondary">Buka Daily Radar</button>
               <a class="btn btn-secondary" href="https://t.me/enginebola" target="_blank" rel="noopener noreferrer">Channel @enginebola ↗</a>
             </div>
             <div class="empty-highlights">
@@ -2612,8 +2906,8 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
                 <span class="hl-v">Confirmed XI Live</span>
               </div>
               <div class="hl-item">
-                <span class="hl-k">Corners Engine</span>
-                <span class="hl-v">NegBin 8.5 – 14.5+</span>
+                <span class="hl-k">Auto Parlay</span>
+                <span class="hl-v">2–10 Leg Probability Engine</span>
               </div>
             </div>
           </div>
@@ -2650,6 +2944,77 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
         <div id="scanner-results">
           <div class="surface-card empty-inline">
             Click <strong>Scan Selected Date</strong> to auto-rank today's strongest 1xBet plays across Totals, Corners, BTTS, Clean Sheets, 1st Half, and Asian Handicaps without clicking matches one by one.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2B: AUTO-PARLAY LAB (2 TO 10 LEGS · RECOMMENDED MOST PROBABLE OUTCOMES) -->
+    <section id="view-parlay" class="view">
+      <div class="page-container">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">Auto-Parlay Lab · 2–10 Legs</h1>
+            <p class="page-sub">Engine Bola otomatis memindai laga prioritas hari ini dan menyusun kombinasi parlay 1xBet dengan probabilitas menang tertinggi — 1 laga per leg, tanpa bentrok, dan bisa ditukar instan.</p>
+          </div>
+          <div class="page-actions">
+            <button id="btn-parlay-reset-excl" class="btn btn-ghost hidden">Reset Swapped</button>
+            <button id="btn-run-parlay-scan" class="btn btn-primary">Refresh Parlay Pool</button>
+          </div>
+        </div>
+
+        <!-- Interactive Leg Count & Strategy Deck -->
+        <div class="surface-card parlay-deck">
+          <div class="parlay-deck-row">
+            <div class="parlay-control-group">
+              <span class="parlay-ctrl-label mono">JUMLAH LEG (2 – 10)</span>
+              <div id="parlay-leg-pills" class="parlay-leg-pills" role="group" aria-label="Choose number of parlay legs">
+                <button type="button" class="leg-pill" data-legs="2">2</button>
+                <button type="button" class="leg-pill active" data-legs="3">3</button>
+                <button type="button" class="leg-pill" data-legs="4">4</button>
+                <button type="button" class="leg-pill" data-legs="5">5</button>
+                <button type="button" class="leg-pill" data-legs="6">6</button>
+                <button type="button" class="leg-pill" data-legs="7">7</button>
+                <button type="button" class="leg-pill" data-legs="8">8</button>
+                <button type="button" class="leg-pill" data-legs="9">9</button>
+                <button type="button" class="leg-pill" data-legs="10">10</button>
+              </div>
+            </div>
+
+            <div class="parlay-control-group">
+              <span class="parlay-ctrl-label mono">STRATEGI PILIHAN</span>
+              <div id="parlay-mode-pills" class="state-pills" role="group" aria-label="Choose parlay strategy">
+                <button type="button" class="state-pill active" data-pmode="SAFE">Most Probable (Safe)</button>
+                <button type="button" class="state-pill" data-pmode="BALANCED">Smart Value</button>
+                <button type="button" class="state-pill" data-pmode="CORNERS_GOALS">Goals &amp; Corners</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="parlay-deck-subrow">
+            <label class="parlay-stake-wrap">
+              <span class="mono">STAKE</span>
+              <input id="parlay-stake-input" type="number" min="1" step="10" value="100" class="parlay-stake-input mono" />
+            </label>
+            <label class="parlay-xi-toggle">
+              <input id="parlay-xi-only" type="checkbox" />
+              <span>Hanya laga dengan <strong>Confirmed Starting XI</strong> resmi</span>
+            </label>
+            <span id="parlay-pool-meta" class="muted-tag mono">Pool: ready</span>
+          </div>
+        </div>
+
+        <div id="parlay-status" class="surface-card hidden" style="margin-bottom:18px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
+            <span id="parlay-status-text">Scanning priority matches for optimal parlay legs...</span>
+            <span id="parlay-status-pct" class="mono">0%</span>
+          </div>
+          <div class="progress-track"><div id="parlay-progress-bar" class="progress-bar" style="width:0%"></div></div>
+        </div>
+
+        <div id="parlay-results">
+          <div class="surface-card empty-inline">
+            Membuka tab <strong>Parlay</strong> otomatis menyusun 2–10 leg probabilitas tertinggi untuk jadwal hari ini. Klik <strong>Refresh Parlay Pool</strong> kapan saja untuk memperbarui data live.
           </div>
         </div>
       </div>
@@ -4220,18 +4585,200 @@ const ObsidianEngine = (() => {
     };
   }
 
+  // ---- Auto-Parlay Engine (2 to 10 Legs · Most Probable 1xBet Lineups) ----
+  async function scanParlayPool(matches, limit = 24, onProgress = null) {
+    const valid = (matches || []).filter(m => !String(m.match_id).startsWith("espn:"));
+    const open = valid.filter(m => !m.finished);
+    // Prioritize flagship leagues first, then fill with remaining open FotMob fixtures so 10-leg parlays always have depth
+    const pri = open.filter(m => m.is_priority);
+    const rest = open.filter(m => !m.is_priority);
+    const ordered = [...pri, ...rest];
+    const queue = (ordered.length >= 2 ? ordered : valid).slice(0, Math.max(10, limit));
+    const results = [];
+    const batchSize = 4;
+    for (let i = 0; i < queue.length; i += batchSize) {
+      const batch = queue.slice(i, i + batchSize);
+      const settled = await Promise.all(batch.map(async m => {
+        try { return await analyzeMatchById(m.match_id); } catch { return null; }
+      }));
+      settled.forEach(a => { if (a && Array.isArray(a.all_markets) && a.all_markets.length) results.push(a); });
+      if (onProgress) onProgress(Math.min(queue.length, i + batchSize), queue.length);
+    }
+    return { scanned: results.length, analyses: results };
+  }
+
+  function buildAutoParlay(analyses, opts = {}) {
+    const targetLegs = clamp(parseInt(opts.legs || 3, 10) || 3, 2, 10);
+    const mode = String(opts.mode || "SAFE").toUpperCase(); // SAFE | BALANCED | CORNERS_GOALS
+    const excluded = new Set((opts.excludeIds || []).map(String));
+    const overrides = opts.marketOverrides || {};
+    const confirmedXiOnly = Boolean(opts.confirmedXiOnly);
+
+    const goalsCornerFams = new Set(["Goals", "BTTS", "First Half", "Team Totals", "Corners"]);
+    const safePreferredKeys = new Set([
+      "over_1_5", "over_2_0_asian", "under_3_5", "under_3_0_asian",
+      "dc_1x", "dc_x2", "home_ah_p1", "away_ah_p1",
+      "home_over_0_5", "away_over_0_5", "1h_over_0_5",
+      "corners_over_8_5", "corners_under_10_5", "home_dnb", "away_dnb"
+    ]);
+
+    const ranked = [];
+    for (const a of (analyses || [])) {
+      if (!a || excluded.has(String(a.match_id))) continue;
+      if (confirmedXiOnly && !a.xi_confirmed) continue;
+
+      const hasFailFilter = (a.filters || []).some(f => f.status === "FAIL");
+      const isTrap = a.verdict?.tier_code === "TIER_4";
+      const allM = a.all_markets || [];
+
+      let pool = allM.filter(m => !(m.veto_reasons && m.veto_reasons.length));
+      if (mode === "CORNERS_GOALS") {
+        pool = pool.filter(m => goalsCornerFams.has(m.family));
+      }
+
+      const scoreMarket = (m) => {
+        const pushBonus = (m.push_prob || 0) * (mode === "SAFE" ? 0.45 : 0.25);
+        const xiBonus = a.xi_confirmed ? 5.0 : 0;
+        const trapPen = (isTrap ? 18 : 0) + (hasFailFilter ? 10 : 0);
+        if (mode === "SAFE") {
+          // Highest winrate playable 1xBet line (avoid trivial <1.10 filler when better structural legs exist)
+          const playableWindow = (m.model_prob >= 68 && m.model_prob <= 91) ? 8 : (m.model_prob > 91 ? -4 : 0);
+          const prefBonus = safePreferredKeys.has(m.key) ? 3.5 : 0;
+          return m.model_prob + pushBonus + xiBonus + playableWindow + prefBonus - trapPen;
+        }
+        if (mode === "BALANCED") {
+          const sweet = (m.model_prob >= 60 && m.model_prob <= 82) ? 10 : (m.model_prob > 82 ? 3 : -8);
+          const evBonus = m.edge_pct !== null ? clamp(m.edge_pct * 0.65, -4, 9) : 0;
+          return m.quality_score * 0.72 + m.model_prob * 0.35 + pushBonus + xiBonus + sweet + evBonus - trapPen;
+        }
+        // CORNERS_GOALS
+        const cDataBonus = (m.family === "Corners" && a.corners_model?.has_season_data) ? 4 : 0;
+        const winBonus = (m.model_prob >= 64 && m.model_prob <= 90) ? 7 : 0;
+        return m.model_prob + pushBonus + xiBonus + cDataBonus + winBonus - trapPen;
+      };
+
+      let sorted = [...pool].sort((x, y) => scoreMarket(y) - scoreMarket(x));
+      if (!sorted.length) sorted = [...allM].sort((x, y) => y.model_prob - x.model_prob);
+      if (!sorted.length) continue;
+
+      const overrideKey = overrides[String(a.match_id)];
+      const chosen = (overrideKey && allM.find(m => m.key === overrideKey)) || sorted[0];
+      const alternatives = [];
+      const seenKeys = new Set([chosen.key]);
+      alternatives.push(chosen);
+      for (const cand of sorted) {
+        if (alternatives.length >= 5) break;
+        if (!seenKeys.has(cand.key)) {
+          seenKeys.add(cand.key);
+          alternatives.push(cand);
+        }
+      }
+
+      ranked.push({
+        analysis: a,
+        market: chosen,
+        alternatives,
+        rank_score: scoreMarket(chosen),
+        is_trap: isTrap || hasFailFilter
+      });
+    }
+
+    // Prefer non-trap matches first, then highest rank_score
+    ranked.sort((x, y) => {
+      if (x.is_trap !== y.is_trap) return x.is_trap ? 1 : -1;
+      return y.rank_score - x.rank_score;
+    });
+
+    const selected = ranked.slice(0, targetLegs);
+    let combWin = selected.length ? 1 : 0;
+    let combSurvive = selected.length ? 1 : 0;
+    let combOdds = selected.length ? 1 : 0;
+    let probSum = 0;
+    let xiCount = 0;
+    let liveOddsCount = 0;
+
+    const legs = selected.map((item, idx) => {
+      const m = item.market;
+      const a = item.analysis;
+      const pCond = clamp(m.model_prob / 100, 0.05, 0.96);
+      const qPush = clamp((m.push_prob || 0) / 100, 0, 0.45);
+      // Exact unconditional win & non-loss (Win + Push) probabilities since m.model_prob is P(Win | No Push)
+      const pWin = clamp(pCond * (1 - qPush), 0.05, 0.96);
+      const pSurv = clamp(pWin + qPush, pWin, 0.985);
+      const usedOdds = m.bookmaker_odds && m.bookmaker_odds > 1.01 ? m.bookmaker_odds : m.fair_odds;
+      if (m.bookmaker_odds && m.bookmaker_odds > 1.01) liveOddsCount++;
+      if (a.xi_confirmed) xiCount++;
+      combWin *= pWin;
+      combSurvive *= pSurv;
+      combOdds *= usedOdds;
+      probSum += pSurv * 100;
+
+      return {
+        index: idx + 1,
+        match_id: a.match_id,
+        league: a.league_name,
+        home: a.home.name,
+        away: a.away.name,
+        home_logo: a.home.logo,
+        away_logo: a.away.logo,
+        kickoff_utc: a.kickoff_utc,
+        xi_confirmed: a.xi_confirmed,
+        xi_status: a.xi_status,
+        projected_score: a.goal_model.projected_score,
+        total_lambda: a.goal_model.total_lambda,
+        corners_lambda: a.corners_model.total_corners_lambda,
+        tier_code: a.verdict.tier_code,
+        is_trap: item.is_trap,
+        market: m,
+        used_odds: +usedOdds.toFixed(2),
+        odds_source: m.bookmaker_odds && m.bookmaker_odds > 1.01 ? "LIVE" : "FAIR",
+        alternatives: item.alternatives
+      };
+    });
+
+    const combined_win_prob = +(combWin * 100).toFixed(2);
+    const combined_survival_prob = +(combSurvive * 100).toFixed(2);
+    const combined_odds = +combOdds.toFixed(2);
+    const avg_leg_prob = legs.length ? +(probSum / legs.length).toFixed(1) : 0;
+
+    let risk_profile;
+    if (legs.length <= 3 && combined_win_prob >= 42) {
+      risk_profile = { code: "SNIPER", label: "OPTIMAL SNIPER ZONE", cls: "tag-emerald", advice: "Kombinasi probabilitas tertinggi — ideal untuk stake utama terkontrol." };
+    } else if (legs.length <= 5 && combined_win_prob >= 18) {
+      risk_profile = { code: "CONTROLLED", label: "CONTROLLED MULTI-LEG", cls: "tag-ice", advice: "Variansi menengah — jaga porsi stake moderat & cek Starting XI T-60'." };
+    } else if (legs.length <= 7 && combined_win_prob >= 7) {
+      risk_profile = { code: "AGGRESSIVE", label: "HIGH VARIANCE PARLAY", cls: "tag-amber", advice: "Multi-leg agresif — gunakan porsi kecil (0.25u–0.5u)." };
+    } else {
+      risk_profile = { code: "LONGSHOT", label: "LOTTERY / LONGSHOT", cls: "tag-coral", advice: "Parlay 8–10 leg bersifat longshot meski setiap leg dipilih dari probabilitas tertinggi — gunakan nominal hiburan saja." };
+    }
+
+    return {
+      requested_legs: targetLegs,
+      mode,
+      available_pool: ranked.length,
+      legs,
+      combined_win_prob,
+      combined_survival_prob,
+      combined_odds,
+      avg_leg_prob,
+      confirmed_xi_count: xiCount,
+      live_odds_count: liveOddsCount,
+      risk_profile
+    };
+  }
+
   // ---- Slip Audit ----
   async function auditSlip(legs) {
     const rows = [], score_projections = [];
     for (let i = 0; i < legs.length; i++) {
       const a = await analyzeMatchById(legs[i].match_id);
       const v = a.verdict;
-      let risk = "SAFE", cmd = v.command, reason = v.executive_reason, uPick = "Auto (Obsidian)";
+      let risk = "SAFE", cmd = v.command, reason = v.executive_reason, uPick = "Auto (Engine Bola)";
       if (legs[i].user_pick_key) {
         const up = a.all_markets.find(m => m.key === legs[i].user_pick_key);
         if (up) {
           uPick = up.label;
-          if (up.veto_reasons.length || up.confidence < 50) { risk = "CRITICAL"; cmd = `PIVOT -> ${v.primary_bet}`; reason = `Flagged (${up.veto_reasons.join("; ") || "low confidence"}). Pivot to Obsidian #1 edge.`; }
+          if (up.veto_reasons.length || up.confidence < 50) { risk = "CRITICAL"; cmd = `PIVOT -> ${v.primary_bet}`; reason = `Flagged (${up.veto_reasons.join("; ") || "low confidence"}). Pivot to Engine Bola #1 edge.`; }
           else if (up.confidence < 65 || up.model_prob < 52) { risk = "HIGH"; cmd = `PIVOT -> ${v.primary_bet}`; reason = `Excess variance (${up.model_prob}%) vs ${v.primary_bet} (${v.model_prob}%).`; }
           else if (up.confidence < 76 && up.key !== v.market_key) { risk = "MEDIUM"; cmd = `PROTECT -> ${v.primary_bet}`; reason = `Moderate risk; ${v.primary_bet} offers cleaner downside protection.`; }
           else { risk = "SAFE"; cmd = "MAINTAIN"; reason = `Aligned with Obsidian telemetry (${up.model_prob}%, Conf ${up.confidence}/100).`; }
@@ -4890,7 +5437,7 @@ const ObsidianEngine = (() => {
   }
 
   return {
-    fetchMatchesByDate, fetchMatchesNext7Days, analyzeMatchById, scanDailyTopPicks, auditSlip,
+    fetchMatchesByDate, fetchMatchesNext7Days, analyzeMatchById, scanDailyTopPicks, scanParlayPool, buildAutoParlay, auditSlip,
     getUsage, getAfKey, setAfKey, getAfAutoFill, setAfAutoFill, getBankrollConfig, setBankrollConfig,
     buildFactorSnapshot, listPredictions, savePrediction, deletePrediction, settleManual, autoSettlePending,
     recalibrateWeights, resetWeights, getAnalytics, mergeCloudMemory, exportBackup, importBackup
@@ -4924,6 +5471,15 @@ const state = {
   pmFilter: "ALL",
   settlingPredId: null,
   newsIntelByMatch: {},
+  parlayLegsCount: 3,
+  parlayMode: "SAFE",
+  parlayStake: 100,
+  parlayXiOnly: false,
+  parlayExcluded: [],
+  parlayOverrides: {},
+  parlayPool: null,
+  parlayPoolDateKey: null,
+  parlayScanning: false,
 };
 
 const SLIP_PICK_OPTIONS = [
@@ -5071,6 +5627,13 @@ document.addEventListener("DOMContentLoaded", () => {
   initInteractive3DFootball();
   initGlassMicroInteractions();
 
+  const heroParlayBtn = document.getElementById("btn-hero-parlay");
+  if (heroParlayBtn) {
+    heroParlayBtn.addEventListener("click", () => {
+      switchView("parlay");
+    });
+  }
+
   const heroRadarBtn = document.getElementById("btn-hero-radar");
   if (heroRadarBtn) {
     heroRadarBtn.addEventListener("click", () => {
@@ -5078,6 +5641,49 @@ document.addEventListener("DOMContentLoaded", () => {
       runDailyScanner();
     });
   }
+
+  // Auto-Parlay Lab Controls (2-10 legs, strategy modes, stake simulator, XI-only filter)
+  document.querySelectorAll("#parlay-leg-pills .leg-pill").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#parlay-leg-pills .leg-pill").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.parlayLegsCount = parseInt(btn.dataset.legs, 10) || 3;
+      if (state.parlayPool) renderAutoParlay();
+      else ensureParlayPoolLoaded();
+    });
+  });
+  document.querySelectorAll("#parlay-mode-pills .state-pill").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#parlay-mode-pills .state-pill").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.parlayMode = btn.dataset.pmode || "SAFE";
+      state.parlayOverrides = {};
+      if (state.parlayPool) renderAutoParlay();
+      else ensureParlayPoolLoaded();
+    });
+  });
+  const parlayStakeEl = document.getElementById("parlay-stake-input");
+  if (parlayStakeEl) {
+    parlayStakeEl.addEventListener("input", () => {
+      const v = parseFloat(parlayStakeEl.value);
+      state.parlayStake = Number.isFinite(v) && v > 0 ? v : 100;
+      if (state.parlayPool) renderAutoParlay();
+    });
+  }
+  const parlayXiEl = document.getElementById("parlay-xi-only");
+  if (parlayXiEl) {
+    parlayXiEl.addEventListener("change", () => {
+      state.parlayXiOnly = Boolean(parlayXiEl.checked);
+      if (state.parlayPool) renderAutoParlay();
+    });
+  }
+  document.getElementById("btn-run-parlay-scan")?.addEventListener("click", () => runAutoParlayScan(true));
+  document.getElementById("btn-parlay-reset-excl")?.addEventListener("click", () => {
+    state.parlayExcluded = [];
+    state.parlayOverrides = {};
+    renderAutoParlay();
+    showToast("Reset swapped matches & overrides");
+  });
 
   const datePicker = document.getElementById("date-picker");
   datePicker.value = state.currentDate;
@@ -5239,6 +5845,7 @@ function switchView(viewName) {
   });
   document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
   document.getElementById(`view-${viewName}`).classList.add("active");
+  if (viewName === "parlay") ensureParlayPoolLoaded();
   if (viewName === "slip") renderSlipBuilder();
   if (viewName === "memory") loadMemoryView();
 }
@@ -5871,6 +6478,314 @@ async function runDailyScanner() {
     runSilentAutoSettle();
   } catch (e) {
     out.innerHTML = `<div class="surface-card empty-inline">Scanner error: ${esc(e.message)}</div>`;
+  }
+}
+
+// ============================================================
+// AUTO-PARLAY LAB (2–10 LEGS · RECOMMENDED MOST PROBABLE 1XBET)
+// ============================================================
+
+function getParlayDateKey() {
+  return `${state.currentDate}:${state.dateRangeMode || "1D"}`;
+}
+
+function ensureParlayPoolLoaded() {
+  const key = getParlayDateKey();
+  if (state.parlayPool && state.parlayPoolDateKey === key && state.parlayPool.length) {
+    renderAutoParlay();
+    return;
+  }
+  if (!state.parlayScanning) {
+    runAutoParlayScan(false);
+  }
+}
+
+async function runAutoParlayScan(force = false) {
+  if (state.parlayScanning) return;
+  state.parlayScanning = true;
+
+  const statusCard = document.getElementById("parlay-status");
+  const statusText = document.getElementById("parlay-status-text");
+  const statusPct = document.getElementById("parlay-status-pct");
+  const bar = document.getElementById("parlay-progress-bar");
+  const out = document.getElementById("parlay-results");
+  const poolMeta = document.getElementById("parlay-pool-meta");
+
+  statusCard?.classList.remove("hidden");
+  if (bar) bar.style.width = "4%";
+  if (statusPct) statusPct.textContent = "4%";
+  if (statusText) statusText.textContent = "Mengumpulkan jadwal laga prioritas hari ini...";
+
+  try {
+    let flat = [];
+    if (state.matchesPayload && state.matchesPayload.leagues?.length && !force) {
+      flat = state.matchesPayload.leagues.flatMap(l => l.matches || []);
+    } else {
+      const payload = state.dateRangeMode === "7D"
+        ? await ObsidianEngine.fetchMatchesNext7Days(state.currentDate, force)
+        : await ObsidianEngine.fetchMatchesByDate(state.currentDate, force);
+      flat = (payload.leagues || []).flatMap(l => l.matches || []);
+    }
+
+    // If fewer than 12 open non-finished fixtures remain today, automatically append tomorrow's slate so 10-leg parlays always work
+    const openNow = flat.filter(m => !m.finished && !String(m.match_id).startsWith("espn:"));
+    if (openNow.length < 12 && state.dateRangeMode !== "7D") {
+      if (statusText) statusText.textContent = "Menambahkan jadwal besok agar pool 10-leg tetap penuh...";
+      try {
+        const nextDate = todayISO(1);
+        const tmrw = await ObsidianEngine.fetchMatchesByDate(nextDate, false);
+        const tFlat = (tmrw.leagues || []).flatMap(l => l.matches || []).filter(m => !m.finished);
+        const seen = new Set(flat.map(m => String(m.match_id)));
+        tFlat.forEach(m => { if (!seen.has(String(m.match_id))) flat.push(m); });
+      } catch {}
+    }
+
+    const res = await ObsidianEngine.scanParlayPool(flat, 24, (done, total) => {
+      const pct = Math.max(5, Math.round((done / Math.max(1, total)) * 100));
+      if (bar) bar.style.width = `${pct}%`;
+      if (statusPct) statusPct.textContent = `${pct}%`;
+      if (statusText) statusText.textContent = `Menganalisis ${done} / ${total} laga prioritas (Dixon-Coles xG, Corners & 1xBet markets)...`;
+    });
+
+    state.parlayPool = res.analyses || [];
+    state.parlayPoolDateKey = getParlayDateKey();
+    if (force) {
+      state.parlayExcluded = [];
+      state.parlayOverrides = {};
+    }
+    if (poolMeta) poolMeta.textContent = `Pool: ${state.parlayPool.length} matches analyzed`;
+    statusCard?.classList.add("hidden");
+    renderAutoParlay();
+    refreshStatus();
+  } catch (e) {
+    statusCard?.classList.add("hidden");
+    if (out) out.innerHTML = `<div class="surface-card empty-inline">Gagal memindai pool parlay: ${esc(e.message || e)}</div>`;
+  } finally {
+    state.parlayScanning = false;
+  }
+}
+
+function renderAutoParlay() {
+  const out = document.getElementById("parlay-results");
+  const poolMeta = document.getElementById("parlay-pool-meta");
+  const resetExclBtn = document.getElementById("btn-parlay-reset-excl");
+  if (!out) return;
+
+  const hasChanges = (state.parlayExcluded?.length || 0) > 0 || Object.keys(state.parlayOverrides || {}).length > 0;
+  resetExclBtn?.classList.toggle("hidden", !hasChanges);
+
+  const pool = state.parlayPool || [];
+  if (!pool.length) {
+    out.innerHTML = `<div class="surface-card empty-inline">Belum ada pertandingan terbuka yang tersedia untuk disusun. Klik <strong>Refresh Parlay Pool</strong> atau pilih tanggal lain.</div>`;
+    return;
+  }
+
+  const ticket = ObsidianEngine.buildAutoParlay(pool, {
+    legs: state.parlayLegsCount,
+    mode: state.parlayMode,
+    excludeIds: state.parlayExcluded,
+    marketOverrides: state.parlayOverrides,
+    confirmedXiOnly: state.parlayXiOnly,
+  });
+
+  if (poolMeta) {
+    poolMeta.textContent = `Pool: ${ticket.available_pool} eligible · ${ticket.confirmed_xi_count}/${ticket.legs.length} XI✓`;
+  }
+
+  if (!ticket.legs.length) {
+    out.innerHTML = `
+      <div class="surface-card empty-inline">
+        ${state.parlayXiOnly
+          ? `Belum ada laga dengan <strong>Confirmed Starting XI</strong> resmi di pool saat ini (Starting XI biasanya rilis T-75' s/d T-60' sebelum kickoff). Matikan filter Confirmed XI untuk melihat proyeksi terbaik sekarang.`
+          : `Semua pertandingan di pool sudah dikeluarkan. Klik <strong>Reset Swapped</strong> untuk mengembalikan daftar rekomendasi.`}
+      </div>
+    `;
+    return;
+  }
+
+  const stake = Number(state.parlayStake) > 0 ? Number(state.parlayStake) : 100;
+  const estPayout = stake * ticket.combined_odds;
+  const netProfit = Math.max(0, estPayout - stake);
+  const oneInN = ticket.combined_win_prob > 0 ? Math.max(1, Math.round(100 / ticket.combined_win_prob)) : "—";
+  const fmtMoney = (n) => n >= 1000 ? n.toLocaleString("en-US", { maximumFractionDigits: 2 }) : n.toFixed(2);
+  const preXiCount = ticket.legs.length - ticket.confirmed_xi_count;
+  const modeLabel = ticket.mode === "SAFE" ? "Most Probable (Safe)" : ticket.mode === "BALANCED" ? "Smart Value" : "Goals & Corners";
+
+  out.innerHTML = `
+    ${preXiCount > 0 ? `
+      <div class="xi-gate-banner">
+        <span class="xi-gate-dot"></span>
+        <div>
+          <div class="xi-gate-title">⏳ ${preXiCount} DARI ${ticket.legs.length} LEG MASIH PRE-XI</div>
+          <div class="xi-gate-desc">Laga bertanda <strong>⏳ PRE-XI</strong> belum menyertakan susunan pemain resmi (rilis T-75' s/d T-60' sebelum kickoff). Kamu bisa klik <strong>✕</strong> untuk mengganti laga atau aktifkan filter <strong>Confirmed Starting XI</strong> mendekati jam kickoff.</div>
+        </div>
+      </div>
+    ` : `
+      <div class="xi-gate-banner confirmed">
+        <span class="xi-gate-dot"></span>
+        <div>
+          <div class="xi-gate-title">✓ SEMUA ${ticket.legs.length} LEG SUDAH CONFIRMED STARTING XI</div>
+          <div class="xi-gate-desc">Seluruh pertandingan dalam tiket parlay ini sudah memasukkan susunan pemain starter resmi 11v11.</div>
+        </div>
+      </div>
+    `}
+
+    <div class="parlay-summary-grid">
+      <div class="kpi-card">
+        <div class="kpi-k">Combined Odds (${ticket.legs.length} Legs)</div>
+        <div class="kpi-v text-ice">${ticket.combined_odds.toFixed(2)}x</div>
+        <div class="kpi-s">${ticket.live_odds_count > 0 ? `${ticket.live_odds_count} Live · ${ticket.legs.length - ticket.live_odds_count} Est. Fair` : "Estimated Fair Odds"}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-k">Exact Clean-Win Prob</div>
+        <div class="kpi-v ${ticket.combined_win_prob >= 40 ? "text-emerald" : ticket.combined_win_prob >= 18 ? "text-ice" : ticket.combined_win_prob >= 8 ? "text-amber" : "text-coral"}">${ticket.combined_win_prob}%</div>
+        <div class="kpi-s">Avg ${ticket.avg_leg_prob}% / leg · ~1 in ${oneInN}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-k">Non-Loss (Push Shield)</div>
+        <div class="kpi-v text-emerald">${ticket.combined_survival_prob}%</div>
+        <div class="kpi-s">Probabilitas 0 leg kalah (incl. refund)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-k">Est. Payout (Stake ${fmtMoney(stake)})</div>
+        <div class="kpi-v" style="color:var(--gold)">${fmtMoney(estPayout)}</div>
+        <div class="kpi-s text-emerald">+${fmtMoney(netProfit)} net profit</div>
+      </div>
+    </div>
+
+    <div class="parlay-risk-bar">
+      <div class="parlay-risk-left">
+        <span class="tag ${ticket.risk_profile.cls}">${esc(ticket.risk_profile.label)}</span>
+        <span>${esc(ticket.risk_profile.advice)}</span>
+      </div>
+      <div class="parlay-actions-bar">
+        <button id="btn-parlay-copy" type="button" class="btn btn-secondary btn-xs">Copy 1xBet Ticket</button>
+        <button id="btn-parlay-to-slip" type="button" class="btn btn-primary btn-xs">Open in Slip Auditor →</button>
+      </div>
+    </div>
+
+    ${ticket.legs.length < ticket.requested_legs ? `
+      <div class="guard-banner" style="margin-bottom:14px;">
+        <span>Hanya ditemukan <strong>${ticket.legs.length}</strong> laga yang tersedia dari target <strong>${ticket.requested_legs}</strong> leg. Klik <strong>Reset Swapped</strong> atau matikan filter Confirmed XI untuk menambah pool.</span>
+      </div>
+    ` : ""}
+
+    <div class="parlay-ticket-list">
+      ${ticket.legs.map((leg) => {
+        const m = leg.market;
+        const xiBadge = leg.xi_confirmed
+          ? `<span class="tag tag-emerald" style="font-size:10px;padding:1px 7px">XI✓ RESMI</span>`
+          : `<span class="tag tag-gold" style="font-size:10px;padding:1px 7px">⏳ PRE-XI</span>`;
+        const pushBit = m.push_prob > 0 ? ` · Shield ${m.push_prob}%` : "";
+        return `
+          <div class="parlay-leg-card">
+            <div class="parlay-leg-num">${leg.index}</div>
+
+            <div class="parlay-leg-match" data-jump-parlay-match="${esc(leg.match_id)}" title="Klik untuk buka audit lengkap pertandingan ini">
+              <div class="parlay-leg-topmeta">
+                <span>${esc(leg.league)}</span>
+                <span>·</span>
+                <span class="mono">${esc(fmtKickoff(leg.kickoff_utc))}</span>
+                ${xiBadge}
+              </div>
+              <div class="parlay-leg-teams">
+                ${leg.home_logo ? `<img src="${esc(leg.home_logo)}" alt="" onerror="this.style.display='none'" />` : ""}
+                <span>${esc(leg.home)}</span>
+                <span style="opacity:.45;font-weight:400">vs</span>
+                ${leg.away_logo ? `<img src="${esc(leg.away_logo)}" alt="" onerror="this.style.display='none'" />` : ""}
+                <span>${esc(leg.away)}</span>
+              </div>
+              <div class="parlay-leg-sub mono">Proj FT ${esc(leg.projected_score)} · xG ${leg.total_lambda.toFixed(1)} λ · Corners ${leg.corners_lambda.toFixed(1)} λ</div>
+            </div>
+
+            <div class="parlay-leg-pick">
+              <div class="parlay-pick-badge">${esc(m.label)}</div>
+              <select class="parlay-market-select" data-parlay-override="${esc(leg.match_id)}" aria-label="Swap market for ${esc(leg.home)} vs ${esc(leg.away)}">
+                ${leg.alternatives.map((alt) => `
+                  <option value="${esc(alt.key)}" ${alt.key === m.key ? "selected" : ""}>${esc(alt.label)} (${alt.model_prob}% · ${alt.bookmaker_odds || alt.fair_odds})</option>
+                `).join("")}
+              </select>
+            </div>
+
+            <div class="parlay-leg-stats">
+              <div class="parlay-prob-box">
+                <div class="parlay-prob-val">${m.model_prob}%</div>
+                <div class="parlay-odds-sub">${leg.odds_source === "LIVE" ? "Odds" : "Fair"} <strong>${leg.used_odds}</strong>${pushBit}</div>
+              </div>
+              <button type="button" class="parlay-swap-btn" data-parlay-exclude="${esc(leg.match_id)}" title="Tukar laga ini dengan kandidat terbaik berikutnya">&times;</button>
+            </div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+
+  // Wire per-leg interactions
+  out.querySelectorAll("[data-jump-parlay-match]").forEach((el) => {
+    el.addEventListener("click", () => {
+      switchView("matches");
+      selectMatch(el.dataset.jumpParlayMatch);
+    });
+  });
+
+  out.querySelectorAll("[data-parlay-override]").forEach((sel) => {
+    sel.addEventListener("change", () => {
+      state.parlayOverrides[sel.dataset.parlayOverride] = sel.value;
+      renderAutoParlay();
+    });
+  });
+
+  out.querySelectorAll("[data-parlay-exclude]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = String(btn.dataset.parlayExclude);
+      if (!state.parlayExcluded.includes(id)) state.parlayExcluded.push(id);
+      renderAutoParlay();
+      showToast("Leg ditukar dengan kandidat probabilitas terbaik berikutnya");
+    });
+  });
+
+  document.getElementById("btn-parlay-to-slip")?.addEventListener("click", () => {
+    loadAutoParlayIntoSlip(ticket);
+  });
+
+  document.getElementById("btn-parlay-copy")?.addEventListener("click", () => {
+    copyAutoParlayTicket(ticket, stake, modeLabel);
+  });
+}
+
+function loadAutoParlayIntoSlip(ticket) {
+  if (!ticket || !ticket.legs?.length) return;
+  state.slipLegs = ticket.legs.map((leg) => ({
+    match_id: leg.match_id,
+    home_name: leg.home,
+    away_name: leg.away,
+    league_name: leg.league,
+    user_pick_key: leg.market.key,
+  }));
+  updateSlipBadge();
+  renderMatchesList();
+  switchView("slip");
+  showToast(`Loaded ${ticket.legs.length}-leg Auto Parlay into Slip Auditor`);
+}
+
+function copyAutoParlayTicket(ticket, stake, modeLabel) {
+  if (!ticket || !ticket.legs?.length) return;
+  const estPayout = (stake * ticket.combined_odds).toFixed(2);
+  const text = [
+    `ENGINE BOLA · AUTO PARLAY (${ticket.legs.length} LEGS · ${modeLabel})`,
+    `Combined Odds: ${ticket.combined_odds.toFixed(2)}x | Win Prob: ${ticket.combined_win_prob}% | Non-Loss: ${ticket.combined_survival_prob}%`,
+    `Stake: ${stake} -> Est. Payout: ${estPayout}`,
+    `--------------------------------`,
+    ...ticket.legs.map((l) => `${l.index}. ${l.home} vs ${l.away} (${l.league})\n   Pick: ${l.market.label} | ${l.market.model_prob}% | ${l.odds_source === "LIVE" ? "Odds" : "Fair"} ${l.used_odds} | ${l.xi_confirmed ? "XI✓" : "Pre-XI"}`),
+    `--------------------------------`,
+    `Channel: https://t.me/enginebola`,
+  ].join("\n");
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast("1xBet Parlay Ticket copied to clipboard!"))
+      .catch(() => showToast("Unable to copy — select manually."));
+  } else {
+    showToast("Clipboard unavailable in this browser.");
   }
 }
 
