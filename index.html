@@ -2642,7 +2642,18 @@ const ObsidianEngine = (() => {
   async function fetchMatchDetailsRaw(matchId, force = false) {
     const ck = `md:${matchId}`;
     if (!force) { const h = cacheGet(ck); if (h) return h; }
-    const d = await fetchJson(`${FOTMOB_BASE}/matchDetails?matchId=${matchId}`);
+    let d = null;
+    // In browser: use VIP Cloudflare Worker proxy if configured & logged in (CORS-free Confirmed XI + Live Stats!)
+    try {
+      const gateUrl = (typeof window !== "undefined" && window.OBSIDIAN_AUTH_GATE_URL) ? String(window.OBSIDIAN_AUTH_GATE_URL).replace(/\/$/, "") : "";
+      const sessTok = (typeof localStorage !== "undefined") ? (localStorage.getItem("obsidian_v18_web_session") || "") : "";
+      if (gateUrl && sessTok && /^\d{4,12}$/.test(String(matchId))) {
+        d = await fetchJson(`${gateUrl}/api/match-details?matchId=${matchId}`, { Authorization: `Bearer ${sessTok}` });
+      }
+    } catch { d = null; }
+    if (!d) {
+      d = await fetchJson(`${FOTMOB_BASE}/matchDetails?matchId=${matchId}`);
+    }
     recordCall("fotmob");
     cacheSet(ck, d, d.ongoing ? 40 : 600);
     return d;
@@ -3107,9 +3118,12 @@ const ObsidianEngine = (() => {
     // STRICT FALLBACK ENRICHMENT: Only invokes API-Football when requested (or Auto-Fill enabled) AND real DATA GAPs exist!
     let afEnrich = null;
     const luTypeRaw0 = String(content.lineup?.lineupType || "").toLowerCase();
+    const hStarterCount = content.lineup?.homeTeam?.starters?.length || 0;
+    const aStarterCount = content.lineup?.awayTeam?.starters?.length || 0;
+    const fotmobXiOfficial = (hStarterCount >= 11 && aStarterCount >= 11 && luTypeRaw0 !== "" && !luTypeRaw0.includes("predict") && !luTypeRaw0.includes("expect")) || luTypeRaw0.includes("confirm") || luTypeRaw0 === "standard";
     const needOdds = !espnOdds;
     const needInjuries = !raw && hUnav.length === 0 && aUnav.length === 0;
-    const needLineups = !luTypeRaw0.includes("confirm");
+    const needLineups = !fotmobXiOfficial;
     if ((fallbackAf || getAfAutoFill()) && (needOdds || needInjuries || needLineups)) {
       afEnrich = await fetchApiFootballEnrichment(hName, aName, matchDate, { needOdds, needInjuries, needLineups });
       if (afEnrich) {
@@ -3157,10 +3171,13 @@ const ObsidianEngine = (() => {
     const am = buildMetrics(aSS, aTbl, aRest, aUnav, false);
     const weights = getWeights();
 
-    // Lineup Confirmation Status (T-60' Gate)
-    const luTypeRaw = String(content.lineup?.lineupType || "").toLowerCase();
-    const xiConfirmed = luTypeRaw.includes("confirm") || !!afEnrich?.xi_confirmed;
-    const xiStatus = xiConfirmed ? "CONFIRMED XI" : hLu.formation ? "PROJECTED XI (WAIT T-60')" : "LINEUP DATA GAP";
+    // Lineup Confirmation Status (T-60' Gate) — FotMob marks official XIs as lineupType="standard" (pre-match="predicted")
+    const xiConfirmed = fotmobXiOfficial || !!afEnrich?.xi_confirmed;
+    const xiStatus = xiConfirmed
+      ? `CONFIRMED XI (${hStarterCount >= 11 ? `${hStarterCount}v${aStarterCount}` : "OFFICIAL"})`
+      : hLu.formation
+        ? "PROJECTED XI (WAIT T-60')"
+        : "LINEUP DATA GAP";
     const lineupConf = xiConfirmed ? 94 : hLu.formation ? 74 : 55;
 
     let dp = 0;
@@ -4350,8 +4367,9 @@ const ObsidianEngine = (() => {
   <script>
 /* OBSIDIAN DIAMOND V18.5 SOVEREIGN PRO — Live UI Controller */
 
-// Live Cloudflare Worker URL for the Sovereign Access Gate (VIP Web Dashboard lock)
+// Live Cloudflare Worker URL for the Sovereign Access Gate (VIP Web Dashboard lock + Live XI Proxy)
 const OBSIDIAN_AUTH_GATE_URL = "https://purple-recipe-b210.arnoldkarstark.workers.dev";
+window.OBSIDIAN_AUTH_GATE_URL = OBSIDIAN_AUTH_GATE_URL;
 const AUTH_SESSION_KEY = "obsidian_v18_web_session";
 
 const state = {
@@ -4893,10 +4911,17 @@ function renderAnalysis(a) {
       <div class="xi-gate-banner ${a.xi_confirmed ? "confirmed" : ""}">
         <span class="xi-gate-dot"></span>
         <div>
-          <div class="xi-gate-title">${a.xi_confirmed ? "✓ CONFIRMED STARTING XI — Susunan Pemain Resmi Masuk Model" : "⏳ PRE-XI PROJECTION — BELUM TERMASUK PREDIKSI LINI PEMAIN RESMI"}</div>
+          <div class="xi-gate-title">${a.xi_confirmed
+            ? `✓ ${esc(a.xi_status)} — Susunan Pemain Resmi Masuk Model`
+            : (a.is_live || a.finished)
+              ? "⏳ LIVE / FT — DATA LINI PEMAIN BELUM TERBACA DI BROWSER"
+              : "⏳ PRE-XI PROJECTION — BELUM TERMASUK PREDIKSI LINI PEMAIN RESMI"
+          }</div>
           <div class="xi-gate-desc">${a.xi_confirmed
             ? `Susunan pemain resmi sudah terkonfirmasi (${esc(a.home.formation)} vs ${esc(a.away.formation)}). Eksekusi penuh diizinkan.`
-            : `Prediksi ini masih berdasarkan statistik tim, xG, & market odds (status: ${esc(a.xi_status)}). Daftar lini pemain resmi (Starting XI) rilis <strong>T-75' s/d T-60' sebelum kickoff</strong> — tunggu konfirmasi XI atau cek alert <strong>CONFIRMED XI</strong> di Telegram sebelum eksekusi final.`
+            : (a.is_live || a.finished)
+              ? `Pertandingan sudah berjalan/selesai, namun feed browser belum menerima daftar Starting XI (${esc(a.xi_status)}). Klik <strong>Refresh</strong> (pastikan Cloudflare Worker terbaru sudah di-deploy agar Confirmed XI & Live Stats masuk bebas CORS).`
+              : `Prediksi ini masih berdasarkan statistik tim, xG, & market odds (status: ${esc(a.xi_status)}). Daftar lini pemain resmi (Starting XI) rilis <strong>T-75' s/d T-60' sebelum kickoff</strong> — tunggu konfirmasi XI atau cek alert <strong>CONFIRMED XI</strong> di Telegram sebelum eksekusi final.`
           }</div>
         </div>
       </div>
@@ -5749,7 +5774,7 @@ function initAuthGate() {
     overlay.classList.add("hidden");
     showError("");
     if (userLabel && user?.name) {
-      userLabel.textContent = user.role === "owner" ? `${user.name} · Owner` : user.name;
+      userLabel.textContent = (user.role === "owner" && !/owner/i.test(user.name)) ? `${user.name} · Owner` : user.name;
     }
     signOutBtn?.classList.remove("hidden");
   };
