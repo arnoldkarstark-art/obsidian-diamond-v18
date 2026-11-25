@@ -321,120 +321,120 @@ function newsTagIndo(tag) {
 }
 
 function humanizeMarket(key, fallbackLabel, home, away) {
-  const h = home || "Tuan Rumah";
-  const a = away || "Tim Tamu";
+  const h = home || "Team 1";
+  const a = away || "Team 2";
   const map = {
     over_1_5: {
-      title: "Minimal 2 Gol (Over 1.5)",
-      explain: "Menang jika total skor laga mencapai 2 gol atau lebih.",
+      title: "Total Over (1.5)",
+      explain: "Menang jika total gol pertandingan minimal 2 gol.",
     },
     over_2_0_asian: {
-      title: "Over 2.0 Gol (Proteksi Seri)",
-      explain: "3+ gol menang penuh · tepat 2 gol modal kembali utuh.",
+      title: "Total Over (2)",
+      explain: "3+ gol menang penuh · tepat 2 gol refund (modal kembali).",
     },
     over_2_25: {
-      title: "Over 2.25 Gol",
+      title: "Asian Total Over (2.25)",
       explain: "3+ gol menang penuh · tepat 2 gol setengah modal kembali.",
     },
     over_2_5: {
-      title: "Minimal 3 Gol (Over 2.5)",
+      title: "Total Over (2.5)",
       explain: "Menang jika total gol kedua tim minimal 3 gol.",
     },
     over_3_5: {
-      title: "Minimal 4 Gol (Over 3.5)",
-      explain: "Laga sangat terbuka — menang jika tercipta minimal 4 gol.",
+      title: "Total Over (3.5)",
+      explain: "Menang jika tercipta minimal 4 gol sepanjang laga.",
     },
     under_2_5: {
-      title: "Maksimal 2 Gol (Under 2.5)",
-      explain: "Menang jika laga ketat dengan total maksimal 2 gol.",
+      title: "Total Under (2.5)",
+      explain: "Menang jika total gol maksimal 2 gol (laga ketat).",
     },
     under_2_75: {
-      title: "Under 2.75 Gol",
+      title: "Asian Total Under (2.75)",
       explain: "0–2 gol menang penuh · tepat 3 gol setengah modal kembali.",
     },
     under_3_0_asian: {
-      title: "Under 3.0 Gol (Proteksi Seri)",
-      explain: "0–2 gol menang penuh · tepat 3 gol modal kembali utuh.",
+      title: "Total Under (3)",
+      explain: "0–2 gol menang penuh · tepat 3 gol refund (modal kembali).",
     },
     under_3_5: {
-      title: "Maksimal 3 Gol (Under 3.5)",
-      explain: "Menang jika total gol pertandingan tidak lebih dari 3 gol.",
+      title: "Total Under (3.5)",
+      explain: "Menang jika total gol tidak lebih dari 3 gol.",
     },
     btts_yes: {
-      title: "Kedua Tim Cetak Gol (BTTS Ya)",
-      explain: `Menang jika ${h} dan ${a} sama-sama mencetak minimal 1 gol.`,
+      title: "BTTS Yes",
+      explain: `Menang jika ${h} dan ${a} sama-sama cetak gol (Both Teams To Score).`,
     },
     btts_no: {
-      title: "Salah Satu Tim Tanpa Gol (BTTS Tidak)",
+      title: "BTTS No",
       explain: "Menang jika minimal satu tim gagal mencetak gol.",
     },
     "1h_over_0_5": {
-      title: "Minimal 1 Gol Babak Pertama",
-      explain: "Menang jika sudah ada gol sebelum turun minum (HT).",
+      title: "1st Half · Total Over (0.5)",
+      explain: "Menang jika sudah ada minimal 1 gol di babak pertama (HT).",
     },
     "1h_over_1_5": {
-      title: "Minimal 2 Gol Babak Pertama",
+      title: "1st Half · Total Over (1.5)",
       explain: "Menang jika tercipta minimal 2 gol di babak pertama.",
     },
     home_over_0_5: {
-      title: `${h} Cetak Minimal 1 Gol`,
-      explain: `Menang selama ${h} berhasil menjebol gawang lawan minimal 1 kali.`,
+      title: `Individual Total 1 Over (0.5) · ${h}`,
+      explain: `Menang selama ${h} mencetak minimal 1 gol.`,
     },
     away_over_0_5: {
-      title: `${a} Cetak Minimal 1 Gol`,
-      explain: `Menang selama ${a} berhasil menjebol gawang lawan minimal 1 kali.`,
+      title: `Individual Total 2 Over (0.5) · ${a}`,
+      explain: `Menang selama ${a} mencetak minimal 1 gol.`,
     },
     home_cs_yes: {
-      title: `${h} Clean Sheet (Tanpa Kebobolan)`,
-      explain: `Menang jika ${a} gagal mencetak gol sepanjang pertandingan.`,
+      title: `${h} Clean Sheet - Yes (IT2 Under 0.5)`,
+      explain: `Menang jika ${a} gagal mencetak gol (0 gol).`,
     },
     away_cs_yes: {
-      title: `${a} Clean Sheet (Tanpa Kebobolan)`,
-      explain: `Menang jika ${h} gagal mencetak gol sepanjang pertandingan.`,
+      title: `${a} Clean Sheet - Yes (IT1 Under 0.5)`,
+      explain: `Menang jika ${h} gagal mencetak gol (0 gol).`,
     },
     "1x2_home": {
-      title: `${h} Menang`,
+      title: `W1 (${h} Win)`,
       explain: `Menang jika ${h} unggul di skor akhir waktu normal.`,
     },
     "1x2_draw": {
-      title: "Hasil Seri (Draw)",
-      explain: "Menang jika pertandingan berakhir imbang di waktu normal.",
+      title: "X (Draw)",
+      explain: "Menang jika skor berakhir imbang di waktu normal.",
     },
     "1x2_away": {
-      title: `${a} Menang`,
+      title: `W2 (${a} Win)`,
       explain: `Menang jika ${a} unggul di skor akhir waktu normal.`,
     },
     dc_1x: {
-      title: `${h} Menang atau Seri (1X)`,
-      explain: `Menang selama ${h} tidak kalah di waktu normal.`,
+      title: `Double Chance 1X (${h})`,
+      explain: `Menang jika ${h} menang atau seri (tidak kalah).`,
     },
     dc_x2: {
-      title: `${a} Menang atau Seri (X2)`,
-      explain: `Menang selama ${a} tidak kalah di waktu normal.`,
+      title: `Double Chance 2X (${a})`,
+      explain: `Menang jika ${a} menang atau seri (tidak kalah).`,
     },
     home_dnb: {
-      title: `${h} Menang (Seri Modal Kembali)`,
-      explain: `${h} menang = profit · jika seri, modal dikembalikan utuh.`,
+      title: `Handicap 1 (0) · ${h} DNB`,
+      explain: `${h} menang = profit · jika seri = refund (modal kembali).`,
     },
     away_dnb: {
-      title: `${a} Menang (Seri Modal Kembali)`,
-      explain: `${a} menang = profit · jika seri, modal dikembalikan utuh.`,
+      title: `Handicap 2 (0) · ${a} DNB`,
+      explain: `${a} menang = profit · jika seri = refund (modal kembali).`,
     },
     home_ah_m025: {
-      title: `${h} Handicap -0.25`,
+      title: `Asian Handicap 1 (-0.25) · ${h}`,
       explain: `${h} menang = profit penuh · seri = setengah modal kembali.`,
     },
     away_ah_p025: {
-      title: `${a} Handicap +0.25`,
+      title: `Asian Handicap 2 (+0.25) · ${a}`,
       explain: `${a} menang = profit penuh · seri = setengah profit.`,
     },
     home_ah_p1: {
-      title: `${h} +1.0 (Kalah 1 Gol Modal Kembali)`,
-      explain: `${h} menang/seri = profit · kalah tepat 1 gol = modal kembali utuh.`,
+      title: `Asian Handicap 1 (+1) · ${h}`,
+      explain: `${h} menang/seri = profit · kalah tepat 1 gol = refund.`,
     },
     away_ah_p1: {
-      title: `${a} +1.0 (Kalah 1 Gol Modal Kembali)`,
-      explain: `${a} menang/seri = profit · kalah tepat 1 gol = modal kembali utuh.`,
+      title: `Asian Handicap 2 (+1) · ${a}`,
+      explain: `${a} menang/seri = profit · kalah tepat 1 gol = refund.`,
     },
   };
   if (map[key]) return map[key];
@@ -442,15 +442,31 @@ function humanizeMarket(key, fallbackLabel, home, away) {
   if (cm) {
     const n = Number(cm[1]) + 1;
     return {
-      title: `Minimal ${n} Korner (Over ${cm[1]}.5)`,
-      explain: `Menang jika total tendangan sudut kedua tim minimal ${n} korner.`,
+      title: `Corners · Total Over (${cm[1]}.5)`,
+      explain: `Menang jika total korner kedua tim minimal ${n} korner.`,
     };
   }
   const cu = String(key || "").match(/^corners_under_(\d+)_5$/);
   if (cu) {
     return {
-      title: `Maksimal ${cu[1]} Korner (Under ${cu[1]}.5)`,
-      explain: `Menang jika total tendangan sudut tidak lebih dari ${cu[1]} korner.`,
+      title: `Corners · Total Under (${cu[1]}.5)`,
+      explain: `Menang jika total korner tidak lebih dari ${cu[1]} korner.`,
+    };
+  }
+  const ch = String(key || "").match(/^home_corners_over_(\d+)_5$/);
+  if (ch) {
+    const n = Number(ch[1]) + 1;
+    return {
+      title: `Corners · IT1 Over (${ch[1]}.5) · ${h}`,
+      explain: `Menang jika ${h} meraih minimal ${n} korner.`,
+    };
+  }
+  const ca = String(key || "").match(/^away_corners_over_(\d+)_5$/);
+  if (ca) {
+    const n = Number(ca[1]) + 1;
+    return {
+      title: `Corners · IT2 Over (${ca[1]}.5) · ${a}`,
+      explain: `Menang jika ${a} meraih minimal ${n} korner.`,
     };
   }
   return { title: fallbackLabel || key, explain: "" };
@@ -603,17 +619,17 @@ async function main() {
         if (spInfo.explain) card.push(`   <i>${escHtml(spInfo.explain)}</i>`);
       }
       const priceNote = v.bookmaker_odds
-        ? ` · Pasar <b>${v.bookmaker_odds}</b>`
-        : ` · Fair <b>${v.fair_odds}</b>`;
+        ? ` · Odds <b>${v.bookmaker_odds}</b>`
+        : ` · Fair Odds <b>${v.fair_odds}</b>`;
       card.push(`▸ <b>Pilihan Utama: ${escHtml(priInfo.title)}</b> (<b>${Math.round(v.model_prob)}%</b>${priceNote})`);
       if (priInfo.explain && (!sp || sp.key !== v.market_key)) {
         card.push(`   <i>${escHtml(priInfo.explain)}</i>`);
       }
       card.push(`▸ Porsi Modal: <b>${escHtml(stakeDescriptor(v.stake_units))}</b> · Est. <b>~${a.goal_model.total_lambda.toFixed(1)} gol</b>`);
       if (cm.high_volume_10_15) {
-        const cParts = [`Over 10.5 (${Math.round(cm.p_over_10_5)}%)`, `Over 11.5 (${Math.round(cm.p_over_11_5)}%)`, `Over 12.5 (${Math.round(cm.p_over_12_5)}%)`];
-        if (cm.p_over_13_5 >= 35) cParts.push(`Over 13.5 (${Math.round(cm.p_over_13_5)}%)`);
-        card.push(`▸ Radar Korner (~${Math.round(cm.total_corners_lambda)} korner): ${cParts.join(" · ")}`);
+        const cParts = [`Total Over (10.5) <b>${Math.round(cm.p_over_10_5)}%</b>`, `Over (11.5) <b>${Math.round(cm.p_over_11_5)}%</b>`, `Over (12.5) <b>${Math.round(cm.p_over_12_5)}%</b>`];
+        if (cm.p_over_13_5 >= 35) cParts.push(`Over (13.5) <b>${Math.round(cm.p_over_13_5)}%</b>`);
+        card.push(`▸ Corners (~${Math.round(cm.total_corners_lambda)} est.): ${cParts.join(" · ")}`);
       }
       xiLines.push("");
       xiLines.push(`<blockquote>${card.join("\n")}</blockquote>`);
@@ -679,7 +695,7 @@ async function main() {
     away: c.analysis.away.name,
     kickoff_dual: fmtKickoffDual(c.analysis.kickoff_utc),
     total_corners_lambda: c.total_corners_lambda,
-    market: c.market?.label || "Over 10.5 Total Corners",
+    market: c.market?.label || "Corners · Total Over (10.5)",
     model_prob: c.market?.model_prob ?? c.p_over_10_5,
     p_over_10_5: c.p_over_10_5,
     p_over_11_5: c.p_over_11_5,
@@ -773,8 +789,8 @@ async function main() {
       ? `Susunan Pemain: <b>Resmi Terkonfirmasi ✓</b>`
       : `Susunan Pemain: <i>Menunggu rilis resmi (T-60' sebelum kickoff)</i>`;
     const priceBit = p.bookmaker_odds
-      ? ` · Pasar <b>${p.bookmaker_odds}</b>`
-      : ` · Harga Wajar <b>${p.fair_odds}</b>`;
+      ? ` · Odds <b>${p.bookmaker_odds}</b>`
+      : ` · Fair Odds <b>${p.fair_odds}</b>`;
     const card = [
       `<b>${idx + 1}. ${escHtml(p.home)} vs ${escHtml(p.away)}</b>`,
       `${escHtml(p.league)} · <code>${escHtml(p.kickoff_dual)}</code>`,
@@ -818,26 +834,26 @@ async function main() {
 
   if (highCorners1015.length) {
     lines.push("");
-    lines.push(`<b>RADAR KORNER TINGGI (10–15+ KORNER)</b>`);
+    lines.push(`<b>RADAR CORNERS TINGGI (10–15+ CORNERS)</b>`);
     lines.push(`<i>Laga dengan intensitas serangan sayap &amp; potensi tendangan sudut tinggi.</i>`);
     const cRows = highCorners1015.map((c) => {
       const tiers = [
-        `Over 10.5 (<b>${Math.round(c.p_over_10_5)}%</b>)`,
-        `Over 11.5 (<b>${Math.round(c.p_over_11_5)}%</b>)`,
-        `Over 12.5 (<b>${Math.round(c.p_over_12_5)}%</b>)`,
+        `Total Over (10.5) <b>${Math.round(c.p_over_10_5)}%</b>`,
+        `Over (11.5) <b>${Math.round(c.p_over_11_5)}%</b>`,
+        `Over (12.5) <b>${Math.round(c.p_over_12_5)}%</b>`,
       ];
-      if (c.p_over_13_5 >= 35) tiers.push(`Over 13.5 (<b>${Math.round(c.p_over_13_5)}%</b>)`);
-      if (c.p_over_14_5 >= 30) tiers.push(`Over 14.5 (<b>${Math.round(c.p_over_14_5)}%</b>)`);
-      return `<b>${escHtml(c.home)} vs ${escHtml(c.away)}</b> · <i>${escHtml(c.league)}</i>\nEst. <b>~${Math.round(c.total_corners_lambda)} korner</b> → ${tiers.join(" · ")}`;
+      if (c.p_over_13_5 >= 35) tiers.push(`Over (13.5) <b>${Math.round(c.p_over_13_5)}%</b>`);
+      if (c.p_over_14_5 >= 30) tiers.push(`Over (14.5) <b>${Math.round(c.p_over_14_5)}%</b>`);
+      return `<b>${escHtml(c.home)} vs ${escHtml(c.away)}</b> · <i>${escHtml(c.league)}</i>\nEst. <b>~${Math.round(c.total_corners_lambda)} corners</b> → ${tiers.join(" · ")}`;
     });
     lines.push("");
     lines.push(`<blockquote>${cRows.join("\n\n").replace(/\n\n/g, "\n—\n")}</blockquote>`);
   } else if (topCorners.length) {
     lines.push("");
-    lines.push(`<b>PILIHAN KORNER TERBAIK</b>`);
+    lines.push(`<b>PILIHAN CORNERS TERBAIK</b>`);
     const cRows = topCorners.map((c) => {
       const info = humanizeMarket(c.market_key, c.market, c.home, c.away);
-      return `• <b>${escHtml(c.home)} vs ${escHtml(c.away)}</b> — ${escHtml(info.title)} (<b>${Math.round(c.model_prob)}%</b>)`;
+      return `• <b>${escHtml(c.home)} vs ${escHtml(c.away)}</b> — <b>${escHtml(info.title)}</b> (<b>${Math.round(c.model_prob)}%</b>)`;
     });
     lines.push("");
     lines.push(`<blockquote>${cRows.join("\n")}</blockquote>`);
@@ -845,10 +861,11 @@ async function main() {
 
   if (topBtts.length) {
     lines.push("");
-    lines.push(`<b>POTENSI KEDUA TIM MENCETAK GOL (BTTS)</b>`);
-    const bRows = topBtts.map((b) =>
-      `• <b>${escHtml(b.home)} vs ${escHtml(b.away)}</b> — Kedua Tim Cetak Gol (<b>${Math.round(b.model_prob)}%</b>)`
-    );
+    lines.push(`<b>BOTH TEAMS TO SCORE (BTTS)</b>`);
+    const bRows = topBtts.map((b) => {
+      const info = humanizeMarket(b.market_key, b.market, b.home, b.away);
+      return `• <b>${escHtml(b.home)} vs ${escHtml(b.away)}</b> — <b>${escHtml(info.title)}</b> (<b>${Math.round(b.model_prob)}%</b>)`;
+    });
     lines.push("");
     lines.push(`<blockquote>${bRows.join("\n")}</blockquote>`);
   }
