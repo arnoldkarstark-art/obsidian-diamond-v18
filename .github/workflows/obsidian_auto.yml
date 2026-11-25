@@ -1,13 +1,21 @@
-name: Obsidian V18.5 Autonomous Radar & Telegram Bot
+name: Obsidian V18.6 Sovereign Sniper & Confirmed-XI Bot
 
 on:
   schedule:
-    # 09:00 AMT (Armenia UTC+4) / 12:00 WIB (Indonesia UTC+7) — Morning Auto-Settle + 5W1H + Daily Radar
+    # --- FULL BRIEFING RUNS ---
+    # 09:00 AMT (UTC+4) / 12:00 WIB (UTC+7) — Morning Auto-Settle + 5W1H Learning + Watchlist
     - cron: "0 5 * * *"
-    # 18:30 AMT (Armenia UTC+4) / 21:30 WIB (Indonesia UTC+7) — Evening Steam & Pre-Match Radar
+    # 18:30 AMT (UTC+4) / 21:30 WIB (UTC+7) — Evening Pre-Match Steam & Radar Update
     - cron: "30 14 * * *"
-    # 20:50 AMT (Armenia UTC+4) / 23:50 WIB (Indonesia UTC+7) — T-60' Confirmed XI Check for European Kickoffs
-    - cron: "50 16 * * *"
+    # --- T-60' CONFIRMED-XI SNIPER ALERTS (zero spam if no new Confirmed XIs) ---
+    # 15:20 AMT / 18:20 WIB — Early Weekend EPL/Liga Kickoffs
+    - cron: "20 11 * * *"
+    # 17:55 AMT / 20:55 WIB — Main European Afternoon Kickoffs
+    - cron: "55 13 * * *"
+    # 20:35 AMT / 23:35 WIB — Early UCL / Europa / Evening Kickoffs (21:45 AMT)
+    - cron: "35 16 * * *"
+    # 22:55 AMT / 01:55 WIB — Main UCL / Championship Night Kickoffs (00:00 AMT)
+    - cron: "55 18 * * *"
   workflow_dispatch:
 
 permissions:
@@ -33,18 +41,19 @@ jobs:
           BOT_SYNC_SECRET: ${{ secrets.BOT_SYNC_SECRET }}
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          GITHUB_SCHEDULE: ${{ github.event.schedule }}
           SCAN_LIMIT: "14"
         run: node scripts/auto_bot.mjs
 
-      - name: Commit updated Memory, News Intel & Daily Picks for Browser Auto-Sync
+      - name: Commit updated Memory, News Intel, XI Cache & Daily Picks for Browser Auto-Sync
         if: always()
         run: |
           git config user.name "Obsidian V18 Bot"
           git config user.email "obsidian-bot@users.noreply.github.com"
           if [ -d data ]; then
-            git add data/memory.json data/daily_picks.json data/news_intel.json || true
+            git add data/memory.json data/daily_picks.json data/news_intel.json data/xi_notified.json || true
             if ! git diff --cached --quiet; then
-              git commit -m "chore(auto): update memory.json (5W1H), news intel & daily picks [skip ci]"
+              git commit -m "chore(auto): update memory.json (5W1H), news intel, XI cache & daily picks [skip ci]"
               git push
             fi
           fi
