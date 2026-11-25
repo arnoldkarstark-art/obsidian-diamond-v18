@@ -1,48 +1,37 @@
 {
-  "generated_at": "2026-11-24T17:37:21.058Z",
-  "calls_used": 6,
+  "generated_at": "2026-11-25T15:35:07.938Z",
+  "calls_used": 3,
   "by_match": {
-    "6106259": {
-      "home": "Arsenal",
-      "away": "Borussia Dortmund",
-      "fetched_at": "2026-11-24T17:37:30.068Z",
+    "5836956": {
+      "home": "Stoke City",
+      "away": "Millwall",
+      "fetched_at": "2026-11-25T15:35:15.058Z",
       "risk_level": "ALERT",
       "signals": [
-        "INJURY_SHOCK",
-        "TEAM_NEWS"
+        "TEAM_NEWS",
+        "SUSPENSION_BAN"
       ],
       "headlines": [
         {
-          "title": "Big positive for Arsenal: David Raya’s shoulder injury ‘not too serious’ a",
-          "source": "Untold-arsenal.com",
-          "published_at": "2026-11-23T17:03:40Z",
-          "url": "https://untold-arsenal.com/archives/124349",
-          "tag": "INJURY_SHOCK"
+          "title": "Millwall handed partial stadium closure over discriminatory chants",
+          "source": "CNA",
+          "published_at": "2026-11-24T15:34:32Z",
+          "url": "https://www.channelnewsasia.com/sport/millwall-handed-partial-stadium-closure-over-discriminatory-chants-6579061",
+          "tag": "TEAM_NEWS"
         },
         {
-          "title": "Arsenal vs Borussia Dortmund Champions League preview: London Calling",
-          "source": "SB Nation",
-          "published_at": "2026-11-23T17:00:00Z",
-          "url": "https://theshortfuse.sbnation.com/uefa-champions-league/37874/arsenal-vs-borussia-dortmund-champions-league-preview-match-thread-lineups-predictions-how-to-watch-raya-arteta-saliba",
+          "title": "Pick of the stats: Stoke City v Millwall",
+          "source": "BBC News",
+          "published_at": "2026-11-24T10:11:57Z",
+          "url": "https://www.bbc.com/sport/football/articles/cq8e060kx127o",
           "tag": "TEAM_NEWS"
-        }
-      ]
-    },
-    "6106412": {
-      "home": "Como",
-      "away": "AEK Athens",
-      "fetched_at": "2026-11-24T17:37:29.628Z",
-      "risk_level": "CLEAR",
-      "signals": [
-        "TEAM_NEWS"
-      ],
-      "headlines": [
+        },
         {
-          "title": "Fabregas praises Alvini despite 5-1 loss vs. Milan: Como will use the same approach",
-          "source": "Football Italia",
-          "published_at": "2026-11-23T14:53:13Z",
-          "url": "https://football-italia.net/fabregas-alvini-5-1-loss-milan-como-approach/",
-          "tag": "TEAM_NEWS"
+          "title": "Millwall forced to partially close stadium after discriminatory chanting",
+          "source": "Sky Sports",
+          "published_at": "2026-11-23T18:18:00Z",
+          "url": "https://www.skysports.com/football/news/13615754/millwall-forced-to-partially-close-the-den-after-commission-proves-fa-charges-of-discriminatory-chanting",
+          "tag": "SUSPENSION_BAN"
         }
       ]
     }
