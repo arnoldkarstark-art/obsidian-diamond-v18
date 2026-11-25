@@ -312,8 +312,38 @@ async function main() {
   const now = new Date();
   const todayAmt = fmtDate(now, TZ_AMT);
   const scanLimit = parseInt(process.env.SCAN_LIMIT || "14", 10);
+  const XI_NOTIFIED_PATH = path.join(DATA_DIR, "xi_notified.json");
 
-  console.log(`[Obsidian Auto-Bot] Start ${todayAmt} (${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB)`);
+  // Auto-detect mode: Full Briefing on morning/evening/manual runs, XI_SNIPER on T-60' prime-time crons
+  const sched = String(process.env.GITHUB_SCHEDULE || "").trim();
+  const xiSchedules = new Set(["20 11 * * *", "55 13 * * *", "35 16 * * *", "55 18 * * *"]);
+  const botMode = (process.env.BOT_MODE || (xiSchedules.has(sched) ? "xi_sniper" : "full")).toLowerCase();
+
+  console.log(`[Obsidian V18.6 Auto-Bot] Start ${todayAmt} (${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB) · Mode=${botMode.toUpperCase()}`);
+
+  // Helper to resolve Telegram recipients via Cloudflare Access Gate (with TELEGRAM_CHAT_ID fallback)
+  async function resolveTelegramTargets() {
+    let targetChatIds = (process.env.TELEGRAM_CHAT_ID || "").trim();
+    const gateUrl = (process.env.OBSIDIAN_GATE_URL || "").trim().replace(/\/$/, "");
+    const syncSecret = (process.env.BOT_SYNC_SECRET || "").trim();
+    if (gateUrl && syncSecret) {
+      try {
+        const subResp = await fetch(`${gateUrl}/api/subscribers`, {
+          headers: { Authorization: `Bearer ${syncSecret}` },
+        });
+        const subJson = await subResp.json().catch(() => ({}));
+        if (subResp.ok && subJson.ok && Array.isArray(subJson.chat_ids) && subJson.chat_ids.length) {
+          targetChatIds = subJson.chat_ids.join(",");
+          console.log(`[Access Gate] Synced ${subJson.chat_ids.length} target(s) (${subJson.mode || "list"}) from Cloudflare KV.`);
+        } else {
+          console.warn(`[Access Gate] Subscriber sync returned HTTP ${subResp.status}; falling back to TELEGRAM_CHAT_ID.`);
+        }
+      } catch (e) {
+        console.warn(`[Access Gate] Subscriber sync error (${e?.message || e}); falling back to TELEGRAM_CHAT_ID.`);
+      }
+    }
+    return targetChatIds;
+  }
 
   // 1. Auto-settle all finished matches (server-side = no browser CORS block -> exact corners & 1H goals!)
   const beforeSettledIds = new Set(
@@ -325,13 +355,12 @@ async function main() {
     .filter((p) => p.status !== "PENDING" && !beforeSettledIds.has(p.id));
   console.log(`[Auto-Settle] Checked ${settleRes.checked}, newly settled: ${settleRes.settled_count}`);
 
-  // 2. Fetch today's slate (AMT calendar) + scan top priority fixtures
+  // 2. Fetch today's slate (AMT calendar)
   let slate = await eng.fetchMatchesByDate(todayAmt, true);
   let flat = (slate.leagues || []).flatMap((l) => l.matches || []);
   let activeDate = todayAmt;
   const openToday = flat.filter((m) => !m.finished && !String(m.match_id).startsWith("espn:"));
   if (openToday.length < 3) {
-    // Late night in Armenia: also include tomorrow's fixtures!
     const tmrwAmt = fmtDate(new Date(now.getTime() + 86400000), TZ_AMT);
     const tSlate = await eng.fetchMatchesByDate(tmrwAmt, true);
     const tFlat = (tSlate.leagues || []).flatMap((l) => l.matches || []);
@@ -339,6 +368,87 @@ async function main() {
     activeDate = openToday.length ? `${todayAmt} + ${tmrwAmt}` : tmrwAmt;
   }
 
+  // ---- STAGE 2: CONFIRMED-XI SNIPER MODE (T-75' to T-10' pre-kickoff window, zero spam) ----
+  if (botMode === "xi_sniper") {
+    let notified = {};
+    if (fs.existsSync(XI_NOTIFIED_PATH)) {
+      try { notified = JSON.parse(fs.readFileSync(XI_NOTIFIED_PATH, "utf8")) || {}; } catch {}
+    }
+    // Prune entries older than 36h
+    const cutoff = Date.now() - 36 * 3600 * 1000;
+    for (const [k, ts] of Object.entries(notified)) {
+      if (Number(ts) < cutoff) delete notified[k];
+    }
+
+    const soonMatches = flat.filter((m) => {
+      if (m.finished || m.is_live || String(m.match_id).startsWith("espn:")) return false;
+      if (notified[String(m.match_id)]) return false;
+      const ko = m.kickoff_utc ? new Date(m.kickoff_utc).getTime() : NaN;
+      if (Number.isNaN(ko)) return false;
+      const minsToKo = (ko - now.getTime()) / 60000;
+      return minsToKo >= 8 && minsToKo <= 88;
+    }).slice(0, 12);
+
+    console.log(`[XI Sniper] Checking ${soonMatches.length} fixture(s) kicking off in 8–88 mins for Official Starting XI...`);
+    const confirmedAudits = [];
+    for (const m of soonMatches) {
+      try {
+        const a = await eng.analyzeMatchById(m.match_id, { forceRefresh: true });
+        if (a && a.xi_confirmed && a.verdict.tier_code !== "TIER_4") {
+          confirmedAudits.push(a);
+          notified[String(a.match_id)] = Date.now();
+        }
+      } catch {}
+    }
+
+    // Save updated memory (with Confirmed-XI updates & any auto-settlements)
+    const backupObj = JSON.parse(eng.exportBackup());
+    backupObj.synced_by = "github_actions_xi_sniper";
+    backupObj.usage = eng.getUsage();
+    fs.writeFileSync(MEMORY_PATH, JSON.stringify(backupObj, null, 2), "utf8");
+    fs.writeFileSync(XI_NOTIFIED_PATH, JSON.stringify(notified, null, 2), "utf8");
+
+    if (!confirmedAudits.length) {
+      console.log("[XI Sniper] No new Confirmed-XI qualifying matches right now — skipping Telegram send (zero spam).");
+      return;
+    }
+
+    const xiLines = [];
+    xiLines.push(`<b>🚨 OBSIDIAN V18.6 — CONFIRMED XI SNIPER ALERT</b>`);
+    xiLines.push(`<code>${escHtml(todayAmt)} · ${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB</code>`);
+    xiLines.push(`<i>✓ Daftar lini pemain resmi (Starting XI) SUDAH terkonfirmasi untuk ${confirmedAudits.length} match berikut:</i>`);
+
+    confirmedAudits.forEach((a, idx) => {
+      const sp = a.verdict.sniper_pick;
+      const v = a.verdict;
+      const cm = a.corners_model;
+      const oddsStr = v.bookmaker_odds
+        ? `Fair ${v.fair_odds} | Bookie ${v.bookmaker_odds}${v.edge_pct !== null ? ` (${v.edge_pct > 0 ? "+" : ""}${v.edge_pct}% EV)` : ""}`
+        : `Fair ${v.fair_odds}`;
+      const highCorStr = cm.high_volume_10_15
+        ? `\n   🚩 <b>Corners Surge (${cm.total_corners_lambda}λ)</b>: O10.5 <b>${cm.p_over_10_5}%</b> · O11.5 <b>${cm.p_over_11_5}%</b> · O12.5 <b>${cm.p_over_12_5}%</b>`
+        : "";
+      xiLines.push(
+        `\n<b>${idx + 1}. [${escHtml(a.league_name)}]</b> · <code>${escHtml(fmtKickoffDual(a.kickoff_utc))}</code> · <b>XI✓</b>\n` +
+        `   ${escHtml(a.home.name)} (${escHtml(a.home.formation)}) vs ${escHtml(a.away.name)} (${escHtml(a.away.formation)}) · ${a.goal_model.total_lambda}λ\n` +
+        (sp ? `   🎯 <b>SNIPER 85–90%: ${escHtml(sp.label)}</b> — <b>${sp.model_prob}%</b> (Fair ${sp.fair_odds})\n` : "") +
+        `   💎 <b>Value Pick: ${escHtml(v.primary_bet)}</b> — <b>${v.model_prob}%</b> · ${escHtml(oddsStr)} · Stake <b>${v.stake_units}u</b>${highCorStr}`
+      );
+    });
+
+    const msg = xiLines.join("\n");
+    try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), msg); } catch {}
+    const targetChatIds = await resolveTelegramTargets();
+    try {
+      const tgRes = await sendTelegram((process.env.TELEGRAM_BOT_TOKEN || "").trim(), targetChatIds, msg);
+      console.log("[Telegram XI Sniper]", tgRes);
+    } catch (e) {
+      console.warn(`::warning title=Telegram XI Sniper not delivered::${e?.message || e}`);
+    }
+    return;
+  }
+
+  // ---- STAGE 1: FULL BRIEFING MODE ----
   console.log(`[Daily Scanner] Scanning up to ${scanLimit} priority fixtures from ${flat.length} matches (${activeDate})...`);
   const scanRes = await eng.scanDailyTopPicks(flat, scanLimit);
   const analytics = eng.getAnalytics();
@@ -362,6 +472,7 @@ async function main() {
     fair_odds: m.fair_odds,
     bookmaker_odds: m.bookmaker_odds,
     edge_pct: m.edge_pct,
+    push_prob: m.push_prob || 0,
     tier: a.verdict.tier,
     tier_code: a.verdict.tier_code,
     stake_units: a.verdict.stake_units,
@@ -369,10 +480,26 @@ async function main() {
     total_lambda: a.goal_model.total_lambda,
   });
 
-  const topAnchors = (scanRes.anchors || []).slice(0, 6).map((a) => {
+  const sniperPicks = (scanRes.sniper_anchors || []).slice(0, 4).map(({ analysis, market }) => compactPick(analysis, market));
+  const topAnchors = (scanRes.anchors || []).slice(0, 5).map((a) => {
     const m = a.all_markets.find((x) => x.key === a.verdict.market_key) || a.radar[0];
     return compactPick(a, m);
   });
+  const highCorners1015 = (scanRes.high_corners_10_15 || []).slice(0, 5).map((c) => ({
+    match_id: c.analysis.match_id,
+    league: c.analysis.league_name,
+    home: c.analysis.home.name,
+    away: c.analysis.away.name,
+    kickoff_dual: fmtKickoffDual(c.analysis.kickoff_utc),
+    total_corners_lambda: c.total_corners_lambda,
+    market: c.market?.label || "Over 10.5 Total Corners",
+    model_prob: c.market?.model_prob ?? c.p_over_10_5,
+    p_over_10_5: c.p_over_10_5,
+    p_over_11_5: c.p_over_11_5,
+    p_over_12_5: c.p_over_12_5,
+    p_over_13_5: c.p_over_13_5,
+    p_over_14_5: c.p_over_14_5,
+  }));
   const topCorners = (scanRes.best_corners || []).slice(0, 3).map(({ analysis, market }) => compactPick(analysis, market));
   const topGoals = (scanRes.best_goals || []).slice(0, 3).map(({ analysis, market }) => compactPick(analysis, market));
   const topBtts = (scanRes.best_btts || []).slice(0, 2).map(({ analysis, market }) => compactPick(analysis, market));
@@ -391,7 +518,6 @@ async function main() {
         pick.news_risk_level = intel.risk_level;
         pick.news_signals = intel.signals;
         pick.news_headline = intel.headlines[0].title;
-        // Also attach news signals to the auto-recorded prediction in memory for 5W1H context
         const predRow = (backupObj.predictions || []).find(
           (p) => String(p.match_id) === String(pick.match_id) && p.source_type === "AUTO"
         );
@@ -409,7 +535,6 @@ async function main() {
     );
     console.log(`[NewsAPI] Completed ${newsCalls} queries, found breaking intel on ${Object.keys(newsByMatch).length} matches.`);
   } else {
-    // Keep file present (empty or existing) so browser fetch never 404s cleanly
     if (!fs.existsSync(NEWS_PATH)) {
       fs.writeFileSync(NEWS_PATH, JSON.stringify({ generated_at: now.toISOString(), calls_used: 0, by_match: {} }, null, 2), "utf8");
     }
@@ -421,7 +546,9 @@ async function main() {
       generated_at: now.toISOString(),
       date_label: activeDate,
       scanned: scanRes.scanned,
+      sniper_picks: sniperPicks,
       top_anchors: topAnchors,
+      high_corners_10_15: highCorners1015,
       top_corners: topCorners,
       top_goals: topGoals,
       top_btts: topBtts,
@@ -431,7 +558,7 @@ async function main() {
 
   // 4. Build crisp Telegram HTML message
   const lines = [];
-  lines.push(`<b>OBSIDIAN V18.5 — DAILY RADAR</b>`);
+  lines.push(`<b>OBSIDIAN V18.6 — SOVEREIGN SNIPER RADAR</b>`);
   lines.push(`<code>${escHtml(activeDate)} · ${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB</code>`);
 
   const s = analytics.summary;
@@ -458,8 +585,21 @@ async function main() {
     lines.push(`• Hit Rate: <b>${s.hit_rate}%</b> (${s.wins}W-${s.losses}L-${s.pushes}P) · ROI <b>${s.roi_pct >= 0 ? "+" : ""}${s.roi_pct}%</b>`);
   }
 
+  if (sniperPicks.length) {
+    lines.push("");
+    lines.push(`<b>🎯 SNIPER 85–90% ANCHORS (Max ${sniperPicks.length} Terbaik)</b>`);
+    sniperPicks.forEach((p, idx) => {
+      const xiTag = p.xi_confirmed ? "XI✓ RESMI" : "⏳ BELUM XI";
+      lines.push(
+        `${idx + 1}. [${escHtml(p.league)}] <code>${escHtml(p.kickoff_dual)}</code> · <b>${xiTag}</b>\n` +
+        `   ${escHtml(p.home)} vs ${escHtml(p.away)} (${p.total_lambda}λ)\n` +
+        `   ✅ <b>${escHtml(p.market)}</b> — <b>${p.model_prob}%</b> (Fair ${p.fair_odds})`
+      );
+    });
+  }
+
   lines.push("");
-  lines.push(`<b>🔥 TOP PICKS (${scanRes.scanned} match diaudit)</b>`);
+  lines.push(`<b>💎 VALUE HUNTER PICKS (${scanRes.scanned} match diaudit)</b>`);
   if (!topAnchors.length) {
     lines.push(`<i>Belum ada Tier 1–2 anchor yang lolos 12 Titanium Filter saat ini.</i>`);
   } else {
@@ -467,7 +607,7 @@ async function main() {
       const oddsStr = p.bookmaker_odds
         ? `Fair ${p.fair_odds} | Bookie ${p.bookmaker_odds}${p.edge_pct !== null ? ` (${p.edge_pct > 0 ? "+" : ""}${p.edge_pct}% EV)` : ""}`
         : `Fair ${p.fair_odds}`;
-      const xiTag = p.xi_confirmed ? "XI✓" : "Pre-XI";
+      const xiTag = p.xi_confirmed ? "XI✓ RESMI" : "⏳ BELUM XI";
       const newsLine = p.news_headline
         ? `\n   📰 [${escHtml((p.news_signals || ["NEWS"])[0])}] ${escHtml(p.news_headline.slice(0, 110))}`
         : "";
@@ -480,7 +620,16 @@ async function main() {
     });
   }
 
-  if (topCorners.length) {
+  if (highCorners1015.length) {
+    lines.push("");
+    lines.push(`<b>🚩 HIGH-VOLUME CORNERS (10–15+ SURGE · NegBin)</b>`);
+    for (const c of highCorners1015) {
+      lines.push(
+        `• [${escHtml(c.league)}] ${escHtml(c.home)} vs ${escHtml(c.away)} (<b>${c.total_corners_lambda}λ</b>)\n` +
+        `  O10.5 <b>${c.p_over_10_5}%</b> · O11.5 <b>${c.p_over_11_5}%</b> · O12.5 <b>${c.p_over_12_5}%</b> · O13.5 <b>${c.p_over_13_5}%</b> · O14.5 <b>${c.p_over_14_5}%</b>`
+      );
+    }
+  } else if (topCorners.length) {
     lines.push("");
     lines.push(`<b>🚩 BEST CORNERS (NegBin)</b>`);
     for (const c of topCorners) {
@@ -498,30 +647,13 @@ async function main() {
 
   const fp = analytics.weights.factor_penalties || {};
   lines.push("");
+  lines.push(`<i>⏳ Tanda BELUM XI = belum termasuk susunan pemain resmi (XI rilis T-75'/T-60', alert CONFIRMED XI dikirim otomatis).</i>`);
   lines.push(`<i>Neural: Goal×${analytics.weights.goal_lambda_scale} · Corner×${analytics.weights.corner_lambda_scale} · Pre-XI -${fp.pre_xi || 0} · AF ${backupObj.usage.api_football}/100 · News ${newsCalls}q</i>`);
 
   const msg = lines.join("\n");
   try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), msg); } catch {}
 
-  let targetChatIds = (process.env.TELEGRAM_CHAT_ID || "").trim();
-  const gateUrl = (process.env.OBSIDIAN_GATE_URL || "").trim().replace(/\/$/, "");
-  const syncSecret = (process.env.BOT_SYNC_SECRET || "").trim();
-  if (gateUrl && syncSecret) {
-    try {
-      const subResp = await fetch(`${gateUrl}/api/subscribers`, {
-        headers: { Authorization: `Bearer ${syncSecret}` },
-      });
-      const subJson = await subResp.json().catch(() => ({}));
-      if (subResp.ok && subJson.ok && Array.isArray(subJson.chat_ids) && subJson.chat_ids.length) {
-        targetChatIds = subJson.chat_ids.join(",");
-        console.log(`[Access Gate] Synced ${subJson.chat_ids.length} authorized Telegram recipient(s) from Cloudflare KV.`);
-      } else {
-        console.warn(`[Access Gate] Subscriber sync returned HTTP ${subResp.status}; falling back to TELEGRAM_CHAT_ID.`);
-      }
-    } catch (e) {
-      console.warn(`[Access Gate] Subscriber sync error (${e?.message || e}); falling back to TELEGRAM_CHAT_ID.`);
-    }
-  }
+  const targetChatIds = await resolveTelegramTargets();
 
   let tgRes;
   try {
