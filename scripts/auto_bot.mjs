@@ -15,7 +15,7 @@ const DATA_DIR = path.join(ROOT, "data");
 const MEMORY_PATH = path.join(DATA_DIR, "memory.json");
 const PICKS_PATH = path.join(DATA_DIR, "daily_picks.json");
 const NEWS_PATH = path.join(DATA_DIR, "news_intel.json");
-const DASHBOARD_URL = process.env.DASHBOARD_URL || "https://arnoldkarstark-art.github.io/obsidian-diamond-v18/";
+const DASHBOARD_URL = process.env.DASHBOARD_URL || "https://enginebola.web.id/";
 
 const TZ_AMT = "Asia/Yerevan";
 const TZ_WIB = "Asia/Jakarta";
