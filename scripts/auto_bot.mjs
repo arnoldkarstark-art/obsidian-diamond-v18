@@ -1238,12 +1238,13 @@ async function main() {
     const chatTypeMap = {};
     const seenCanonicalIds = new Set();
 
-    // Inspect each configured channel/group via Telegram getChat:
+    // Inspect each configured channel/group via Telegram getChat (2-pass so @enginebolachats and its linked_chat_id never duplicate!):
     // 1) Detect exact chat type (supergroup vs broadcast channel) so @enginebolachats gets full <tg-emoji> club crests!
-    // 2) Auto-discover linked Discussion Supergroup (linked_chat_id) so the bot posts full club crests directly into the group!
+    // 2) Auto-discover linked Discussion Supergroup (linked_chat_id) only if not already in the target list!
     if (tgTok) {
       const autoLinkGroup = String(process.env.DISABLE_LINKED_GROUP_MIRROR || "").toLowerCase() !== "true";
       const initialTargets = [...list];
+      const linkedCandidates = [];
       for (const cid of initialTargets) {
         if (/^\d{6,}$/.test(cid)) {
           chatTypeMap[cid] = "private";
@@ -1262,14 +1263,19 @@ async function main() {
               seenCanonicalIds.add(canonicalId);
             }
             const linkedId = cJ.result.linked_chat_id != null ? String(cJ.result.linked_chat_id) : "";
-            if (autoLinkGroup && cType === "channel" && linkedId && !list.includes(linkedId) && !seenCanonicalIds.has(linkedId)) {
-              list.push(linkedId);
-              chatTypeMap[linkedId] = "supergroup";
-              seenCanonicalIds.add(linkedId);
-              console.log(`[Linked Supergroup] Auto-detected discussion group (${linkedId}) — will post FULL Premium club crests directly to group!`);
+            if (autoLinkGroup && cType === "channel" && linkedId) {
+              linkedCandidates.push(linkedId);
             }
           }
         } catch {}
+      }
+      for (const linkedId of linkedCandidates) {
+        if (!list.includes(linkedId) && !seenCanonicalIds.has(linkedId)) {
+          list.push(linkedId);
+          chatTypeMap[linkedId] = "supergroup";
+          seenCanonicalIds.add(linkedId);
+          console.log(`[Linked Supergroup] Auto-detected discussion group (${linkedId}) — will post FULL Premium club crests directly to group!`);
+        }
       }
     }
 
