@@ -359,12 +359,18 @@ async function loadCustomEmojiPacks(token) {
         resolver.enabled = true;
       }
 
-      // Scan all packs for animated/custom UI icons matching their base Unicode emoji (preferring animated icons!)
+      // Scan packs for animated/custom UI icons matching their base Unicode emoji (preferring animated icons!).
+      // Skip static stickers from the @FCprice club/league grid because league crests (e.g. LaLiga) share base emoji "⚽".
       for (const [uiKey, baseList] of Object.entries(uiEmojiCandidates)) {
-        const matches = stickers.filter((s) => s.custom_emoji_id && baseList.includes(s.emoji));
+        const matches = stickers.filter((s) =>
+          s.custom_emoji_id &&
+          baseList.includes(s.emoji) &&
+          (!isFcPricePack || s.is_animated || s.is_video)
+        );
         if (!matches.length) continue;
         const animHit = matches.find((s) => s.is_animated || s.is_video);
-        const pick = animHit || matches[0];
+        const pick = animHit || (uiKey === "ball" ? null : matches[0]);
+        if (!pick) continue;
         // Prefer animated icon over static icon if both packs provide one
         if (!resolver.ui[uiKey] || (animHit && !resolver.ui[`${uiKey}_anim`])) {
           resolver.ui[uiKey] = pick.custom_emoji_id;
@@ -822,7 +828,7 @@ function chunkTelegramHtml(htmlText) {
   return chunks;
 }
 
-async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null) {
+async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null, chatTypeMap = {}) {
   if (!token || !chatId) {
     console.log("TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set — printing message to stdout instead:\n" + htmlText);
     return { skipped: true };
@@ -865,14 +871,29 @@ async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null)
 
   const richChunks = chunkTelegramHtml(htmlText);
   const chanChunks = channelFallbackHtml ? chunkTelegramHtml(channelFallbackHtml) : richChunks;
+  const forceChannelCustom = String(process.env.FORCE_CHANNEL_CUSTOM_EMOJI || "").toLowerCase() === "true";
 
   const results = [];
   for (let rIdx = 0; rIdx < chatIds.length; rIdx++) {
     const targetId = chatIds[rIdx];
-    // Broadcast channels (@channel) strip <tg-emoji> unless bot has Fragment username -> send clean rich-flag channel version;
-    // Private DMs & Groups/Supergroups render full <tg-emoji> club crests & league logos via Bot API 9.4 + Owner Premium!
-    const isPublicChannel = targetId.startsWith("@");
-    const chunks = (isPublicChannel && channelFallbackHtml) ? chanChunks : richChunks;
+    // Resolve real chat type via chatTypeMap or live getChat (so public supergroups like @enginebolachats get full club crests!)
+    let chatType = chatTypeMap?.[targetId] || "";
+    if (!chatType) {
+      if (/^\d{6,}$/.test(targetId)) {
+        chatType = "private";
+      } else {
+        try {
+          const cR = await fetch(`https://api.telegram.org/bot${cleanToken}/getChat?chat_id=${encodeURIComponent(targetId)}`);
+          const cJ = await cR.json().catch(() => ({}));
+          if (cR.ok && cJ.ok && cJ.result?.type) chatType = cJ.result.type;
+        } catch {}
+      }
+    }
+    // Telegram Bot API 9.4 renders <tg-emoji> in private, group & supergroup chats (when bot owner has Premium);
+    // Broadcast channels strip <tg-emoji> unless bot owns a Fragment username -> send crisp Unicode flags to channels.
+    const isBroadcastChannel = chatType === "channel" || (!chatType && targetId.startsWith("@"));
+    const useChannelFallback = isBroadcastChannel && !forceChannelCustom && !!channelFallbackHtml;
+    const chunks = useChannelFallback ? chanChunks : richChunks;
     let recipientOk = true;
     let lastErr = null;
     let stripCustomEmoji = false;
@@ -929,7 +950,7 @@ async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null)
       }
       if (i < chunks.length - 1) await sleep(1200);
     }
-    results.push({ recipient: rIdx + 1, mode: isPublicChannel ? "channel_unicode" : "premium_custom_emoji", ok: recipientOk, custom_emoji_stripped: stripCustomEmoji, ...(lastErr ? { error: lastErr } : {}) });
+    results.push({ recipient: rIdx + 1, type: chatType || "unknown", mode: useChannelFallback ? "channel_unicode" : "premium_custom_emoji", ok: recipientOk, custom_emoji_stripped: stripCustomEmoji, ...(lastErr ? { error: lastErr } : {}) });
     if (rIdx < chatIds.length - 1) await sleep(1200);
   }
 
@@ -1174,9 +1195,10 @@ async function main() {
 
   console.log(`[Obsidian V18.6 Auto-Bot] Start ${todayAmt} (${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB) · Mode=${botMode.toUpperCase()}`);
 
-  // Helper to resolve Telegram recipients & Owner ID via Cloudflare Access Gate (with env fallback)
+  // Helper to resolve Telegram recipients, linked Discussion Supergroups & Owner ID via Cloudflare Access Gate
   async function resolveTelegramContext() {
     let targetChatIds = (process.env.TELEGRAM_CHAT_ID || "").trim();
+    let extraGroupId = (process.env.TELEGRAM_GROUP_ID || "").trim();
     let ownerId = (process.env.TELEGRAM_OWNER_ID || "").trim();
     const gateUrl = (process.env.OBSIDIAN_GATE_URL || "").trim().replace(/\/$/, "");
     const syncSecret = (process.env.BOT_SYNC_SECRET || "").trim();
@@ -1191,6 +1213,7 @@ async function main() {
             targetChatIds = subJson.chat_ids.join(",");
             console.log(`[Access Gate] Synced ${subJson.chat_ids.length} target(s) (${subJson.mode || "list"}) from Cloudflare KV.`);
           }
+          if (subJson.group_id && !extraGroupId) extraGroupId = String(subJson.group_id).trim();
           if (subJson.owner_id && !ownerId) ownerId = String(subJson.owner_id).trim();
         } else {
           console.warn(`[Access Gate] Subscriber sync returned HTTP ${subResp.status}; falling back to TELEGRAM_CHAT_ID.`);
@@ -1199,21 +1222,67 @@ async function main() {
         console.warn(`[Access Gate] Subscriber sync error (${e?.message || e}); falling back to TELEGRAM_CHAT_ID.`);
       }
     }
-    if (!ownerId) {
-      const numHit = targetChatIds.split(/[\s,;]+/).find((id) => /^\d{6,}$/.test(id.trim()));
-      if (numHit) ownerId = numHit.trim();
-    }
-    // Auto-mirror to Owner DM so Owner receives full Premium <tg-emoji> club crests & league logos (Bot API 9.4+)
-    if (ownerId && String(process.env.DISABLE_OWNER_DM_MIRROR || "").toLowerCase() !== "true") {
-      const list = targetChatIds.split(/[\s,;]+/).map((s) => s.trim()).filter(Boolean);
-      if (!list.includes(ownerId)) {
-        list.push(ownerId);
-        targetChatIds = list.join(",");
-        console.log("[Owner DM Mirror] Enabled full Premium custom-emoji copy to Owner DM alongside channel.");
+
+    const list = targetChatIds.split(/[\s,;]+/).map((s) => s.trim()).filter(Boolean);
+    if (extraGroupId) {
+      for (const gid of extraGroupId.split(/[\s,;]+/).map((s) => s.trim()).filter(Boolean)) {
+        if (!list.includes(gid)) list.push(gid);
       }
     }
-    let botUsername = (process.env.TELEGRAM_BOT_USERNAME || "").trim();
+    if (!ownerId) {
+      const numHit = list.find((id) => /^\d{6,}$/.test(id));
+      if (numHit) ownerId = numHit;
+    }
+
     const tgTok = (process.env.TELEGRAM_BOT_TOKEN || "").replace(/^["']|["']$/g, "").trim();
+    const chatTypeMap = {};
+    const seenCanonicalIds = new Set();
+
+    // Inspect each configured channel/group via Telegram getChat:
+    // 1) Detect exact chat type (supergroup vs broadcast channel) so @enginebolachats gets full <tg-emoji> club crests!
+    // 2) Auto-discover linked Discussion Supergroup (linked_chat_id) so the bot posts full club crests directly into the group!
+    if (tgTok) {
+      const autoLinkGroup = String(process.env.DISABLE_LINKED_GROUP_MIRROR || "").toLowerCase() !== "true";
+      const initialTargets = [...list];
+      for (const cid of initialTargets) {
+        if (/^\d{6,}$/.test(cid)) {
+          chatTypeMap[cid] = "private";
+          seenCanonicalIds.add(cid);
+          continue;
+        }
+        try {
+          const cR = await fetch(`https://api.telegram.org/bot${tgTok}/getChat?chat_id=${encodeURIComponent(cid)}`);
+          const cJ = await cR.json().catch(() => ({}));
+          if (cR.ok && cJ.ok && cJ.result) {
+            const cType = cJ.result.type || "";
+            const canonicalId = cJ.result.id != null ? String(cJ.result.id) : "";
+            chatTypeMap[cid] = cType;
+            if (canonicalId) {
+              chatTypeMap[canonicalId] = cType;
+              seenCanonicalIds.add(canonicalId);
+            }
+            const linkedId = cJ.result.linked_chat_id != null ? String(cJ.result.linked_chat_id) : "";
+            if (autoLinkGroup && cType === "channel" && linkedId && !list.includes(linkedId) && !seenCanonicalIds.has(linkedId)) {
+              list.push(linkedId);
+              chatTypeMap[linkedId] = "supergroup";
+              seenCanonicalIds.add(linkedId);
+              console.log(`[Linked Supergroup] Auto-detected discussion group (${linkedId}) — will post FULL Premium club crests directly to group!`);
+            }
+          }
+        } catch {}
+      }
+    }
+
+    // Auto-mirror to Owner DM so Owner receives full Premium <tg-emoji> club crests & league logos (Bot API 9.4+)
+    if (ownerId && String(process.env.DISABLE_OWNER_DM_MIRROR || "").toLowerCase() !== "true") {
+      if (!list.includes(ownerId)) {
+        list.push(ownerId);
+        chatTypeMap[ownerId] = "private";
+        console.log("[Owner DM Mirror] Enabled full Premium custom-emoji copy to Owner DM alongside channel/group.");
+      }
+    }
+
+    let botUsername = (process.env.TELEGRAM_BOT_USERNAME || "").trim();
     if (tgTok && !botUsername) {
       try {
         const meR = await fetch(`https://api.telegram.org/bot${tgTok}/getMe`);
@@ -1221,7 +1290,7 @@ async function main() {
         if (meR.ok && meJ.ok && meJ.result?.username) botUsername = meJ.result.username;
       } catch {}
     }
-    return { targetChatIds, ownerId, botUsername };
+    return { targetChatIds: list.join(","), ownerId, botUsername, chatTypeMap };
   }
 
   // 1. Auto-settle all finished matches (server-side = no browser CORS block -> exact corners & 1H goals!)
@@ -1394,7 +1463,7 @@ async function main() {
     const channelMsg = buildXiMsg(plainEmojiPack);
     try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), richMsg); } catch {}
     try {
-      const tgRes = await sendTelegram(tgToken, tgCtx.targetChatIds, richMsg, channelMsg);
+      const tgRes = await sendTelegram(tgToken, tgCtx.targetChatIds, richMsg, channelMsg, tgCtx.chatTypeMap);
       console.log("[Telegram XI Sniper]", tgRes);
     } catch (e) {
       console.warn(`::warning title=Telegram XI Sniper not delivered::${e?.message || e}`);
@@ -1715,7 +1784,8 @@ async function main() {
       tgToken,
       tgCtx.targetChatIds,
       richMsg,
-      channelMsg
+      channelMsg,
+      tgCtx.chatTypeMap
     );
   } catch (e) {
     tgRes = { ok: false, error: String(e?.message || e) };
