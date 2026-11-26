@@ -1,6 +1,6 @@
 {
   "version": "OBSIDIAN_V18_7",
-  "exported_at": "2026-11-26T08:45:43.743Z",
+  "exported_at": "2026-11-26T09:28:54.628Z",
   "predictions": [
     {
       "id": 1795672401270,
@@ -80,10 +80,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-3",
         "formation_away": "5-3-2",
-        "captured_at": "2026-11-26T08:45:43.740Z"
+        "captured_at": "2026-11-26T09:28:53.621Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:43.740Z"
+      "updated_at": "2026-11-26T09:28:53.621Z"
     },
     {
       "id": 1795672401064,
@@ -164,10 +164,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-3-3",
         "formation_away": "4-3-3",
-        "captured_at": "2026-11-26T08:45:43.033Z"
+        "captured_at": "2026-11-26T09:28:54.625Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:43.033Z"
+      "updated_at": "2026-11-26T09:28:54.625Z"
     },
     {
       "id": 1795672400794,
@@ -249,10 +249,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T08:45:40.604Z"
+        "captured_at": "2026-11-26T09:28:52.600Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:40.604Z"
+      "updated_at": "2026-11-26T09:28:52.600Z"
     },
     {
       "id": 1795672400159,
@@ -328,10 +328,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T08:45:41.756Z"
+        "captured_at": "2026-11-26T09:28:52.419Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:41.756Z"
+      "updated_at": "2026-11-26T09:28:52.419Z"
     },
     {
       "id": 1795672400011,
@@ -410,10 +410,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "3-4-2-1",
-        "captured_at": "2026-11-26T08:45:40.871Z"
+        "captured_at": "2026-11-26T09:28:52.504Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:40.871Z"
+      "updated_at": "2026-11-26T09:28:52.504Z"
     },
     {
       "id": 1795672399109,
@@ -429,9 +429,9 @@
       "market_family": "Result & AH",
       "market_key": "away_ah_p1",
       "market_label": "Asian Handicap 2 (+1) · Real Sociedad",
-      "model_prob": 82.4,
-      "raw_prob": 83.1,
-      "fair_odds": 1.21,
+      "model_prob": 82.2,
+      "raw_prob": 82.8,
+      "fair_odds": 1.22,
       "opening_odds": null,
       "bookmaker_odds": null,
       "steam_pct": null,
@@ -491,8 +491,8 @@
       "pre_xi_snapshot": {
         "market_key": "away_ah_p1",
         "market_label": "Asian Handicap 2 (+1) · Real Sociedad",
-        "model_prob": 82.4,
-        "fair_odds": 1.21,
+        "model_prob": 82.2,
+        "fair_odds": 1.22,
         "bookmaker_odds": null,
         "projected_score": "1–1",
         "home_lambda": 1.44,
@@ -501,10 +501,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "4-4-2",
-        "captured_at": "2026-11-26T08:45:38.538Z"
+        "captured_at": "2026-11-26T09:28:50.859Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:38.538Z"
+      "updated_at": "2026-11-26T09:28:50.859Z"
     },
     {
       "id": 1795672399208,
@@ -583,10 +583,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-2-1",
         "formation_away": "4-4-2",
-        "captured_at": "2026-11-26T08:45:39.301Z"
+        "captured_at": "2026-11-26T09:28:51.186Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:39.301Z"
+      "updated_at": "2026-11-26T09:28:51.186Z"
     },
     {
       "id": 1795672399325,
@@ -665,10 +665,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-2-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T08:45:39.133Z"
+        "captured_at": "2026-11-26T09:28:50.914Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:39.133Z"
+      "updated_at": "2026-11-26T09:28:50.914Z"
     },
     {
       "id": 1795672398392,
@@ -744,10 +744,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T08:45:36.991Z"
+        "captured_at": "2026-11-26T09:28:49.644Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:36.991Z"
+      "updated_at": "2026-11-26T09:28:49.644Z"
     },
     {
       "id": 1795672397634,
@@ -763,17 +763,17 @@
       "market_family": "Result & AH",
       "market_key": "away_ah_p1",
       "market_label": "Asian Handicap 2 (+1) · Milan",
-      "model_prob": 77.8,
-      "raw_prob": 78.5,
-      "fair_odds": 1.28,
+      "model_prob": 76.8,
+      "raw_prob": 77.5,
+      "fair_odds": 1.3,
       "opening_odds": null,
       "bookmaker_odds": null,
       "steam_pct": null,
-      "confidence": 78,
+      "confidence": 77,
       "tier": "TIER 2: VALUE HUNTER",
       "stake_units": 1.25,
-      "home_lambda": 1.36,
-      "away_lambda": 1.33,
+      "home_lambda": 1.39,
+      "away_lambda": 1.3,
       "home_corners_lambda": 7.5,
       "away_corners_lambda": 2.39,
       "projected_score": "1–1",
@@ -825,20 +825,20 @@
       "pre_xi_snapshot": {
         "market_key": "away_ah_p1",
         "market_label": "Asian Handicap 2 (+1) · Milan",
-        "model_prob": 77.8,
-        "fair_odds": 1.28,
+        "model_prob": 76.8,
+        "fair_odds": 1.3,
         "bookmaker_odds": null,
         "projected_score": "1–1",
-        "home_lambda": 1.36,
-        "away_lambda": 1.33,
+        "home_lambda": 1.39,
+        "away_lambda": 1.3,
         "total_lambda": 2.69,
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "4-4-1-1",
-        "captured_at": "2026-11-26T08:45:37.184Z"
+        "captured_at": "2026-11-26T09:28:49.466Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:37.184Z"
+      "updated_at": "2026-11-26T09:28:49.466Z"
     },
     {
       "id": 1795672397845,
@@ -915,10 +915,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T08:45:37.586Z"
+        "captured_at": "2026-11-26T09:28:49.281Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:37.586Z"
+      "updated_at": "2026-11-26T09:28:49.281Z"
     },
     {
       "id": 1795672396594,
@@ -997,10 +997,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-3",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T08:45:34.561Z"
+        "captured_at": "2026-11-26T09:28:48.085Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:34.561Z"
+      "updated_at": "2026-11-26T09:28:48.085Z"
     },
     {
       "id": 1795672396822,
@@ -1079,10 +1079,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-1-4-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T08:45:35.120Z"
+        "captured_at": "2026-11-26T09:28:48.163Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:35.120Z"
+      "updated_at": "2026-11-26T09:28:48.163Z"
     },
     {
       "id": 1795672396110,
@@ -1160,10 +1160,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-1-4-1",
         "formation_away": "4-3-3",
-        "captured_at": "2026-11-26T08:45:34.246Z"
+        "captured_at": "2026-11-26T09:28:48.074Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T08:45:34.246Z"
+      "updated_at": "2026-11-26T09:28:48.074Z"
     },
     {
       "id": 1795635747435,
@@ -5559,8 +5559,8 @@
   "synced_by": "github_actions_auto_bot",
   "usage": {
     "date": "2026-11-26",
-    "fotmob": 284,
-    "espn": 11,
+    "fotmob": 350,
+    "espn": 14,
     "api_football": 0
   },
   "emoji_cache": {
