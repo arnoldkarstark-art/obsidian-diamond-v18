@@ -209,8 +209,9 @@ function singleAltEmoji(str, fallback = "⚽") {
   if (!s) return fallback;
   try {
     const seg = new Intl.Segmenter("en", { granularity: "grapheme" });
-    const first = [...seg.segment(s)][0]?.segment;
-    return first || fallback;
+    const parts = [...seg.segment(s)].map((x) => x.segment).filter(Boolean);
+    if (parts.length >= 2 && /^[🟠🟢🔵🟣🟡⚪🔴⚫]$/.test(parts[0])) return parts[1];
+    return parts[0] || fallback;
   } catch {
     return [...s][0] || fallback;
   }
@@ -871,12 +872,11 @@ async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null,
 
   const richChunks = chunkTelegramHtml(htmlText);
   const chanChunks = channelFallbackHtml ? chunkTelegramHtml(channelFallbackHtml) : richChunks;
-  const forceChannelCustom = String(process.env.FORCE_CHANNEL_CUSTOM_EMOJI || "").toLowerCase() === "true";
+  const disableChannelCustom = String(process.env.DISABLE_CHANNEL_CUSTOM_EMOJI || "").toLowerCase() === "true";
 
   const results = [];
   for (let rIdx = 0; rIdx < chatIds.length; rIdx++) {
     const targetId = chatIds[rIdx];
-    // Resolve real chat type via chatTypeMap or live getChat (so public supergroups like @enginebolachats get full club crests!)
     let chatType = chatTypeMap?.[targetId] || "";
     if (!chatType) {
       if (/^\d{6,}$/.test(targetId)) {
@@ -889,10 +889,8 @@ async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null,
         } catch {}
       }
     }
-    // Telegram Bot API 9.4 renders <tg-emoji> in private, group & supergroup chats (when bot owner has Premium);
-    // Broadcast channels strip <tg-emoji> unless bot owns a Fragment username -> send crisp Unicode flags to channels.
     const isBroadcastChannel = chatType === "channel" || (!chatType && targetId.startsWith("@"));
-    const useChannelFallback = isBroadcastChannel && !forceChannelCustom && !!channelFallbackHtml;
+    const useChannelFallback = isBroadcastChannel && disableChannelCustom && !!channelFallbackHtml;
     const chunks = useChannelFallback ? chanChunks : richChunks;
     let recipientOk = true;
     let lastErr = null;
@@ -1242,7 +1240,7 @@ async function main() {
     // 1) Detect exact chat type (supergroup vs broadcast channel) so @enginebolachats gets full <tg-emoji> club crests!
     // 2) Auto-discover linked Discussion Supergroup (linked_chat_id) only if not already in the target list!
     if (tgTok) {
-      const autoLinkGroup = String(process.env.DISABLE_LINKED_GROUP_MIRROR || "").toLowerCase() !== "true";
+      const autoLinkGroup = String(process.env.ENABLE_LINKED_GROUP_MIRROR || "").toLowerCase() === "true";
       const initialTargets = [...list];
       const linkedCandidates = [];
       for (const cid of initialTargets) {
