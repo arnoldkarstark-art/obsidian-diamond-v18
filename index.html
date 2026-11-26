@@ -2688,8 +2688,307 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   .parlay-prob-box { text-align: left; }
 }
 
+/* ---- Kinetic Moving Icons (Engine Bola Ball + Sweeping Radar + Flags) ---- */
+@keyframes ebBallRoll {
+  0%   { transform: rotate(0deg) translateY(0px); }
+  25%  { transform: rotate(90deg) translateY(-1.8px); }
+  50%  { transform: rotate(180deg) translateY(0px); }
+  75%  { transform: rotate(270deg) translateY(-1.2px); }
+  100% { transform: rotate(360deg) translateY(0px); }
+}
+@keyframes ebRadarSweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes ebRadarBlip {
+  0%, 100% { opacity: 0.25; transform: scale(0.75); }
+  45%      { opacity: 1;    transform: scale(1.25); }
+}
+@keyframes ebSoftPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.12); }
+}
+
+.eb-live-ball {
+  display: inline-block;
+  font-size: 0.92em;
+  line-height: 1;
+  margin-left: 3px;
+  vertical-align: -1px;
+  animation: ebBallRoll 4.8s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(56, 217, 255, 0.32));
+}
+.eb-live-ball-mark {
+  margin-left: 0;
+  font-size: 18px;
+  animation-duration: 5.5s;
+}
+.eb-live-ball-lg {
+  font-size: 0.72em;
+  margin-left: 6px;
+  vertical-align: 2px;
+  animation-duration: 4.4s;
+}
+
+.brand-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.nav-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12.5px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.nav-ico-ball {
+  animation: ebBallRoll 6.5s linear infinite;
+}
+.nav-ico-radar {
+  color: var(--ice);
+}
+.seg-btn.active .nav-ico-radar {
+  color: #2be08d;
+}
+.eb-radar-svg {
+  display: block;
+  overflow: visible;
+}
+.eb-radar-sweep {
+  transform-origin: 12px 12px;
+  animation: ebRadarSweep 2.6s linear infinite;
+}
+.eb-radar-blip {
+  transform-origin: 16.5px 8.5px;
+  animation: ebRadarBlip 2.6s ease-in-out infinite;
+}
+.nav-ico-pulse {
+  animation: ebSoftPulse 3.2s ease-in-out infinite;
+}
+.nav-ico-brain {
+  animation: ebSoftPulse 3.8s ease-in-out infinite;
+}
+.nav-lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.page-title-flex {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.title-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.title-ico-radar {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(56, 217, 255, 0.1);
+  border: 1px solid rgba(56, 217, 255, 0.25);
+  box-shadow: 0 0 18px rgba(43, 224, 141, 0.14);
+}
+
+@media (max-width: 780px) {
+  .seg-btn {
+    flex-direction: column;
+    gap: 2px;
+    padding: 5px 2px;
+    font-size: 9.5px;
+    line-height: 1.1;
+  }
+  .nav-ico {
+    font-size: 12px;
+  }
+  .nav-ico-radar .eb-radar-svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+/* ---- Team Flag & League Emoji Badges ---- */
+.league-emoji {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  line-height: 1;
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+.flag-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12.5px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+.flag-chip-lg {
+  font-size: 15px;
+  margin-right: 5px;
+}
+.crest-ball-fallback {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* ---- Pre-XI -> Confirmed-XI Prediction Shift Alert Card ---- */
+.xi-shift-card {
+  margin-bottom: 16px;
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  border: 1px solid rgba(245, 185, 66, 0.36);
+  background: linear-gradient(135deg, rgba(245, 185, 66, 0.11), rgba(255, 95, 86, 0.06) 55%, rgba(9, 17, 29, 0.72));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.xi-shift-card.shift-prob {
+  border-color: rgba(56, 217, 255, 0.34);
+  background: linear-gradient(135deg, rgba(56, 217, 255, 0.10), rgba(9, 17, 29, 0.72));
+}
+.xi-shift-card.shift-confirmed {
+  border-color: rgba(43, 224, 141, 0.28);
+  background: linear-gradient(135deg, rgba(43, 224, 141, 0.08), rgba(9, 17, 29, 0.72));
+}
+.xi-shift-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.xi-shift-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--ink-primary);
+}
+.xi-shift-compare {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.xi-shift-box {
+  background: rgba(5, 11, 20, 0.56);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  padding: 11px 13px;
+}
+.xi-shift-box.after {
+  border-color: rgba(43, 224, 141, 0.35);
+  background: rgba(43, 224, 141, 0.07);
+}
+.xi-shift-card.shift-changed .xi-shift-box.before {
+  border-color: rgba(255, 95, 86, 0.25);
+  opacity: 0.88;
+}
+.xi-shift-k {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  margin-bottom: 4px;
+}
+.xi-shift-pick {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+.xi-shift-sub {
+  font-size: 11.5px;
+  color: var(--ink-secondary);
+  margin-top: 3px;
+}
+.xi-shift-arrow {
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--amber);
+}
+.xi-shift-explain {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.xi-shift-reason {
+  background: rgba(255, 255, 255, 0.032);
+  border: 1px solid var(--border-hairline);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 12px;
+  line-height: 1.48;
+  color: var(--ink-secondary);
+}
+.xi-shift-reason strong {
+  color: var(--ink-primary);
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.shift-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: rgba(245, 185, 66, 0.16);
+  color: var(--amber);
+  border: 1px solid rgba(245, 185, 66, 0.34);
+  white-space: nowrap;
+}
+.shift-pill.shift-prob-pill {
+  background: rgba(56, 217, 255, 0.14);
+  color: var(--ice);
+  border-color: rgba(56, 217, 255, 0.3);
+}
+
+@media (max-width: 780px) {
+  .xi-shift-compare {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .xi-shift-arrow {
+    transform: rotate(90deg);
+    font-size: 14px;
+  }
+  .xi-shift-explain {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .orbit-ring, .orbit-ring-2, .view.active {
+  .orbit-ring, .orbit-ring-2, .view.active,
+  .eb-live-ball, .nav-ico-ball, .eb-radar-sweep, .eb-radar-blip, .nav-ico-pulse, .nav-ico-brain {
     animation: none !important;
   }
   .auth-btn::before { display: none; }
@@ -2723,7 +3022,7 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
             </div>
             <span class="auth-kicker mono">QUANT FOOTBALL INTELLIGENCE</span>
           </div>
-          <h1 class="auth-hero-title">ENGINE BOLA</h1>
+          <h1 class="auth-hero-title">ENGINE BOLA <span class="eb-live-ball eb-live-ball-lg" aria-hidden="true">⚽</span></h1>
           <p class="auth-hero-sub">Model Dixon-Coles xG, Confirmed Starting XI, radar 10–15+ Corners, dan pemetaan market 1xBet secara real-time dalam satu ruang kontrol.</p>
 
           <div class="auth-specs">
@@ -2774,13 +3073,10 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   <header class="topbar" role="banner">
     <div class="topbar-left">
       <div class="brand-mark js-brand-orb" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 64 64" fill="none">
-          <circle cx="32" cy="32" r="24" stroke="#38d9ff" stroke-width="3.2"/>
-          <polygon points="32,19 43,27 39,40 25,40 21,27" stroke="#f5b942" stroke-width="2.6" stroke-linejoin="round"/>
-        </svg>
+        <span class="eb-live-ball eb-live-ball-mark">⚽</span>
       </div>
       <div class="brand-text">
-        <span class="brand-title">ENGINE BOLA</span>
+        <span class="brand-title">ENGINE BOLA <span class="eb-live-ball" aria-hidden="true">⚽</span></span>
         <span class="brand-sub">Quant Football · 1xBet Engine</span>
       </div>
       <a class="channel-pill" href="https://t.me/enginebola" target="_blank" rel="noopener noreferrer" title="Buka Channel Telegram Resmi Engine Bola">
@@ -2791,14 +3087,36 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
     </div>
 
     <nav class="segmented-nav" role="tablist" aria-label="Workspace Views">
-      <button id="nav-matches" class="seg-btn active" data-view="matches" role="tab" aria-selected="true">Matches</button>
-      <button id="nav-scanner" class="seg-btn" data-view="scanner" role="tab" aria-selected="false">Daily Radar</button>
-      <button id="nav-parlay" class="seg-btn" data-view="parlay" role="tab" aria-selected="false">Parlay</button>
+      <button id="nav-matches" class="seg-btn active" data-view="matches" role="tab" aria-selected="true">
+        <span class="nav-ico nav-ico-ball" aria-hidden="true">⚽</span>
+        <span class="nav-lbl">Matches</span>
+      </button>
+      <button id="nav-scanner" class="seg-btn" data-view="scanner" role="tab" aria-selected="false">
+        <span class="nav-ico nav-ico-radar" aria-hidden="true">
+          <svg class="eb-radar-svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.45"/>
+            <circle cx="12" cy="12" r="5.2" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+            <g class="eb-radar-sweep">
+              <path d="M12 12L12 2.5A9.5 9.5 0 0 1 20.2 7.2Z" fill="currentColor" opacity="0.36"/>
+              <line x1="12" y1="12" x2="12" y2="2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </g>
+            <circle class="eb-radar-blip" cx="16.5" cy="8.5" r="1.7" fill="#2be08d"/>
+            <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="nav-lbl">Daily Radar</span>
+      </button>
+      <button id="nav-parlay" class="seg-btn" data-view="parlay" role="tab" aria-selected="false">
+        <span class="nav-ico nav-ico-pulse" aria-hidden="true">🎯</span>
+        <span class="nav-lbl">Parlay</span>
+      </button>
       <button id="nav-slip" class="seg-btn" data-view="slip" role="tab" aria-selected="false">
-        Slip <span id="slip-badge" class="count-chip hidden">0</span>
+        <span class="nav-ico" aria-hidden="true">🧾</span>
+        <span class="nav-lbl">Slip <span id="slip-badge" class="count-chip hidden">0</span></span>
       </button>
       <button id="nav-memory" class="seg-btn" data-view="memory" role="tab" aria-selected="false">
-        Memory <span id="memory-badge" class="count-chip hidden">0</span>
+        <span class="nav-ico nav-ico-brain" aria-hidden="true">🧠</span>
+        <span class="nav-lbl">Memory <span id="memory-badge" class="count-chip hidden">0</span></span>
       </button>
     </nav>
 
@@ -2920,7 +3238,21 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
       <div class="page-container">
         <div class="page-head">
           <div>
-            <h1 class="page-title">Daily Top Picks Auto-Scanner</h1>
+            <h1 class="page-title page-title-flex">
+              <span class="title-ico title-ico-radar" aria-hidden="true">
+                <svg class="eb-radar-svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="9.5" stroke="#38d9ff" stroke-width="1.5" opacity="0.5"/>
+                  <circle cx="12" cy="12" r="5.5" stroke="#38d9ff" stroke-width="1.2" opacity="0.35"/>
+                  <g class="eb-radar-sweep">
+                    <path d="M12 12L12 2.5A9.5 9.5 0 0 1 20.2 7.2Z" fill="#2be08d" opacity="0.42"/>
+                    <line x1="12" y1="12" x2="12" y2="2.5" stroke="#2be08d" stroke-width="1.9" stroke-linecap="round"/>
+                  </g>
+                  <circle class="eb-radar-blip" cx="16.5" cy="8.5" r="1.9" fill="#f5b942"/>
+                  <circle cx="12" cy="12" r="1.6" fill="#38d9ff"/>
+                </svg>
+              </span>
+              <span>Daily Radar · Auto-Scanner</span>
+            </h1>
             <p class="page-sub">Automatically scans today's priority leagues from FotMob &amp; ESPN to rank the sharpest Sniper Anchors, High-Volume Corners (10–15+), 1xBet Goals/BTTS, and Trap Games to Avoid.</p>
           </div>
           <div class="page-actions">
@@ -2954,7 +3286,7 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
       <div class="page-container">
         <div class="page-head">
           <div>
-            <h1 class="page-title">Auto-Parlay Lab · 2–10 Legs</h1>
+            <h1 class="page-title page-title-flex"><span class="title-ico nav-ico-pulse" aria-hidden="true">🎯</span><span>Auto-Parlay Lab · 2–10 Legs</span></h1>
             <p class="page-sub">Engine Bola otomatis memindai laga prioritas hari ini dan menyusun kombinasi parlay 1xBet dengan probabilitas menang tertinggi — 1 laga per leg, tanpa bentrok, dan bisa ditukar instan.</p>
           </div>
           <div class="page-actions">
@@ -3025,7 +3357,7 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
       <div class="page-container">
         <div class="page-head">
           <div>
-            <h1 class="page-title">Slip Re-Calibration &amp; Parlay Control</h1>
+            <h1 class="page-title page-title-flex"><span class="title-ico" aria-hidden="true">🧾</span><span>Slip Re-Calibration &amp; Parlay Control</span></h1>
             <p class="page-sub">Add fixtures from Matches or Daily Radar, optionally choose your intended 1xBet pick per leg, and run Engine Bola risk triangulation &amp; Sovereign Trio parlay math.</p>
           </div>
           <div class="page-actions">
@@ -3045,7 +3377,7 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
       <div class="page-container">
         <div class="page-head">
           <div>
-            <h1 class="page-title">Autonomous Memory, 5W1H &amp; Neural Learning</h1>
+            <h1 class="page-title page-title-flex"><span class="title-ico nav-ico-brain" aria-hidden="true">🧠</span><span>Autonomous Memory, 5W1H &amp; Neural Learning</span></h1>
             <p class="page-sub">Auto-records every analyzed fixture, settles completed scores automatically next day, runs 5W1H root-cause post-mortems, and learns historical factor penalties.</p>
           </div>
           <div class="page-actions">
@@ -3301,6 +3633,182 @@ const ObsidianEngine = (() => {
     return id ? `https://images.fotmob.com/image_resources/logo/teamlogo/${id}_small.png` : "";
   }
 
+  // ---- Global Team Flag & League Representative Emoji Engine ----
+  const ISO3_TO_FLAG = {
+    ENG: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", SCO: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", WAL: "🏴󠁧󠁢󠁷󠁬󠁳󠁿", NIR: "🇬🇧", GBR: "🇬🇧",
+    ESP: "🇪🇸", ITA: "🇮🇹", GER: "🇩🇪", DEU: "🇩🇪", FRA: "🇫🇷", NED: "🇳🇱", NLD: "🇳🇱",
+    POR: "🇵🇹", PRT: "🇵🇹", BEL: "🇧🇪", TUR: "🇹🇷", SUI: "🇨🇭", CHE: "🇨🇭", AUT: "🇦🇹",
+    DEN: "🇩🇰", DNK: "🇩🇰", SWE: "🇸🇪", NOR: "🇳🇴", FIN: "🇫🇮", ISL: "🇮🇸", IRL: "🇮🇪",
+    POL: "🇵🇱", CZE: "🇨🇿", CRO: "🇭🇷", HRV: "🇭🇷", SRB: "🇷🇸", UKR: "🇺🇦", RUS: "🇷🇺",
+    GRE: "🇬🇷", GRC: "🇬🇷", ROU: "🇷🇴", HUN: "🇭🇺", SVK: "🇸🇰", SVN: "🇸🇮", BGR: "🇧🇬",
+    BUL: "🇧🇬", BIH: "🇧🇦", MNE: "🇲🇪", MKD: "🇲🇰", ALB: "🇦🇱", CYP: "🇨🇾", ISR: "🇮🇱",
+    GEO: "🇬🇪", ARM: "🇦🇲", AZE: "🇦🇿", KAZ: "🇰🇿", MDA: "🇲🇩", LTU: "🇱🇹", LVA: "🇱🇻",
+    EST: "🇪🇪", LUX: "🇱🇺", MLT: "🇲🇹", BLR: "🇧🇾", FRO: "🇫🇴", GIB: "🇬🇮", KOS: "🇽🇰",
+    BRA: "🇧🇷", ARG: "🇦🇷", URU: "🇺🇾", URY: "🇺🇾", COL: "🇨🇴", CHI: "🇨🇱", CHL: "🇨🇱",
+    ECU: "🇪🇨", PER: "🇵🇪", PAR: "🇵🇾", PRY: "🇵🇾", VEN: "🇻🇪", BOL: "🇧🇴",
+    USA: "🇺🇸", MEX: "🇲🇽", CAN: "🇨🇦", CRC: "🇨🇷", PAN: "🇵🇦", JAM: "🇯🇲", HON: "🇭🇳",
+    GUA: "🇬🇹", SLV: "🇸🇻", TRI: "🇹🇹",
+    JPN: "🇯🇵", KOR: "🇰🇷", CHN: "🇨🇳", AUS: "🇦🇺", NZL: "🇳🇿", KSA: "🇸🇦", SAU: "🇸🇦",
+    QAT: "🇶🇦", UAE: "🇦🇪", ARE: "🇦🇪", IRN: "🇮🇷", IRQ: "🇮🇶", KUW: "🇰🇼", KWT: "🇰🇼",
+    BHR: "🇧🇭", OMN: "🇴🇲", JOR: "🇯🇴", UZB: "🇺🇿", IND: "🇮🇳", IDN: "🇮🇩", THA: "🇹🇭",
+    MYS: "🇲🇾", MAS: "🇲🇾", VNM: "🇻🇳", VIE: "🇻🇳", SGP: "🇸🇬", PHI: "🇵🇭", HKG: "🇭🇰",
+    EGY: "🇪🇬", MAR: "🇲🇦", ALG: "🇩🇿", DZA: "🇩🇿", TUN: "🇹🇳", NGA: "🇳🇬", SEN: "🇸🇳",
+    GHA: "🇬🇭", CMR: "🇨🇲", CIV: "🇨🇮", ZAF: "🇿🇦", RSA: "🇿🇦", MLI: "🇲🇱", BFA: "🇧🇫",
+    COD: "🇨🇩", KEN: "🇰🇪", TAN: "🇹🇿", UGA: "🇺🇬", ANG: "🇦🇴", ZAM: "🇿🇲",
+    INT: "🌍", EUR: "🇪🇺",
+  };
+
+  function countryCodeToFlag(cc) {
+    const code = String(cc || "").trim().toUpperCase();
+    if (!code) return "";
+    if (ISO3_TO_FLAG[code]) return ISO3_TO_FLAG[code];
+    if (/^[A-Z]{2}$/.test(code)) {
+      return String.fromCodePoint(0x1f1e6 + code.charCodeAt(0) - 65, 0x1f1e6 + code.charCodeAt(1) - 65);
+    }
+    return "";
+  }
+
+  function getLeagueEmoji(leagueName, countryCode = "") {
+    const ln = String(leagueName || "").toLowerCase();
+    const cc = String(countryCode || "").toUpperCase();
+    if (ln.includes("world cup") || ln.includes("fifa")) return "🏆🌍";
+    if (ln.includes("champions league") && !ln.includes("afc") && !ln.includes("caf") && !ln.includes("concacaf")) return "🌟🇪🇺";
+    if (ln.includes("europa league")) return "🟠🇪🇺";
+    if (ln.includes("conference league")) return "🟢🇪🇺";
+    if (ln.includes("uefa") || ln.includes("euro ") || ln.includes("nations league")) return "🇪🇺⚽";
+    if (ln.includes("libertadores") || ln.includes("sudamericana") || ln.includes("copa america") || ln.includes("conmebol")) return "🏆🌎";
+    if (ln.includes("concacaf") || ln.includes("leagues cup")) return "🏆🌎";
+    if (ln.includes("afc") || ln.includes("asian cup")) return "🏆🌏";
+    if (ln.includes("caf") || ln.includes("africa")) return "🏆🌍";
+    const flag = countryCodeToFlag(cc);
+    if (flag && cc !== "INT") return flag;
+    const kwMap = [
+      [/premier league|championship|league one|league two|fa cup|efl|carabao|national league/, "🏴󠁧󠁢󠁥󠁮󠁧󠁿"],
+      [/la liga|laliga|segunda federacion|copa del rey|copa de la reina|primera federacion/, "🇪🇸"],
+      [/serie a|serie b|serie c|coppa italia/, ln.includes("série") || ln.includes("brasileir") ? "🇧🇷" : "🇮🇹"],
+      [/bundesliga|dfb|regionalliga/, "🇩🇪"],
+      [/ligue 1|ligue 2|coupe de france/, "🇫🇷"],
+      [/eredivisie|eerste divisie|knvb/, "🇳🇱"],
+      [/primeira liga|liga portugal|taça/, "🇵🇹"],
+      [/süper lig|super lig|turkish/, "🇹🇷"],
+      [/premiership|highland|lowland|scottish/, "🏴󠁧󠁢󠁳󠁣󠁴󠁿"],
+      [/pro league|belgian|jupiler/, "🇧🇪"],
+      [/brasileir|série a|série b|copa do brasil|paulista|carioca/, "🇧🇷"],
+      [/liga profesional|primera nacional|copa argentina/, "🇦🇷"],
+      [/mls|usl|us open cup/, "🇺🇸"],
+      [/liga mx/, "🇲🇽"],
+      [/j\.?\s*league|j1|j2/, "🇯🇵"],
+      [/k league/, "🇰🇷"],
+      [/saudi|roshn/, "🇸🇦"],
+      [/i-?league|indian super/, "🇮🇳"],
+      [/liga 1 indonesia|bri liga/, "🇮🇩"],
+      [/a-league/, "🇦🇺"],
+      [/1\.\s*cfl/, "🇲🇪"],
+    ];
+    for (const [rx, em] of kwMap) {
+      if (rx.test(ln)) return em;
+    }
+    return flag || "🏟️";
+  }
+
+  const NATION_TEAM_FLAGS = [
+    ["england", "🏴󠁧󠁢󠁥󠁮󠁧󠁿"], ["scotland", "🏴󠁧󠁢󠁳󠁣󠁴󠁿"], ["wales", "🏴󠁧󠁢󠁷󠁬󠁳󠁿"], ["northern ireland", "🇬🇧"],
+    ["spain", "🇪🇸"], ["italy", "🇮🇹"], ["germany", "🇩🇪"], ["france", "🇫🇷"], ["netherlands", "🇳🇱"],
+    ["portugal", "🇵🇹"], ["belgium", "🇧🇪"], ["turkey", "🇹🇷"], ["türkiye", "🇹🇷"], ["switzerland", "🇨🇭"],
+    ["austria", "🇦🇹"], ["denmark", "🇩🇰"], ["sweden", "🇸🇪"], ["norway", "🇳🇴"], ["finland", "🇫🇮"],
+    ["poland", "🇵🇱"], ["czechia", "🇨🇿"], ["czech republic", "🇨🇿"], ["croatia", "🇭🇷"], ["serbia", "🇷🇸"],
+    ["ukraine", "🇺🇦"], ["greece", "🇬🇷"], ["romania", "🇷🇴"], ["hungary", "🇭🇺"], ["slovakia", "🇸🇰"],
+    ["slovenia", "🇸🇮"], ["ireland", "🇮🇪"], ["iceland", "🇮🇸"], ["georgia", "🇬🇪"], ["armenia", "🇦🇲"],
+    ["brazil", "🇧🇷"], ["argentina", "🇦🇷"], ["uruguay", "🇺🇾"], ["colombia", "🇨🇴"], ["chile", "🇨🇱"],
+    ["ecuador", "🇪🇨"], ["peru", "🇵🇪"], ["paraguay", "🇵🇾"], ["venezuela", "🇻🇪"], ["bolivia", "🇧🇴"],
+    ["usa", "🇺🇸"], ["united states", "🇺🇸"], ["mexico", "🇲🇽"], ["canada", "🇨🇦"], ["costa rica", "🇨🇷"],
+    ["panama", "🇵🇦"], ["jamaica", "🇯🇲"], ["honduras", "🇭🇳"],
+    ["japan", "🇯🇵"], ["south korea", "🇰🇷"], ["korea republic", "🇰🇷"], ["china", "🇨🇳"], ["australia", "🇦🇺"],
+    ["new zealand", "🇳🇿"], ["saudi arabia", "🇸🇦"], ["qatar", "🇶🇦"], ["uae", "🇦🇪"], ["iran", "🇮🇷"],
+    ["iraq", "🇮🇶"], ["jordan", "🇯🇴"], ["uzbekistan", "🇺🇿"], ["indonesia", "🇮🇩"], ["thailand", "🇹🇭"],
+    ["malaysia", "🇲🇾"], ["vietnam", "🇻🇳"], ["india", "🇮🇳"],
+    ["egypt", "🇪🇬"], ["morocco", "🇲🇦"], ["algeria", "🇩🇿"], ["tunisia", "🇹🇳"], ["nigeria", "🇳🇬"],
+    ["senegal", "🇸🇳"], ["ghana", "🇬🇭"], ["cameroon", "🇨🇲"], ["ivory coast", "🇨🇮"], ["south africa", "🇿🇦"],
+    ["mali", "🇲🇱"], ["burkina faso", "🇧🇫"], ["dr congo", "🇨🇩"], ["zambia", "🇿🇲"], ["angola", "🇦🇴"],
+  ];
+
+  const CLUB_COUNTRY_RULES = [
+    [/arsenal|chelsea|liverpool|manchester|tottenham|newcastle|aston villa|brighton|west ham|crystal palace|bournemouth|fulham|brentford|nottingham|everton|wolves|wolverhampton|leicester|southampton|ipswich|leeds|burnley|sunderland|stoke|millwall|watford|blackburn|west brom|bolton|birmingham|sheffield|coventry|middlesbrough|norwich|bristol|hull|luton|preston|derby|portsmouth|cardiff|swansea|plymouth|oxford|qpr/, "🏴󠁧󠁢󠁥󠁮󠁧󠁿"],
+    [/real madrid|barcelona|atlético madrid|atletico madrid|villarreal|real sociedad|athletic club|athletic bilbao|real betis|sevilla|valencia|girona|celta|mallorca|osasuna|getafe|rayo vallecano|espanyol|alaves|las palmas|valladolid|leganes|talavera|huelva/, "🇪🇸"],
+    [/inter\b|internazionale|ac milan|\bmilan\b|juventus|napoli|atalanta|roma|lazio|fiorentina|bologna|torino|udinese|genoa|cagliari|empoli|parma|verona|lecce|monza|como|venezia|cremonese|avellino|palermo|sampdoria|sassuolo|spezia|pisa|bari|brescia|modena|cesena/, "🇮🇹"],
+    [/bayern|dortmund|leverkusen|rb leipzig|leipzig|stuttgart|frankfurt|freiburg|hoffenheim|wolfsburg|werder bremen|gladbach|mainz|augsburg|union berlin|heidenheim|bochum|st\.?\s*pauli|kiel|hamburg|schalke|köln|koln|hertha|nürnberg/, "🇩🇪"],
+    [/paris saint|psg|marseille|monaco|lille|lyon|rennes|nice|lens|brest|strasbourg|toulouse|reims|nantes|montpellier|auxerre|angers|le havre|saint-etienne/, "🇫🇷"],
+    [/ajax|psv|feyenoord|az alkmaar|twente|utrecht|heerenveen|groningen|nec nijmegen|sparta rotterdam|go ahead/, "🇳🇱"],
+    [/benfica|porto|sporting cp|sporting lisbon|braga|vitoria guimaraes|famalicao|boavista|estoril|rio ave|gil vicente/, "🇵🇹"],
+    [/club brugge|anderlecht|union st|st\.?\s*gilloise|genk|gent|antwerp|standard liege|mechelen|charleroi|westerlo/, "🇧🇪"],
+    [/galatasaray|fenerbahçe|fenerbahce|beşiktaş|besiktas|trabzonspor|başakşehir|basaksehir|samsunspor|kasımpaşa|göztepe|antalyaspor|konyaspor|sivasspor/, "🇹🇷"],
+    [/celtic|rangers|aberdeen|hearts|hibernian|dundee|kilmarnock|motherwell|st mirren|inverurie|buckie/, "🏴󠁧󠁢󠁳󠁣󠁴󠁿"],
+    [/shakhtar|dynamo kyiv|dnipro|zorya|kryvbas/, "🇺🇦"],
+    [/slavia prague|sparta prague|viktoria plzen|plzeň|banik ostrava/, "🇨🇿"],
+    [/salzburg|sturm graz|rapid wien|austria wien|lask/, "🇦🇹"],
+    [/young boys|basel|zürich|zurich|servette|lugano|st\.?\s*gallen/, "🇨🇭"],
+    [/copenhagen|midtjylland|brøndby|brondby|nordsjælland|aarhus/, "🇩🇰"],
+    [/malmö|malmo|djurgården|aik|hammarby|elfsborg|häcken|göteborg/, "🇸🇪"],
+    [/bodø|bodo|molde|rosenborg|viking|brann|lillestrøm|lillestrom|vålerenga/, "🇳🇴"],
+    [/olympiacos|panathinaikos|aek athens|paok|aris/, "🇬🇷"],
+    [/dinamo zagreb|hajduk split|rijeka|osijek/, "🇭🇷"],
+    [/crvena zvezda|red star|partizan|tsc|vojvodina/, "🇷🇸"],
+    [/legia|lech pozna[nń]|rak[oó]w|jagiellonia|pogo[nń]/, "🇵🇱"],
+    [/ferencvaros|ferencváros|paks|fehervar/, "🇭🇺"],
+    [/celje|olimpija|maribor/, "🇸🇮"],
+    [/slovan bratislava|spartak trnava/, "🇸🇰"],
+    [/sheriff|zimbru/, "🇲🇩"],
+    [/qarabag|qarabağ|sabah fk|neftchi/, "🇦🇿"],
+    [/boca juniors|river plate|racing club|independiente|san lorenzo|velez|estudiantes|talleres|lanus|huracan|rosario|belgrano|newell|argentinos|banfield|tigre|platense|defensa/, "🇦🇷"],
+    [/flamengo|palmeiras|botafogo|atlético-?mg|atletico mineiro|são paulo|sao paulo|corinthians|internacional|grêmio|gremio|fluminense|cruzeiro|vasco|bahia|fortaleza|athletico paranaense|bragantino|santos|vitória|juventude|cuiaba|mirassol/, "🇧🇷"],
+    [/al-?hilal|al-?nassr|al-?ittihad|al-?ahli|al-?shabab|al-?taawoun|al-?ettifaq|al-?fateh|al-?qadsiah|al-?feiha|damac/, "🇸🇦"],
+    [/al ahly|zamalek|pyramids|ceramica cleopatra|ghazl al mahalla|ismaily|al masry|smouha/, "🇪🇬"],
+    [/shonan|ventforet|sapporo|fujieda|kashima|urawa|kawasaki|yokohama|vissel kobe|gamba osaka|cerezo osaka|sanfrecce|nagoya|fc tokyo|machida/, "🇯🇵"],
+    [/inter miami|la galaxy|lafc|columbus crew|cincinnati|seattle sounders|nycfc|atlanta united|orlando city|charlotte|nashville|houston dynamo/, "🇺🇸"],
+    [/club america|chivas|cruz azul|monterrey|tigres|pumas|toluca|pachuca|leon|tijuana/, "🇲🇽"],
+    [/kuwait sc|al arabi|qadsia/, "🇰🇼"],
+    [/muharraq|riffa|khalidiya/, "🇧🇭"],
+    [/ararat|pyunik|noah|urartu|alashkert|shirak/, "🇦🇲"],
+    [/maccabi|hapoel|beitar/, "🇮🇱"],
+    [/apoel|omonia|pafos|aek larnaca|aris limassol/, "🇨🇾"],
+    [/fcsb|steaua|cfr cluj|rapid bucure|universitatea craiova/, "🇷🇴"],
+    [/ludogorets|levski|cska sofia|botev plovdiv/, "🇧🇬"],
+    [/shakhtar|dynamo kyiv|kryvbas|polissya|dnipro/, "🇺🇦"],
+    [/slavia prag|sparta prag|viktoria plze|banik|mlada boleslav/, "🇨🇿"],
+    [/astana|kairat|ordabasy|tobol/, "🇰🇿"],
+    [/dinamo tbilisi|dinamo batumi|saburtalo|torpedo kutaisi/, "🇬🇪"],
+    [/hjk helsinki|kups|ilves/, "🇫🇮"],
+    [/shamrock rovers|shelbourne|st patrick|bohemian/, "🇮🇪"],
+    [/persib|persija|bali united|psm makassar|borneo fc|madura united|persebaya|arema|dewa united/, "🇮🇩"],
+    [/johor darul|jdt|selangor|terengganu/, "🇲🇾"],
+    [/buriram|bangkok united|bg pathum|port fc/, "🇹🇭"],
+  ];
+
+  function getTeamFlag(teamName, leagueName = "", countryCode = "") {
+    const tn = String(teamName || "").toLowerCase().trim();
+    const tnClean = tn.replace(/\b(u17|u19|u20|u21|u23|women|w|ii|b)\b/g, "").trim();
+    // 1. National teams (exact or prefix match)
+    for (const [nation, flag] of NATION_TEAM_FLAGS) {
+      if (tnClean === nation || tn.startsWith(nation + " ")) return flag;
+    }
+    // 2. Domestic league country code directly gives every team's nation flag
+    const cc = String(countryCode || "").toUpperCase();
+    if (cc && cc !== "INT" && cc !== "EUR") {
+      const f = countryCodeToFlag(cc);
+      if (f) return f;
+    }
+    // 3. Cross-border international club lookup (UCL / UEL / UECL / AFC / Copa)
+    for (const [rx, flag] of CLUB_COUNTRY_RULES) {
+      if (rx.test(tn)) return flag;
+    }
+    // 4. Fallback to domestic league name if recognizable
+    const lgFlag = getLeagueEmoji(leagueName, cc);
+    if (lgFlag && !lgFlag.includes("🏆") && !lgFlag.includes("🌟") && !lgFlag.includes("🟠") && !lgFlag.includes("🟢") && !lgFlag.includes("🇪🇺") && !lgFlag.includes("🏟")) {
+      return lgFlag;
+    }
+    return "⚽";
+  }
+
   // ---- Mathematical Core ----
   function logGamma(z) {
     const g = 7;
@@ -3425,6 +3933,9 @@ const ObsidianEngine = (() => {
       let total = 0, liveCount = 0;
       for (const lg of (data.leagues || [])) {
         const lgId = lg.primaryId || lg.id;
+        const lgName = lg.name || "Competition";
+        const lgCcode = lg.ccode || "";
+        const lgEmoji = getLeagueEmoji(lgName, lgCcode);
         const ms = [];
         for (const m of (lg.matches || [])) {
           const st = m.status || {};
@@ -3433,14 +3944,16 @@ const ObsidianEngine = (() => {
           if (isLive) liveCount++;
           const liveMin = st.liveTime ? (st.liveTime.short || st.liveTime.long || "") : "";
           const reason = st.reason ? (st.reason.short || "") : "";
+          const hName = m.home?.name || "Home";
+          const aName = m.away?.name || "Away";
           const item = {
-            match_id: String(m.id), source: "fotmob", league_id: String(lgId), league_name: lg.name || "Competition",
-            country_code: lg.ccode || "", date: dateIso, kickoff_utc: st.utcTime || "",
+            match_id: String(m.id), source: "fotmob", league_id: String(lgId), league_name: lgName,
+            league_emoji: lgEmoji, country_code: lgCcode, date: dateIso, kickoff_utc: st.utcTime || "",
             state: isLive ? "LIVE" : finished ? "FT" : cancelled ? "CANC" : "UPCOMING",
             is_live: isLive, finished, live_minute: liveMin, status_label: isLive ? liveMin : finished ? reason : "",
-            home_id: String(m.home?.id || ""), home_name: m.home?.name || "Home",
+            home_id: String(m.home?.id || ""), home_name: hName, home_flag: getTeamFlag(hName, lgName, lgCcode),
             home_score: (started || finished) ? m.home?.score : null, home_logo: crestUrl(m.home?.id),
-            away_id: String(m.away?.id || ""), away_name: m.away?.name || "Away",
+            away_id: String(m.away?.id || ""), away_name: aName, away_flag: getTeamFlag(aName, lgName, lgCcode),
             away_score: (started || finished) ? m.away?.score : null, away_logo: crestUrl(m.away?.id),
             is_priority: PRIORITY_LEAGUES.has(Number(lgId))
           };
@@ -3450,8 +3963,8 @@ const ObsidianEngine = (() => {
         }
         if (ms.length) {
           leagues.push({
-            league_id: String(lgId), league_name: lg.name || "Competition",
-            country_code: lg.ccode || "", is_priority: PRIORITY_LEAGUES.has(Number(lgId)), matches: ms
+            league_id: String(lgId), league_name: lgName, league_emoji: lgEmoji,
+            country_code: lgCcode, is_priority: PRIORITY_LEAGUES.has(Number(lgId)), matches: ms
           });
         }
       }
@@ -3474,13 +3987,16 @@ const ObsidianEngine = (() => {
         if (isLive) liveCount++;
         const slug = ev.season?.slug || "espn-soccer";
         const lgName = slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-        if (!map[slug]) map[slug] = { league_id: slug, league_name: lgName, is_priority: true, matches: [] };
+        const lgEmoji = getLeagueEmoji(lgName, "");
+        if (!map[slug]) map[slug] = { league_id: slug, league_name: lgName, league_emoji: lgEmoji, is_priority: true, matches: [] };
+        const hName = hc.team?.displayName || "Home";
+        const aName = ac.team?.displayName || "Away";
         const eItem = {
-          match_id: `espn:${ev.id}`, source: "espn", league_id: slug, league_name: lgName,
+          match_id: `espn:${ev.id}`, source: "espn", league_id: slug, league_name: lgName, league_emoji: lgEmoji,
           date: dateIso, kickoff_utc: ev.date || "", state: isLive ? "LIVE" : finished ? "FT" : "UPCOMING",
           is_live: isLive, finished, live_minute: isLive ? (ev.status?.displayClock || "LIVE") : "", status_label: stType.shortDetail || "",
-          home_id: String(hc.id || ""), home_name: hc.team?.displayName || "Home", home_score: (isLive || finished) ? parseInt(hc.score, 10) : null, home_logo: hc.team?.logo || "",
-          away_id: String(ac.id || ""), away_name: ac.team?.displayName || "Away", away_score: (isLive || finished) ? parseInt(ac.score, 10) : null, away_logo: ac.team?.logo || "",
+          home_id: String(hc.id || ""), home_name: hName, home_flag: getTeamFlag(hName, lgName, ""), home_score: (isLive || finished) ? parseInt(hc.score, 10) : null, home_logo: hc.team?.logo || "",
+          away_id: String(ac.id || ""), away_name: aName, away_flag: getTeamFlag(aName, lgName, ""), away_score: (isLive || finished) ? parseInt(ac.score, 10) : null, away_logo: ac.team?.logo || "",
           is_priority: true
         };
         knownMatches.set(eItem.match_id, eItem);
@@ -4019,7 +4535,8 @@ const ObsidianEngine = (() => {
     const luTypeRaw0 = String(content.lineup?.lineupType || "").toLowerCase();
     const hStarterCount = content.lineup?.homeTeam?.starters?.length || 0;
     const aStarterCount = content.lineup?.awayTeam?.starters?.length || 0;
-    const fotmobXiOfficial = (hStarterCount >= 11 && aStarterCount >= 11 && luTypeRaw0 !== "" && !luTypeRaw0.includes("predict") && !luTypeRaw0.includes("expect")) || luTypeRaw0.includes("confirm") || luTypeRaw0 === "standard";
+    const isNonOfficialLu = !luTypeRaw0 || luTypeRaw0.includes("predict") || luTypeRaw0.includes("expect") || luTypeRaw0.includes("last");
+    const fotmobXiOfficial = luTypeRaw0 === "standard" || luTypeRaw0.includes("confirm") || luTypeRaw0.includes("official") || (hStarterCount >= 11 && aStarterCount >= 11 && !isNonOfficialLu) || ((isLive || finished) && hStarterCount >= 11 && aStarterCount >= 11);
     const needOdds = !espnOdds;
     const needInjuries = !raw && hUnav.length === 0 && aUnav.length === 0;
     const needLineups = !fotmobXiOfficial;
@@ -4136,13 +4653,17 @@ const ObsidianEngine = (() => {
       lamA = ((att(am, avgG) * def(hm, avgG)) / avgG) / Math.sqrt(effHomeAdv) * weights.goal_lambda_scale;
     }
 
-    // Stronger Tier-S absence impact (2+ Tier-S out = star shock!)
-    const hStarShock = hm.tier_s_out.length >= 2;
-    const aStarShock = am.tier_s_out.length >= 2;
-    const hPen = Math.min(0.30, hm.tier_s_out.length * 0.11 + hm.tier_s_doubt.length * 0.04 + hm.tier_a_out.length * 0.03);
-    const aPen = Math.min(0.30, am.tier_s_out.length * 0.11 + am.tier_s_doubt.length * 0.04 + am.tier_a_out.length * 0.03);
-    lamH *= (1 - hPen * 0.88) * (1 + aPen * 0.25);
-    lamA *= (1 - aPen * 0.88) * (1 + hPen * 0.25);
+    // V18.7 Squad Crisis & Attack/Defense Star-Shock (learned from 2026-11-25 audit: multi-starter absences hurt BOTH attack & defense/GK!)
+    const hKeyOut = hm.tier_s_out.length + hm.tier_a_out.length;
+    const aKeyOut = am.tier_s_out.length + am.tier_a_out.length;
+    const hStarShock = hm.tier_s_out.length >= 2 || hKeyOut >= 3 || hUnav.length >= 5;
+    const aStarShock = am.tier_s_out.length >= 2 || aKeyOut >= 3 || aUnav.length >= 5;
+    const hPen = Math.min(0.36, hm.tier_s_out.length * 0.11 + hm.tier_s_doubt.length * 0.04 + hm.tier_a_out.length * 0.04 + (hUnav.length >= 5 ? 0.06 : 0));
+    const aPen = Math.min(0.36, am.tier_s_out.length * 0.11 + am.tier_s_doubt.length * 0.04 + am.tier_a_out.length * 0.04 + (aUnav.length >= 5 ? 0.06 : 0));
+    const hDefVuln = hStarShock ? Math.min(0.18, 0.06 + hKeyOut * 0.025 + (hUnav.length >= 5 ? 0.04 : 0)) : hPen * 0.25;
+    const aDefVuln = aStarShock ? Math.min(0.18, 0.06 + aKeyOut * 0.025 + (aUnav.length >= 5 ? 0.04 : 0)) : aPen * 0.25;
+    lamH *= (1 - hPen * 0.88) * (1 + aDefVuln);
+    lamA *= (1 - aPen * 0.88) * (1 + hDefVuln);
     if (hm.european_hangover || hm.wed_sat_fatigue) { lamH *= 0.94; lamA *= 1.05; }
     if (am.european_hangover || am.wed_sat_fatigue) { lamA *= 0.93; lamH *= 1.06; }
     lamH = clamp(lamH, 0.30, 3.55); lamA = clamp(lamA, 0.24, 3.15);
@@ -4349,12 +4870,18 @@ const ObsidianEngine = (() => {
       { key: "away_ah_p1", label: `Asian Handicap 2 (+1) · ${aName}`, family: "Result & AH", line: 1, raw: pAAHp1, push: pAAHp1Push, v: 0.12 }
     ];
 
-    // If lambdas were already Bayesian-anchored to market odds, use light residual probability anchor (0.12) to avoid double-shrinking
+    // V18.7 Thin-Data Shrinkage + Bookmaker Steam Alignment + Away Underdog Corners Guard (learned from 2026-11-25 audit!)
+    const hasXgData = hm.xg_pm !== null && am.xg_pm !== null;
+    const isThinData = !hasXgData && !hasCData;
     const anchorW = marketAnchored ? (lambdaMarketAnchored ? 0.12 : (weights.market_anchor_weight ?? 0.30)) : 0.0;
 
     const scored = cands.map(c => {
       const cal = weights.market_calibration?.[c.family] || { prob_shift: 0, confidence_mult: 1, blocked: false };
       let pPure = clamp(c.raw + (cal.prob_shift || 0), 0.03, 0.96);
+      // Thin-data Bayesian shrinkage prevents overconfident 95% ratings on non-xG/non-corner minor leagues
+      if (isThinData) {
+        pPure = clamp(0.5 + (pPure - 0.5) * 0.84, 0.05, 0.88);
+      }
       const [bk, mktImp] = oddsMap[c.key] || [null, null];
       const isLiveMkt = bk && mktImp && (!customOdds || !customOdds[c.key]);
       const p = (isLiveMkt && anchorW > 0) ? clamp((1 - anchorW) * pPure + anchorW * mktImp, 0.03, 0.96) : pPure;
@@ -4365,16 +4892,21 @@ const ObsidianEngine = (() => {
       if (edge !== null) valStatus = edge >= 6 ? "Strong Value" : edge >= 2.5 ? "Moderate Value" : edge >= 0.5 ? "Thin Value" : edge >= -1.5 ? "No Value" : "Negative Value";
       let pen = 0; const vr = [];
       if (c.key.startsWith("1x2_") && veto1x2) { pen += 22; vr.push("1X2 vetoed by Trap/Balanced Filter"); }
+      if (driftTrap && (c.key === "home_dnb" || c.key === "home_ah_m025" || c.key === "home_ah_p1" || c.key === "dc_1x")) {
+        pen += 16; vr.push("Sharp Steam Against Home (Odds Drift Trap)");
+      }
       if (c.key === "1x2_away" && foundation) { pen += 20; vr.push("Foundation Rule: Top-3 Home Fortress"); }
       if ((c.key === "over_2_5" || c.key === "over_3_5" || c.key === "over_2_25") && (mirassol || volatileComp)) { pen += 18; vr.push("Mirassol/Volatile suppresses Over"); }
-      if ((c.key === "over_2_5" || c.key === "over_2_25" || c.key === "over_3_5") && (hStarShock || aStarShock)) { pen += 14; vr.push("Tier-S Star-Shock suppresses aggressive Over"); }
-      if ((c.key === "1x2_home" || c.key === "home_dnb" || c.key === "home_ah_m025") && (hLeaky || hStarShock)) { pen += 16; vr.push(hStarShock ? "Home Tier-S Star-Shock" : "Leaky Home Defense (xGA ≥ 1.65)"); }
-      if ((c.key === "1x2_away" || c.key === "away_dnb") && (aLeaky || aStarShock)) { pen += 16; vr.push(aStarShock ? "Away Tier-S Star-Shock" : "Leaky Away Defense (xGA ≥ 1.65)"); }
-      if (c.family === "Corners" && !hasCData) { pen += 14; vr.push("Season corner table DATA GAP"); }
+      if ((c.key === "over_2_5" || c.key === "over_2_25" || c.key === "over_3_5") && (hStarShock || aStarShock)) { pen += 14; vr.push("Squad Crisis / Tier-S Star-Shock suppresses aggressive Over"); }
+      if ((c.key === "1x2_home" || c.key === "home_dnb" || c.key === "home_ah_m025") && (hLeaky || hStarShock)) { pen += 16; vr.push(hStarShock ? "Home Squad Crisis / Star-Shock" : "Leaky Home Defense (xGA ≥ 1.65)"); }
+      if ((c.key === "1x2_away" || c.key === "away_dnb" || c.key === "away_ah_p025") && (aLeaky || aStarShock)) { pen += 16; vr.push(aStarShock ? "Away Squad Crisis / Star-Shock" : "Leaky Away Defense (xGA ≥ 1.65)"); }
+      if (c.family === "Corners" && !hasCData) { pen += 16; vr.push("Season corner table DATA GAP"); }
+      if (c.key.startsWith("away_corners_over_") && (pHW >= 0.56 || !hasCData)) { pen += 15; vr.push("Heavy Away Underdog Team-Corners Risk"); }
+      if (isThinData) { pen += 10; vr.push("Thin League Data (No xG/Corners Table)"); }
       if (cal.blocked) { pen += 18; vr.push("Auto Edge-Policy Haircut"); }
       const fp = weights.factor_penalties || {};
       if (!xiConfirmed && fp.pre_xi > 0) { pen += fp.pre_xi; vr.push(`Learned Pre-XI Haircut (-${fp.pre_xi})`); }
-      if ((hm.xg_pm === null || am.xg_pm === null) && fp.data_gap > 0) { pen += fp.data_gap; vr.push(`Learned xG-Gap Haircut (-${fp.data_gap})`); }
+      if (!hasXgData && fp.data_gap > 0) { pen += fp.data_gap; vr.push(`Learned xG-Gap Haircut (-${fp.data_gap})`); }
       if (fatigue.length > 0 && fp.fatigue > 0) { pen += fp.fatigue; vr.push(`Learned Fatigue Haircut (-${fp.fatigue})`); }
       const usab = (p >= 0.56 && p <= 0.78) ? 14 : (p >= 0.50 && p < 0.56) ? 8 : (p > 0.78 && p <= 0.85) ? 6 : (p > 0.85 ? -6 : -18);
       const eb = edge === null ? 0 : edge >= 5 ? 14 : edge >= 2.5 ? 9 : edge >= 1 ? 4 : edge <= -3 ? -16 : edge <= -1 ? -9 : 0;
@@ -4413,9 +4945,9 @@ const ObsidianEngine = (() => {
     let tier = "TIER 2: VALUE HUNTER", tierCode = "TIER_2", stake = 2.5, cmd = "EXECUTE";
     if (volatileComp || primary.confidence < 50 || (primary.edge_pct !== null && primary.edge_pct <= -3)) {
       tier = "TIER 4: STRICT VETO"; tierCode = "TIER_4"; stake = 0; cmd = "VETO";
-    } else if (primary.confidence >= 82 && !driftTrap && !doubtS && !starShockAny && xiConfirmed) {
+    } else if (primary.confidence >= 82 && !driftTrap && !doubtS && !starShockAny && xiConfirmed && !isThinData) {
       tier = "TIER 1: TITANIUM ANCHOR"; tierCode = "TIER_1"; stake = primary.confidence >= 87 ? 4.5 : 4.0; cmd = "EXECUTE";
-    } else if (primary.confidence < 68) {
+    } else if (primary.confidence < 68 || isThinData) {
       tier = "TIER 3: HIGH-VARIANCE PIVOT"; tierCode = "TIER_3"; stake = 1.0; cmd = "PIVOT";
     }
     // Kelly-bounded sizing when live bookmaker odds exist (prevents flat over-staking on thin EV)
@@ -4437,7 +4969,7 @@ const ObsidianEngine = (() => {
       ...aUnav.filter(p => p.tier === "Tier S" || p.tier === "Tier A").map(p => ({ team: aName, player: p.name, tier: p.tier, status: p.status }))
     ];
 
-    // V18.6 SNIPER 85-90% HIGH-WINRATE CANDIDATE (strictly playable sportsbook lines: 78–90% / Fair 1.11–1.28)
+    // V18.7 SNIPER 85-90% HIGH-WINRATE CANDIDATE (strictly playable sportsbook lines: 78–90% / Fair 1.11–1.28 + requires real xG data)
     const SNIPER_KEYS = new Set(["over_1_5", "under_3_5", "dc_1x", "dc_x2", "home_ah_p1", "away_ah_p1", "home_over_0_5", "away_over_0_5", "over_2_0_asian", "under_3_0_asian", "1h_over_0_5"]);
     const isPlayableSniper = (m) => {
       if (!SNIPER_KEYS.has(m.key) || m.veto_reasons.length > 0) return false;
@@ -4446,7 +4978,7 @@ const ObsidianEngine = (() => {
       if (m.key === "away_ah_p1" && pAW > 0.50) return false;
       return true;
     };
-    const sniperPick = (!volatileComp && !driftTrap && !starShockAny && chaos <= 46 && dataConf >= 70)
+    const sniperPick = (!volatileComp && !driftTrap && !starShockAny && !isThinData && chaos <= 46 && dataConf >= 70)
       ? (scored.filter(isPlayableSniper)
           .sort((a, b) => (b.model_prob + b.push_prob * 0.35 + b.confidence * 0.15) - (a.model_prob + a.push_prob * 0.35 + a.confidence * 0.15))[0] || null)
       : null;
@@ -4456,15 +4988,20 @@ const ObsidianEngine = (() => {
     const venue = venueRaw || afEnrich?.venue || hTeamRaw?.overview?.venue?.widget?.name || "DATA GAP";
     const refRaw = typeof infoBox.Referee === "object" ? infoBox.Referee?.text : infoBox.Referee;
     const referee = refRaw || afEnrich?.referee || "DATA GAP";
+    const countryCode = String(gen.countryCode || stub?.country_code || "").toUpperCase();
+    const leagueEmoji = getLeagueEmoji(lgName, countryCode);
+    const homeFlag = getTeamFlag(hName, lgName, countryCode);
+    const awayFlag = getTeamFlag(aName, lgName, countryCode);
 
     const resultObj = {
       match_id: String(matchId), sources_used: sourcesUsed, league_id: lgId, league_name: lgName,
+      country_code: countryCode, league_emoji: leagueEmoji, is_priority: !!stub?.is_priority,
       league_baseline: leagueBaseline, market_anchored: marketAnchored, lambda_market_anchored: lambdaMarketAnchored,
-      xi_status: xiStatus, xi_confirmed: xiConfirmed,
+      xi_status: xiStatus, xi_confirmed: xiConfirmed, xi_shift: null,
       venue, referee, kickoff_utc: koUtc, match_date: matchDate,
       state: isLive ? "LIVE" : finished ? "FT" : "UPCOMING", is_live: isLive, finished, live_minute: liveMin,
-      home: { id: hId, name: hName, logo: crestUrl(hId), score: hScore, formation: hLu.formation || "DATA GAP", metrics: hm },
-      away: { id: aId, name: aName, logo: crestUrl(aId), score: aScore, formation: aLu.formation || "DATA GAP", metrics: am },
+      home: { id: hId, name: hName, flag: homeFlag, logo: crestUrl(hId), score: hScore, formation: hLu.formation || "DATA GAP", metrics: hm },
+      away: { id: aId, name: aName, flag: awayFlag, logo: crestUrl(aId), score: aScore, formation: aLu.formation || "DATA GAP", metrics: am },
       verdict: {
         tier, tier_code: tierCode, primary_bet: primary.label, market_key: primary.key, market_family: primary.family,
         line_value: primary.line, model_prob: primary.model_prob, pure_prob: primary.pure_prob, raw_prob: primary.raw_prob,
@@ -4504,16 +5041,20 @@ const ObsidianEngine = (() => {
       filters, star_watchlist: sw, live_stats: liveStats, odds,
       risk_audit: {
         chaos_index: chaos, data_confidence: dataConf, lineup_confidence: lineupConf,
-        self_critique: !xiConfirmed ? `Prediksi ini BELUM termasuk susunan pemain (Starting XI) resmi (${xiStatus}) — stake dikunci 75% sampai XI rilis T-75'/T-60'.` : hm.xg_pm === null ? "Season xG table unavailable (DATA GAP); weighted recent goal splits used." : "Official XI confirmed; residual risk is early red card or penalty shock (0.76 xG).",
+        self_critique: !xiConfirmed ? `Prediksi ini BELUM termasuk susunan pemain (Starting XI) resmi (${xiStatus}) — stake dikunci 75% sampai XI rilis T-75'/T-60'.` : isThinData ? "Liga ini memiliki data xG/Corners terbatas — probabilitas otomatis diredam (Bayesian shrinkage)." : "Official XI confirmed; residual risk is early red card or penalty shock (0.76 xG).",
         failure_condition: primary.family === "Corners" ? "Early 2-0 lead slows tempo and suppresses late corners." : primary.key.includes("under") ? "Early opening goal (<15') or red card breaks compact block." : "Poor finishing variance vs xG or conservative 0-0 HT stalemate.",
         live_hedge_trigger: primary.family === "Corners" ? "If <3 corners by 35' in slow tempo, skip adding live corners." : primary.key.includes("over") ? "If 0-0 at 55' with live xG < 0.75, hedge partially into Under 1.5." : "If backed side trails at HT with <0.45 live xG, protect bankroll."
       },
       active_learning_weights: { home_advantage: weights.home_advantage, goal_lambda_scale: weights.goal_lambda_scale, corner_lambda_scale: weights.corner_lambda_scale, dixon_coles_rho: weights.dixon_coles_rho, total_settled: weights.total_settled || 0 }
     };
 
-    // Autonomous Memory: auto-record every upcoming/live analysis so next-day scans auto-settle & learn 5W1H!
+    // Autonomous Memory & Pre-XI -> Post-XI Shift Detection
     if (!resultObj.finished) {
-      autoRecordPrediction(resultObj);
+      const rec = autoRecordPrediction(resultObj);
+      if (rec?.xi_shift) resultObj.xi_shift = rec.xi_shift;
+    } else {
+      const existing = loadLS(STORE_PREDS, []).find(p => String(p.match_id) === String(matchId) && p.source_type === "AUTO");
+      if (existing?.xi_shift) resultObj.xi_shift = existing.xi_shift;
     }
     return resultObj;
   }
@@ -4581,7 +5122,8 @@ const ObsidianEngine = (() => {
       best_goals: bestInFamily("Goals"),
       best_btts: bestInFamily("BTTS"),
       best_first_half: bestInFamily("First Half"),
-      traps: traps.slice(0, 4)
+      traps: traps.slice(0, 4),
+      analyses: results
     };
   }
 
@@ -4717,13 +5259,17 @@ const ObsidianEngine = (() => {
         index: idx + 1,
         match_id: a.match_id,
         league: a.league_name,
+        league_emoji: a.league_emoji || getLeagueEmoji(a.league_name, a.country_code),
         home: a.home.name,
         away: a.away.name,
+        home_flag: a.home.flag || getTeamFlag(a.home.name, a.league_name, a.country_code),
+        away_flag: a.away.flag || getTeamFlag(a.away.name, a.league_name, a.country_code),
         home_logo: a.home.logo,
         away_logo: a.away.logo,
         kickoff_utc: a.kickoff_utc,
         xi_confirmed: a.xi_confirmed,
         xi_status: a.xi_status,
+        xi_shift: a.xi_shift || null,
         projected_score: a.goal_model.projected_score,
         total_lambda: a.goal_model.total_lambda,
         corners_lambda: a.corners_model.total_corners_lambda,
@@ -4847,22 +5393,144 @@ const ObsidianEngine = (() => {
     };
   }
 
+  function buildXiShiftAnalysis(preSnap, a) {
+    if (!preSnap || !a?.xi_confirmed) return null;
+    const v = a.verdict;
+    const gm = a.goal_model;
+    const beforeTot = +(Number(preSnap.total_lambda ?? ((preSnap.home_lambda || 0) + (preSnap.away_lambda || 0))) || 2.5).toFixed(2);
+    const afterTot = +Number(gm.total_lambda || 2.5).toFixed(2);
+    const lamDelta = +(afterTot - beforeTot).toFixed(2);
+    const hLamDelta = +(Number(gm.home_lambda || 0) - Number(preSnap.home_lambda || 0)).toFixed(2);
+    const aLamDelta = +(Number(gm.away_lambda || 0) - Number(preSnap.away_lambda || 0)).toFixed(2);
+    const probDelta = +(Number(v.model_prob || 0) - Number(preSnap.model_prob || 0)).toFixed(1);
+    const pickChanged = preSnap.market_key !== v.market_key;
+    const probShifted = Math.abs(probDelta) >= 4.0 || Math.abs(lamDelta) >= 0.22;
+    const status = pickChanged ? "PICK_CHANGED" : probShifted ? "PROB_SHIFTED" : "CONFIRMED_UNCHANGED";
+
+    // Build factual WHY explanation
+    const reasons = [];
+    const starOut = (a.star_watchlist || []).filter(s => s.status === "OUT");
+    if (starOut.length) {
+      reasons.push(`Absensi resmi di Starting XI: ${starOut.slice(0, 3).map(s => `${s.player} (${s.team})`).join(", ")}`);
+    }
+    const formChangedH = preSnap.formation_home && preSnap.formation_home !== "DATA GAP" && a.home.formation && a.home.formation !== "DATA GAP" && preSnap.formation_home !== a.home.formation;
+    const formChangedA = preSnap.formation_away && preSnap.formation_away !== "DATA GAP" && a.away.formation && a.away.formation !== "DATA GAP" && preSnap.formation_away !== a.away.formation;
+    if (formChangedH || formChangedA) {
+      const fParts = [];
+      if (formChangedH) fParts.push(`${a.home.name} ${preSnap.formation_home} → ${a.home.formation}`);
+      if (formChangedA) fParts.push(`${a.away.name} ${preSnap.formation_away} → ${a.away.formation}`);
+      reasons.push(`Perubahan formasi taktis (${fParts.join(" · ")})`);
+    }
+    if (Math.abs(hLamDelta) >= 0.14 || Math.abs(aLamDelta) >= 0.14) {
+      reasons.push(`Pergeseran ekspektasi gol xG: ${a.home.name} ${hLamDelta >= 0 ? "+" : ""}${hLamDelta}λ, ${a.away.name} ${aLamDelta >= 0 ? "+" : ""}${aLamDelta}λ`);
+    }
+    if (v.bookmaker_odds && preSnap.bookmaker_odds && Math.abs(v.bookmaker_odds - preSnap.bookmaker_odds) >= 0.08) {
+      reasons.push(`Pergerakan odds pasar (${preSnap.bookmaker_odds} → ${v.bookmaker_odds})`);
+    }
+    if (!reasons.length) {
+      reasons.push(pickChanged
+        ? "Komposisi 11 starter resmi mengubah ranking probabilitas & skor kualitas antar market 1xBet."
+        : "Susunan 11 starter resmi sesuai dengan proyeksi pra-laga (tidak ada kejutan rotasi besar).");
+    }
+
+    // Build clear HOW action guidance
+    let howText;
+    if (pickChanged) {
+      howText = `Model melakukan PIVOT dari "${preSnap.market_label}" (${preSnap.model_prob}%) → "${v.primary_bet}" (${v.model_prob}%, Fair ${v.fair_odds}). Gunakan pilihan terbaru pasca Starting XI resmi dan hindari eksekusi pick lama.`;
+    } else if (probShifted) {
+      howText = probDelta > 0
+        ? `Pick tetap "${v.primary_bet}" dan keyakinan MENGUAT +${probDelta}% (${preSnap.model_prob}% → ${v.model_prob}%) setelah XI resmi keluar — valid untuk eksekusi sesuai porsi stake.`
+        : `Pick tetap "${v.primary_bet}", tetapi probabilitas TURUN ${probDelta}% (${preSnap.model_prob}% → ${v.model_prob}%) pasca XI resmi — kurangi porsi stake atau pilih opsi lebih aman di Market Radar.`;
+    } else {
+      howText = `Starting XI resmi mengonfirmasi proyeksi awal: "${v.primary_bet}" tetap konsisten (${preSnap.model_prob}% → ${v.model_prob}%).`;
+    }
+
+    return {
+      status,
+      changed: pickChanged,
+      significant: pickChanged || probShifted,
+      before: {
+        market_key: preSnap.market_key,
+        market_label: preSnap.market_label,
+        model_prob: preSnap.model_prob,
+        fair_odds: preSnap.fair_odds,
+        projected_score: preSnap.projected_score,
+        total_lambda: beforeTot,
+        tier: preSnap.tier,
+        captured_at: preSnap.captured_at,
+      },
+      after: {
+        market_key: v.market_key,
+        market_label: v.primary_bet,
+        model_prob: v.model_prob,
+        fair_odds: v.fair_odds,
+        projected_score: gm.projected_score,
+        total_lambda: afterTot,
+        tier: v.tier,
+        confirmed_at: new Date().toISOString(),
+      },
+      prob_delta: probDelta,
+      lambda_delta: lamDelta,
+      why: reasons.join(" · "),
+      how: howText,
+    };
+  }
+
   function autoRecordPrediction(a) {
     try {
       const all = loadLS(STORE_PREDS, []);
       const v = a.verdict;
       const factors = buildFactorSnapshot(a);
+      const makePreSnap = () => ({
+        market_key: v.market_key,
+        market_label: v.primary_bet,
+        model_prob: v.model_prob,
+        fair_odds: v.fair_odds,
+        bookmaker_odds: v.bookmaker_odds || null,
+        projected_score: a.goal_model.projected_score,
+        home_lambda: a.goal_model.home_lambda,
+        away_lambda: a.goal_model.away_lambda,
+        total_lambda: a.goal_model.total_lambda,
+        tier: v.tier,
+        formation_home: a.home.formation || "DATA GAP",
+        formation_away: a.away.formation || "DATA GAP",
+        captured_at: new Date().toISOString(),
+      });
+
       const existingIdx = all.findIndex(p => String(p.match_id) === String(a.match_id) && p.source_type === "AUTO");
       if (existingIdx >= 0) {
-        // Only update pre-match snapshot if still PENDING (e.g. when Confirmed XI drops or odds steam!)
-        if (all[existingIdx].status === "PENDING") {
-          const prev = all[existingIdx];
+        const prev = all[existingIdx];
+        if (prev.status === "PENDING") {
           const sameKey = prev.market_key === v.market_key;
           const openOdd = sameKey ? (prev.opening_odds || prev.bookmaker_odds || v.bookmaker_odds || null) : (v.bookmaker_odds || null);
           const curOdd = sameKey ? (v.bookmaker_odds || prev.bookmaker_odds || null) : (v.bookmaker_odds || null);
           const steamPct = (sameKey && openOdd > 1.01 && curOdd > 1.01)
             ? +(((1 / curOdd) - (1 / openOdd)) * 100).toFixed(2)
             : (sameKey ? (prev.steam_pct ?? null) : null);
+
+          // Preserve Pre-XI snapshot! If previous record was Pre-XI, promote it into pre_xi_snapshot before overwriting with Confirmed XI
+          let preSnap = prev.pre_xi_snapshot || null;
+          if (!a.xi_confirmed) {
+            preSnap = makePreSnap();
+          } else if (!preSnap && prev.factors && prev.factors.xi_confirmed === false) {
+            preSnap = {
+              market_key: prev.market_key,
+              market_label: prev.market_label,
+              model_prob: prev.model_prob,
+              fair_odds: prev.fair_odds,
+              bookmaker_odds: prev.bookmaker_odds || null,
+              projected_score: prev.projected_score,
+              home_lambda: prev.home_lambda,
+              away_lambda: prev.away_lambda,
+              total_lambda: +((prev.home_lambda || 0) + (prev.away_lambda || 0)).toFixed(2),
+              tier: prev.tier,
+              formation_home: "DATA GAP",
+              formation_away: "DATA GAP",
+              captured_at: prev.updated_at || prev.created_at,
+            };
+          }
+          const xiShift = (a.xi_confirmed && preSnap) ? buildXiShiftAnalysis(preSnap, a) : (prev.xi_shift || null);
+
           all[existingIdx] = {
             ...prev,
             market_family: v.market_family, market_key: v.market_key, market_label: v.primary_bet,
@@ -4875,11 +5543,14 @@ const ObsidianEngine = (() => {
             home_lambda: a.goal_model.home_lambda, away_lambda: a.goal_model.away_lambda,
             home_corners_lambda: a.corners_model.home_corners_lambda, away_corners_lambda: a.corners_model.away_corners_lambda,
             projected_score: a.goal_model.projected_score,
+            pre_xi_snapshot: preSnap,
+            xi_shift: xiShift,
             factors, updated_at: new Date().toISOString()
           };
           saveLS(STORE_PREDS, all);
+          return { id: all[existingIdx].id, xi_shift: xiShift };
         }
-        return all[existingIdx].id;
+        return { id: prev.id, xi_shift: prev.xi_shift || null };
       }
       const item = {
         id: Date.now() + Math.floor(Math.random() * 999),
@@ -4895,6 +5566,8 @@ const ObsidianEngine = (() => {
         home_lambda: a.goal_model.home_lambda, away_lambda: a.goal_model.away_lambda,
         home_corners_lambda: a.corners_model.home_corners_lambda, away_corners_lambda: a.corners_model.away_corners_lambda,
         projected_score: a.goal_model.projected_score,
+        pre_xi_snapshot: a.xi_confirmed ? null : makePreSnap(),
+        xi_shift: null,
         factors, status: "PENDING", closing_odds: null, clv_pct: null,
         actual_home_goals: null, actual_away_goals: null, actual_home_corners: null, actual_away_corners: null,
         actual_1h_goals: null, pnl_units: null, brier_score: null, post_mortem: null,
@@ -4903,7 +5576,7 @@ const ObsidianEngine = (() => {
       all.unshift(item);
       // Cap stored ledger at 600 latest entries to keep localStorage fast
       saveLS(STORE_PREDS, all.slice(0, 600));
-      return item.id;
+      return { id: item.id, xi_shift: null };
     } catch { return null; }
   }
 
@@ -4996,10 +5669,14 @@ const ObsidianEngine = (() => {
     } else if (st === "LOST" || st === "HALF_LOST") {
       const fWarns = f.filter_warnings || [];
       const severeFilter = fWarns.find(x => x.includes("Trap") || x.includes("Balanced") || x.includes("Mirassol") || x.includes("France") || x.includes("Volatile"));
-      if (f.xi_confirmed === false || (f.star_absences || []).length >= 2) {
+      if (f.xi_confirmed === false) {
         rootCause = "LINEUP_ROTATION_SHOCK";
         whyText = `Prediksi dibuat sebelum XI resmi (${f.xi_status || "PROJECTED XI"})${(f.star_absences || []).length ? ` dengan absensi penting (${f.star_absences.slice(0, 2).join(", ")})` : ""} — perubahan komposisi starter memengaruhi output gol (${hg}–${ag} vs proj ${p.projected_score}).`;
         howText = `Naikkan penalti Pre-XI & tunggu CONFIRMED XI di T-60' sebelum mengeksekusi stake penuh.`;
+      } else if ((f.star_absences || []).length >= 2) {
+        rootCause = "SQUAD_INJURY_CRISIS";
+        whyText = `Krisis cedera/absensi multi-pemain kunci (${f.star_absences.slice(0, 3).join(", ")}) meski XI sudah resmi (${f.xi_status || "CONFIRMED XI"}) menurunkan ketajaman & stabilitas lini belakang (${hg}–${ag} vs proj ${p.projected_score}).`;
+        howText = `Aktifkan V18.7 Squad Crisis Penalty (kurangi λ tim terdampak & naikkan kerentanan kebobolan lawan) saat ≥2 pemain kunci absen.`;
       } else if (f.fatigue_flagged) {
         rootCause = "FATIGUE_HANGOVER_SHOCK";
         whyText = `Faktor kelelahan jadwal (European Hangover / <78 jam rest: ${f.home_rest_days ?? "?"}d vs ${f.away_rest_days ?? "?"}d) menurunkan tempo/fokus dibanding rata-rata musim.`;
@@ -5403,10 +6080,11 @@ const ObsidianEngine = (() => {
         const lp = local[idx];
         // Upgrade local PENDING with cloud SETTLED (full corners/1H/5W1H from GitHub Actions!)
         if (!isSettled(lp.status) && isSettled(cp.status)) {
-          local[idx] = { ...lp, ...cp };
+          local[idx] = { ...lp, ...cp, pre_xi_snapshot: cp.pre_xi_snapshot || lp.pre_xi_snapshot || null, xi_shift: cp.xi_shift || lp.xi_shift || null };
           upgraded++;
-        } else if (!isSettled(lp.status) && !isSettled(cp.status) && (cp.updated_at || "") > (lp.updated_at || "")) {
-          local[idx] = { ...lp, ...cp };
+        } else if (!isSettled(lp.status) && !isSettled(cp.status) && (((cp.updated_at || "") > (lp.updated_at || "")) || (!lp.xi_shift && cp.xi_shift))) {
+          local[idx] = { ...lp, ...cp, pre_xi_snapshot: cp.pre_xi_snapshot || lp.pre_xi_snapshot || null, xi_shift: cp.xi_shift || lp.xi_shift || null };
+          upgraded++;
         }
       }
     }
@@ -5418,7 +6096,7 @@ const ObsidianEngine = (() => {
 
   function exportBackup() {
     return JSON.stringify({
-      version: "OBSIDIAN_V18_5", exported_at: new Date().toISOString(),
+      version: "OBSIDIAN_V18_7", exported_at: new Date().toISOString(),
       predictions: loadLS(STORE_PREDS, []),
       weights: getWeights(),
       logs: loadLS(STORE_LOGS, []),
@@ -5438,6 +6116,7 @@ const ObsidianEngine = (() => {
 
   return {
     fetchMatchesByDate, fetchMatchesNext7Days, analyzeMatchById, scanDailyTopPicks, scanParlayPool, buildAutoParlay, auditSlip,
+    countryCodeToFlag, getLeagueEmoji, getTeamFlag, buildXiShiftAnalysis,
     getUsage, getAfKey, setAfKey, getAfAutoFill, setAfAutoFill, getBankrollConfig, setBankrollConfig,
     buildFactorSnapshot, listPredictions, savePrediction, deletePrediction, settleManual, autoSettlePending,
     recalibrateWeights, resetWeights, getAnalytics, mergeCloudMemory, exportBackup, importBackup
@@ -5906,11 +6585,89 @@ function getAllSlateMatchesFlat() {
   return out;
 }
 
+function lgEmojiOf(lgName, cc, pre) {
+  return pre || (ObsidianEngine.getLeagueEmoji ? ObsidianEngine.getLeagueEmoji(lgName || "", cc || "") : "⚽");
+}
+function teamFlagOf(teamName, lgName, cc, pre) {
+  return pre || (ObsidianEngine.getTeamFlag ? ObsidianEngine.getTeamFlag(teamName || "", lgName || "", cc || "") : "⚽");
+}
+function getSavedShiftForMatch(matchId) {
+  try {
+    const all = ObsidianEngine.listPredictions("ALL", "ALL");
+    const rec = all.find(p => String(p.match_id) === String(matchId) && p.xi_shift);
+    return rec ? rec.xi_shift : null;
+  } catch { return null; }
+}
+function renderShiftPill(shift) {
+  if (!shift || !shift.significant) return "";
+  if (shift.changed) {
+    return `<span class="shift-pill" title="Prediksi berubah pasca Confirmed XI: ${esc(shift.before?.market_label || "")} → ${esc(shift.after?.market_label || "")}">🔄 XI SHIFT</span>`;
+  }
+  const d = shift.prob_delta || 0;
+  return `<span class="shift-pill shift-prob-pill" title="Peluang bergeser ${d >= 0 ? "+" : ""}${d}% pasca Confirmed XI">📊 XI ${d >= 0 ? "+" : ""}${d}%</span>`;
+}
+function renderXiShiftCard(a) {
+  const shift = a.xi_shift || getSavedShiftForMatch(a.match_id);
+  if (!shift || !shift.before || !shift.after) return "";
+  const isChanged = !!shift.changed;
+  const isProbShift = !isChanged && !!shift.significant;
+  const cardCls = isChanged ? "shift-changed" : isProbShift ? "shift-prob" : "shift-confirmed";
+  const badge = isChanged
+    ? `<span class="tag tag-amber">🔄 PREDIKSI BERUBAH PASCA XI RESMI</span>`
+    : isProbShift
+      ? `<span class="tag tag-ice">📊 PROBABILITAS BERGESER PASCA XI</span>`
+      : `<span class="tag tag-emerald">✓ PREDIKSI PRE-XI TERKONFIRMASI</span>`;
+  const deltaStr = `${shift.prob_delta >= 0 ? "+" : ""}${shift.prob_delta}% prob · λ ${shift.lambda_delta >= 0 ? "+" : ""}${shift.lambda_delta}`;
+  return `
+    <div class="xi-shift-card ${cardCls}">
+      <div class="xi-shift-head">
+        <div class="xi-shift-title">
+          <span>${isChanged ? "🚨" : isProbShift ? "📡" : "✅"}</span>
+          <span>Pre-XI → Confirmed XI Audit Tracker</span>
+          ${badge}
+        </div>
+        <span class="mono muted-tag">${esc(deltaStr)}</span>
+      </div>
+      <div class="xi-shift-compare">
+        <div class="xi-shift-box before">
+          <div class="xi-shift-k mono">BEFORE BET (PRE-XI · ${esc(shift.before.xi_status || "PROJECTED")})</div>
+          <div class="xi-shift-pick">${esc(shift.before.market_label)}</div>
+          <div class="xi-shift-sub mono">${shift.before.model_prob}% · Fair ${shift.before.fair_odds} · Proj ${esc(shift.before.projected_score || "—")} · ${esc(shift.before.tier || "")}</div>
+        </div>
+        <div class="xi-shift-arrow" aria-hidden="true">${isChanged ? "⟶" : "＝"}</div>
+        <div class="xi-shift-box after">
+          <div class="xi-shift-k mono">AFTER BET (CONFIRMED XI RESMI)</div>
+          <div class="xi-shift-pick">${esc(shift.after.market_label)}</div>
+          <div class="xi-shift-sub mono">${shift.after.model_prob}% · Fair ${shift.after.fair_odds} · Proj ${esc(shift.after.projected_score || "—")} · ${esc(shift.after.tier || "")}</div>
+        </div>
+      </div>
+      <div class="xi-shift-explain">
+        <div class="xi-shift-reason">
+          <strong>WHY · Alasan Perubahan</strong>
+          ${esc(shift.why)}
+        </div>
+        <div class="xi-shift-reason">
+          <strong>HOW · Arah Eksekusi</strong>
+          ${esc(shift.how)}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderMatchesList() {
   const payload = state.matchesPayload;
   const listEl = document.getElementById("matches-list");
   const metaEl = document.getElementById("matches-meta");
   if (!payload) return;
+
+  // Map saved XI shifts once for fast O(1) lookup per fixture row
+  const shiftMap = new Map();
+  try {
+    for (const p of ObsidianEngine.listPredictions("ALL", "ALL")) {
+      if (p.xi_shift && p.xi_shift.significant) shiftMap.set(String(p.match_id), p.xi_shift);
+    }
+  } catch {}
 
   const q = state.searchQuery;
   let visibleCount = 0;
@@ -5924,25 +6681,31 @@ function renderMatchesList() {
     });
     if (!filtered.length) continue;
     visibleCount += filtered.length;
+    const lgEm = lgEmojiOf(lg.league_name, lg.country_code, lg.league_emoji);
 
     const rowsHtml = filtered.map((m) => {
       const isSelected = state.selectedMatchId === m.match_id;
       const inSlip = state.slipLegs.some((l) => l.match_id === m.match_id);
       const timeLabel = m.is_live ? esc(m.live_minute || "LIVE") : m.finished ? esc(m.status_label || "FT") : fmtKickoffStack(m.kickoff_utc);
+      const hFlag = teamFlagOf(m.home_name, lg.league_name, lg.country_code, m.home_flag);
+      const aFlag = teamFlagOf(m.away_name, lg.league_name, lg.country_code, m.away_flag);
+      const shiftPill = renderShiftPill(shiftMap.get(String(m.match_id)));
       return `
         <div class="match-row ${isSelected ? "selected" : ""}" data-match-id="${esc(m.match_id)}">
-          <div class="match-time ${m.is_live ? "live" : ""}">${timeLabel}</div>
+          <div class="match-time ${m.is_live ? "live" : ""}">${timeLabel}${shiftPill ? `<div style="margin-top:3px">${shiftPill}</div>` : ""}</div>
           <div class="match-teams">
             <div class="team-line">
               <div class="team-id-wrap">
-                ${m.home_logo ? `<img class="team-crest" src="${esc(m.home_logo)}" alt="" loading="lazy" />` : ""}
+                <span class="flag-chip" aria-hidden="true">${hFlag}</span>
+                ${m.home_logo ? `<img class="team-crest" src="${esc(m.home_logo)}" alt="" loading="lazy" onerror="this.style.display='none'" />` : ""}
                 <span class="team-name">${esc(m.home_name)}</span>
               </div>
               <span class="team-score">${m.home_score ?? ""}</span>
             </div>
             <div class="team-line">
               <div class="team-id-wrap">
-                ${m.away_logo ? `<img class="team-crest" src="${esc(m.away_logo)}" alt="" loading="lazy" />` : ""}
+                <span class="flag-chip" aria-hidden="true">${aFlag}</span>
+                ${m.away_logo ? `<img class="team-crest" src="${esc(m.away_logo)}" alt="" loading="lazy" onerror="this.style.display='none'" />` : ""}
                 <span class="team-name">${esc(m.away_name)}</span>
               </div>
               <span class="team-score">${m.away_score ?? ""}</span>
@@ -5953,7 +6716,7 @@ function renderMatchesList() {
       `;
     }).join("");
 
-    htmlParts.push(`<div class="league-group"><div class="league-header"><span>${esc(lg.league_name)}</span><span class="mono">${filtered.length}</span></div>${rowsHtml}</div>`);
+    htmlParts.push(`<div class="league-group"><div class="league-header"><span><span class="league-emoji" aria-hidden="true">${lgEm}</span>${esc(lg.league_name)}</span><span class="mono">${filtered.length}</span></div>${rowsHtml}</div>`);
   }
 
   metaEl.innerHTML = `<span>${visibleCount} of ${payload.total_matches} fixtures · ${esc(payload.date)}</span><span class="mono" style="text-transform:uppercase">${esc(payload.source)}</span>`;
@@ -6026,6 +6789,10 @@ function renderAnalysis(a) {
   const scoreDisplay = (a.is_live || a.finished) && a.home.score !== null ? `${a.home.score} – ${a.away.score}` : "vs";
   const stateBadge = a.is_live ? `<span class="tag tag-coral">LIVE ${a.live_minute ? a.live_minute + "'" : ""}</span>` : a.finished ? `<span class="tag">FULL TIME</span>` : `<span class="tag">${fmtKickoff(a.kickoff_utc)} · ${esc(a.match_date)}</span>`;
   const xiBadge = a.xi_confirmed ? `<span class="tag tag-emerald">CONFIRMED XI</span>` : `<span class="tag tag-amber">${esc(a.xi_status)}</span>`;
+  const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji);
+  const hFlag = teamFlagOf(a.home.name, a.league_name, a.country_code, a.home.flag);
+  const aFlag = teamFlagOf(a.away.name, a.league_name, a.country_code, a.away.flag);
+  const shiftCardHtml = renderXiShiftCard(a);
 
   canvas.innerHTML = `
     <div class="audit-wrap">
@@ -6037,7 +6804,7 @@ function renderAnalysis(a) {
             ${stateBadge}
             ${xiBadge}
             ${!a.finished ? `<span class="tag tag-ice" title="Auto-recorded to Memory for next-day 5W1H settlement">AUTO-LOGGED</span>` : ""}
-            <span class="tag">${esc(a.league_name)}</span>
+            <span class="tag"><span class="league-emoji" aria-hidden="true">${lgEm}</span>${esc(a.league_name)}</span>
             <span class="tag tag-ice mono">Avg ${lb.avg_goals} xG · ${lb.avg_corners} C</span>
             ${a.sources_used.map(s => `<span class="tag">${esc(s)}</span>`).join("")}
           </div>
@@ -6049,9 +6816,9 @@ function renderAnalysis(a) {
         </div>
         <div class="scoreboard-grid">
           <div class="hero-team">
-            ${a.home.logo ? `<img class="hero-crest" src="${esc(a.home.logo)}" alt="" />` : ""}
+            ${a.home.logo ? `<img class="hero-crest" src="${esc(a.home.logo)}" alt="" onerror="this.style.display='none'" />` : `<span class="crest-ball-fallback" aria-hidden="true">⚽</span>`}
             <div>
-              <div class="hero-team-name">${esc(a.home.name)}</div>
+              <div class="hero-team-name"><span class="flag-chip flag-chip-lg" aria-hidden="true">${hFlag}</span>${esc(a.home.name)}</div>
               <div class="hero-team-sub"><span class="mono">${esc(a.home.formation)}</span>${a.home.metrics.table_rank ? `<span class="mono">#${a.home.metrics.table_rank}</span>` : ""}${renderFormDots(a.home.metrics.recent_form_str)}</div>
             </div>
           </div>
@@ -6060,9 +6827,9 @@ function renderAnalysis(a) {
             <div class="hero-proj">Model FT: <strong class="mono">${esc(gm.projected_score)}</strong></div>
           </div>
           <div class="hero-team away">
-            ${a.away.logo ? `<img class="hero-crest" src="${esc(a.away.logo)}" alt="" />` : ""}
+            ${a.away.logo ? `<img class="hero-crest" src="${esc(a.away.logo)}" alt="" onerror="this.style.display='none'" />` : `<span class="crest-ball-fallback" aria-hidden="true">⚽</span>`}
             <div>
-              <div class="hero-team-name">${esc(a.away.name)}</div>
+              <div class="hero-team-name"><span class="flag-chip flag-chip-lg" aria-hidden="true">${aFlag}</span>${esc(a.away.name)}</div>
               <div class="hero-team-sub">${renderFormDots(a.away.metrics.recent_form_str)}${a.away.metrics.table_rank ? `<span class="mono">#${a.away.metrics.table_rank}</span>` : ""}<span class="mono">${esc(a.away.formation)}</span></div>
             </div>
           </div>
@@ -6086,6 +6853,8 @@ function renderAnalysis(a) {
           }</div>
         </div>
       </div>
+
+      ${shiftCardHtml}
 
       <div class="verdict-card">
         <div class="verdict-top">
@@ -6392,21 +7161,27 @@ async function runDailyScanner() {
     const renderPickCards = (items, title, badgeCls) => `
       <div class="surface-card" style="margin-bottom:18px;">
         <div class="card-head"><h2>${title}</h2><span class="tag ${badgeCls}">${items.length} plays</span></div>
-        ${items.length ? `<div class="radar-cards-grid">${items.map(({ analysis: a, market: m }) => `
+        ${items.length ? `<div class="radar-cards-grid">${items.map(({ analysis: a, market: m }) => {
+          const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji);
+          const hFlag = teamFlagOf(a.home.name, a.league_name, a.country_code, a.home.flag);
+          const aFlag = teamFlagOf(a.away.name, a.league_name, a.country_code, a.away.flag);
+          const shiftPill = renderShiftPill(a.xi_shift || getSavedShiftForMatch(a.match_id));
+          return `
           <div class="pick-card" data-jump-match="${esc(a.match_id)}">
             <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--ink-tertiary);gap:6px">
-              <span>${esc(a.league_name)}</span>
-              <span class="tag ${a.xi_confirmed ? "tag-emerald" : "tag-amber"}" style="font-size:10px;padding:1px 6px">${a.xi_confirmed ? "XI✓ RESMI" : "⏳ BELUM XI"}</span>
+              <span><span class="league-emoji" aria-hidden="true">${lgEm}</span>${esc(a.league_name)}</span>
+              <span style="display:inline-flex;align-items:center;gap:4px">${shiftPill}<span class="tag ${a.xi_confirmed ? "tag-emerald" : "tag-amber"}" style="font-size:10px;padding:1px 6px">${a.xi_confirmed ? "XI✓ RESMI" : "⏳ BELUM XI"}</span></span>
             </div>
             <div style="font-size:11px;color:var(--ink-tertiary)" class="mono">${fmtKickoff(a.kickoff_utc)}</div>
-            <div style="font-size:13.5px;font-weight:600">${esc(a.home.name)} vs ${esc(a.away.name)}</div>
+            <div style="font-size:13.5px;font-weight:600"><span class="flag-chip">${hFlag}</span>${esc(a.home.name)} <span style="opacity:.45;font-weight:400">vs</span> <span class="flag-chip">${aFlag}</span>${esc(a.away.name)}</div>
             <div style="font-size:15px;font-weight:700;color:var(--ink-primary)">${esc(m.label)}</div>
             <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;" class="mono">
               <span class="text-emerald">${m.model_prob}% (Fair ${m.fair_odds})</span>
               <span>${m.edge_pct !== null ? `<span class="${m.edge_pct > 0 ? "text-emerald" : "text-coral"}">${m.edge_pct > 0 ? "+" : ""}${m.edge_pct}% EV</span>` : `Conf ${m.confidence}`}</span>
             </div>
           </div>
-        `).join("")}</div>` : `<div class="empty-inline">No qualifying picks in this category for ${esc(state.currentDate)}.</div>`}
+        `;
+        }).join("")}</div>` : `<div class="empty-inline">No qualifying picks in this category for ${esc(state.currentDate)}.</div>`}
       </div>
     `;
 
@@ -6416,13 +7191,16 @@ async function runDailyScanner() {
         <div class="card-head"><h2>🔥 High-Volume Corners Radar (10–15+ Expected)</h2><span class="tag tag-gold">${highCorners.length} matches ≥10.5λ</span></div>
         ${highCorners.length ? `<div class="radar-cards-grid">${highCorners.map(c => {
           const a = c.analysis;
+          const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji);
+          const hFlag = teamFlagOf(a.home.name, a.league_name, a.country_code, a.home.flag);
+          const aFlag = teamFlagOf(a.away.name, a.league_name, a.country_code, a.away.flag);
           return `
             <div class="pick-card" data-jump-match="${esc(a.match_id)}">
               <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--ink-tertiary)">
-                <span>${esc(a.league_name)}</span>
+                <span><span class="league-emoji" aria-hidden="true">${lgEm}</span>${esc(a.league_name)}</span>
                 <span class="tag tag-gold mono" style="font-size:10.5px;padding:1px 7px">Proj ${c.total_corners_lambda} Corners</span>
               </div>
-              <div style="font-size:13.5px;font-weight:600">${esc(a.home.name)} vs ${esc(a.away.name)}</div>
+              <div style="font-size:13.5px;font-weight:600"><span class="flag-chip">${hFlag}</span>${esc(a.home.name)} <span style="opacity:.45;font-weight:400">vs</span> <span class="flag-chip">${aFlag}</span>${esc(a.away.name)}</div>
               <div style="font-size:12px;color:var(--ink-secondary)">Recommended: <strong style="color:var(--ink-primary)">${esc(c.market?.label || "Corners · Total Over (10.5)")}</strong> (${c.market?.model_prob ?? c.p_over_10_5}%)</div>
               <div class="corner-surge-chips">
                 <div class="corner-chip ${c.p_over_10_5 >= 60 ? "hot" : ""}"><div class="ck">O10.5</div><div class="cv">${c.p_over_10_5}%</div></div>
@@ -6442,7 +7220,7 @@ async function runDailyScanner() {
         <span class="xi-gate-dot"></span>
         <div>
           <div class="xi-gate-title">⏳ CATATAN LINI PEMAIN (STARTING XI)</div>
-          <div class="xi-gate-desc">Kartu bertanda <strong>⏳ BELUM XI</strong> belum menyertakan daftar pemain resmi (Starting XI rilis <strong>T-75' s/d T-60'</strong> sebelum kickoff). Tunggu status <strong>XI✓ RESMI</strong> atau alert Confirmed-XI Telegram untuk akurasi maksimal.</div>
+          <div class="xi-gate-desc">Kartu bertanda <strong>⏳ BELUM XI</strong> belum menyertakan daftar pemain resmi (Starting XI rilis <strong>T-75' s/d T-60'</strong> sebelum kickoff). Tunggu status <strong>XI✓ RESMI</strong> atau alert Confirmed-XI Telegram — jika prediksi berubah setelah XI keluar, badge <strong>🔄 XI SHIFT</strong> akan otomatis muncul.</div>
         </div>
       </div>
       ${renderPickCards(res.sniper_anchors || [], "🎯 SNIPER 85–90% High-Winrate Anchors (Max 4 Plays)", "tag-gold")}
@@ -6456,13 +7234,18 @@ async function runDailyScanner() {
         <div class="surface-card">
           <div class="card-head"><h2>Trap Games &amp; Veto Warnings</h2><span class="tag tag-coral">${res.traps.length} flagged</span></div>
           <div class="radar-cards-grid">
-            ${res.traps.map(a => `
+            ${res.traps.map(a => {
+              const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji);
+              const hFlag = teamFlagOf(a.home.name, a.league_name, a.country_code, a.home.flag);
+              const aFlag = teamFlagOf(a.away.name, a.league_name, a.country_code, a.away.flag);
+              return `
               <div class="pick-card" data-jump-match="${esc(a.match_id)}">
-                <div style="font-size:11px;color:var(--coral)" class="mono">VETO / TRAP WARNING</div>
-                <div style="font-size:14px;font-weight:600">${esc(a.home.name)} vs ${esc(a.away.name)}</div>
+                <div style="font-size:11px;color:var(--coral)" class="mono">VETO / TRAP WARNING · <span class="league-emoji">${lgEm}</span>${esc(a.league_name)}</div>
+                <div style="font-size:14px;font-weight:600"><span class="flag-chip">${hFlag}</span>${esc(a.home.name)} <span style="opacity:.45;font-weight:400">vs</span> <span class="flag-chip">${aFlag}</span>${esc(a.away.name)}</div>
                 <div style="font-size:12px;color:var(--ink-secondary)">${esc(a.filters.find(f => f.status === "FAIL")?.detail || a.verdict.tier)}</div>
               </div>
-            `).join("")}
+            `;
+            }).join("")}
           </div>
         </div>
       ` : ""}
@@ -6677,21 +7460,28 @@ function renderAutoParlay() {
           ? `<span class="tag tag-emerald" style="font-size:10px;padding:1px 7px">XI✓ RESMI</span>`
           : `<span class="tag tag-gold" style="font-size:10px;padding:1px 7px">⏳ PRE-XI</span>`;
         const pushBit = m.push_prob > 0 ? ` · Shield ${m.push_prob}%` : "";
+        const lgEm = lgEmojiOf(leg.league, "", leg.league_emoji);
+        const hFlag = teamFlagOf(leg.home, leg.league, "", leg.home_flag);
+        const aFlag = teamFlagOf(leg.away, leg.league, "", leg.away_flag);
+        const shiftPill = renderShiftPill(leg.xi_shift || getSavedShiftForMatch(leg.match_id));
         return `
           <div class="parlay-leg-card">
             <div class="parlay-leg-num">${leg.index}</div>
 
             <div class="parlay-leg-match" data-jump-parlay-match="${esc(leg.match_id)}" title="Klik untuk buka audit lengkap pertandingan ini">
               <div class="parlay-leg-topmeta">
-                <span>${esc(leg.league)}</span>
+                <span><span class="league-emoji" aria-hidden="true">${lgEm}</span>${esc(leg.league)}</span>
                 <span>·</span>
                 <span class="mono">${esc(fmtKickoff(leg.kickoff_utc))}</span>
                 ${xiBadge}
+                ${shiftPill}
               </div>
               <div class="parlay-leg-teams">
+                <span class="flag-chip" aria-hidden="true">${hFlag}</span>
                 ${leg.home_logo ? `<img src="${esc(leg.home_logo)}" alt="" onerror="this.style.display='none'" />` : ""}
                 <span>${esc(leg.home)}</span>
                 <span style="opacity:.45;font-weight:400">vs</span>
+                <span class="flag-chip" aria-hidden="true">${aFlag}</span>
                 ${leg.away_logo ? `<img src="${esc(leg.away_logo)}" alt="" onerror="this.style.display='none'" />` : ""}
                 <span>${esc(leg.away)}</span>
               </div>
@@ -6772,11 +7562,16 @@ function copyAutoParlayTicket(ticket, stake, modeLabel) {
   if (!ticket || !ticket.legs?.length) return;
   const estPayout = (stake * ticket.combined_odds).toFixed(2);
   const text = [
-    `ENGINE BOLA · AUTO PARLAY (${ticket.legs.length} LEGS · ${modeLabel})`,
+    `⚽ ENGINE BOLA · AUTO PARLAY (${ticket.legs.length} LEGS · ${modeLabel})`,
     `Combined Odds: ${ticket.combined_odds.toFixed(2)}x | Win Prob: ${ticket.combined_win_prob}% | Non-Loss: ${ticket.combined_survival_prob}%`,
     `Stake: ${stake} -> Est. Payout: ${estPayout}`,
     `--------------------------------`,
-    ...ticket.legs.map((l) => `${l.index}. ${l.home} vs ${l.away} (${l.league})\n   Pick: ${l.market.label} | ${l.market.model_prob}% | ${l.odds_source === "LIVE" ? "Odds" : "Fair"} ${l.used_odds} | ${l.xi_confirmed ? "XI✓" : "Pre-XI"}`),
+    ...ticket.legs.map((l) => {
+      const lgEm = lgEmojiOf(l.league, "", l.league_emoji);
+      const hFlag = teamFlagOf(l.home, l.league, "", l.home_flag);
+      const aFlag = teamFlagOf(l.away, l.league, "", l.away_flag);
+      return `${l.index}. ${hFlag} ${l.home} vs ${aFlag} ${l.away} (${lgEm} ${l.league})\n   Pick: ${l.market.label} | ${l.market.model_prob}% | ${l.odds_source === "LIVE" ? "Odds" : "Fair"} ${l.used_odds} | ${l.xi_confirmed ? "XI✓" : "Pre-XI"}`;
+    }),
     `--------------------------------`,
     `Channel: https://t.me/enginebola`,
   ].join("\n");
@@ -6824,13 +7619,18 @@ function renderSlipBuilder() {
     panel.innerHTML = `<div class="empty-inline">No fixtures in your slip yet. Tap <strong>+ Slip</strong> on any match.</div>`;
     return;
   }
-  panel.innerHTML = state.slipLegs.map((leg, i) => `
+  panel.innerHTML = state.slipLegs.map((leg, i) => {
+    const lgEm = lgEmojiOf(leg.league_name, "");
+    const hFlag = teamFlagOf(leg.home_name, leg.league_name, "");
+    const aFlag = teamFlagOf(leg.away_name, leg.league_name, "");
+    return `
     <div class="slip-leg-row">
-      <div><strong>${esc(leg.home_name)} vs ${esc(leg.away_name)}</strong><div class="text-muted" style="font-size:12px">${esc(leg.league_name)}</div></div>
+      <div><strong><span class="flag-chip">${hFlag}</span>${esc(leg.home_name)} vs <span class="flag-chip">${aFlag}</span>${esc(leg.away_name)}</strong><div class="text-muted" style="font-size:12px"><span class="league-emoji">${lgEm}</span>${esc(leg.league_name)}</div></div>
       <select class="slip-select" data-slip-pick="${i}">${SLIP_PICK_OPTIONS.map(o => `<option value="${esc(o.key)}" ${leg.user_pick_key === o.key ? "selected" : ""}>${esc(o.label)}</option>`).join("")}</select>
       <button class="btn btn-ghost btn-xs" data-remove-leg="${i}">Remove</button>
     </div>
-  `).join("");
+  `;
+  }).join("");
   panel.querySelectorAll("[data-slip-pick]").forEach(s => s.addEventListener("change", () => state.slipLegs[+s.dataset.slipPick].user_pick_key = s.value));
   panel.querySelectorAll("[data-remove-leg]").forEach(b => b.addEventListener("click", () => { state.slipLegs.splice(+b.dataset.removeLeg, 1); updateSlipBadge(); renderSlipBuilder(); renderMatchesList(); }));
 }
@@ -6882,6 +7682,7 @@ function rcLabel(code) {
     HIERARCHY_TRIUMPH: "Hierarchy Triumph",
     PROTECTED_REFUND: "Asian Push Shield",
     LINEUP_ROTATION_SHOCK: "Lineup Rotation Shock",
+    SQUAD_INJURY_CRISIS: "Squad Injury Crisis",
     FATIGUE_HANGOVER_SHOCK: "Fatigue / Hangover",
     FILTER_WARNING_IGNORED: "Filter Warning Triggered",
     DATA_GAP_UNDER_SAMPLE: "xG / Corner Data Gap",
@@ -6916,12 +7717,16 @@ function renderPostMortemFeed(postMortems) {
     const isPush = p.status === "PUSH";
     const stCls = isWin ? "tag-emerald" : isPush ? "tag-ice" : "tag-coral";
     const srcCls = (p.source_type === "AUTO") ? "auto" : "manual";
+    const lgEm = lgEmojiOf(p.league_name, p.country_code, p.league_emoji);
+    const hFlag = teamFlagOf(p.home_team, p.league_name, p.country_code, p.home_flag);
+    const aFlag = teamFlagOf(p.away_team, p.league_name, p.country_code, p.away_flag);
+    const shiftPill = renderShiftPill(p.xi_shift);
     return `
       <div class="pm-card">
         <div class="pm-head">
           <div>
-            <div class="pm-title">${esc(p.home_team)} vs ${esc(p.away_team)} <span class="src-badge ${srcCls}">${p.source_type === "AUTO" ? "AUTO" : "MANUAL"}</span></div>
-            <div class="pm-meta mono">${esc(p.match_date)} · ${esc(p.league_name)} · Actual ${p.actual_home_goals ?? "?"}–${p.actual_away_goals ?? "?"}</div>
+            <div class="pm-title"><span class="flag-chip">${hFlag}</span>${esc(p.home_team)} vs <span class="flag-chip">${aFlag}</span>${esc(p.away_team)} <span class="src-badge ${srcCls}">${p.source_type === "AUTO" ? "AUTO" : "MANUAL"}</span> ${shiftPill}</div>
+            <div class="pm-meta mono">${esc(p.match_date)} · <span class="league-emoji">${lgEm}</span>${esc(p.league_name)} · Actual ${p.actual_home_goals ?? "?"}–${p.actual_away_goals ?? "?"}</div>
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
             <span class="tag ${stCls}">${esc(p.status)}</span>
@@ -6935,6 +7740,7 @@ function renderPostMortemFeed(postMortems) {
           <div class="pm-row"><span class="pm-k">WHERE</span><span class="pm-v">${esc(pm.where)}</span></div>
           <div class="pm-row"><span class="pm-k">WHY</span><span class="pm-v pm-why">${esc(pm.why)}</span></div>
           <div class="pm-row"><span class="pm-k">HOW</span><span class="pm-v pm-how">${esc(pm.how)}</span></div>
+          ${p.xi_shift?.changed ? `<div class="pm-row"><span class="pm-k">XI SHIFT</span><span class="pm-v">Before: ${esc(p.xi_shift.before?.market_label)} (${p.xi_shift.before?.model_prob}%) → After: ${esc(p.xi_shift.after?.market_label)} (${p.xi_shift.after?.model_prob}%). ${esc(p.xi_shift.why)}</span></div>` : ""}
         </div>
       </div>
     `;
@@ -7028,7 +7834,7 @@ function loadMemoryView() {
   if (rcWrap) {
     const rcs = data.root_causes || [];
     if (!rcs.length) {
-      rcWrap.innerHTML = `<div class="empty-inline" style="padding:22px 10px">Belum ada prediksi meleset yang ter-settle. Saat ada miss, engine otomatis mengklasifikasi akar penyebab (Lineup Shock, Fatigue, Filter Warning, Data Gap, λ Bias, atau Black Swan).</div>`;
+      rcWrap.innerHTML = `<div class="empty-inline" style="padding:22px 10px">Belum ada prediksi meleset yang ter-settle. Saat ada miss, engine otomatis mengklasifikasi akar penyebab (Lineup Shock, Squad Crisis, Fatigue, Filter Warning, Data Gap, λ Bias, atau Black Swan).</div>`;
     } else {
       rcWrap.innerHTML = `<div class="rc-list">${rcs.map(r => `
         <div class="rc-item">
@@ -7054,7 +7860,7 @@ function loadMemoryView() {
           <thead><tr><th>League / Competition</th><th>Settled</th><th>Wins</th><th>Hit Rate</th><th>Mean Brier</th><th>ROI</th></tr></thead>
           <tbody>${lgs.map(l => `
             <tr>
-              <td><strong>${esc(l.league)}</strong></td>
+              <td><strong><span class="league-emoji">${lgEmojiOf(l.league, "")}</span>${esc(l.league)}</strong></td>
               <td class="mono">${l.bets}</td>
               <td class="mono">${l.wins}</td>
               <td class="mono ${l.hit_rate >= 60 ? "text-emerald" : l.hit_rate < 48 ? "text-coral" : "text-amber"}">${l.hit_rate}%</td>
@@ -7082,6 +7888,11 @@ function renderPredictionsLedger() {
       <tbody>${preds.map(p => {
         const srcCls = (p.source_type === "AUTO") ? "auto" : "manual";
         const rcTag = p.post_mortem?.root_cause ? `<div style="margin-top:4px"><span class="muted-tag">${esc(rcLabel(p.post_mortem.root_cause))}</span></div>` : "";
+        const lgEm = lgEmojiOf(p.league_name, p.country_code, p.league_emoji);
+        const hFlag = teamFlagOf(p.home_team, p.league_name, p.country_code, p.home_flag);
+        const aFlag = teamFlagOf(p.away_team, p.league_name, p.country_code, p.away_flag);
+        const shiftPill = renderShiftPill(p.xi_shift);
+        const beforeNote = p.xi_shift?.changed ? `<div class="text-muted" style="font-size:10.5px;margin-top:2px">Pre-XI: ${esc(p.xi_shift.before?.market_label)} (${p.xi_shift.before?.model_prob}%)</div>` : "";
         const steamBadge = (p.clv_pct !== null && p.clv_pct !== undefined)
           ? `<span class="${p.clv_pct > 0 ? "text-emerald" : p.clv_pct < 0 ? "text-coral" : "text-muted"}">${p.clv_pct > 0 ? "+" : ""}${p.clv_pct}% CLV</span>`
           : (p.steam_pct !== null && p.steam_pct !== undefined && Math.abs(p.steam_pct) >= 0.5)
@@ -7090,8 +7901,11 @@ function renderPredictionsLedger() {
         return `
         <tr>
           <td class="mono text-muted">${esc(p.match_date)}</td>
-          <td><strong>${esc(p.home_team)} vs ${esc(p.away_team)}</strong><span class="src-badge ${srcCls}">${p.source_type === "AUTO" ? "AUTO" : "MAN"}</span></td>
-          <td><strong>${esc(p.market_label)}</strong></td>
+          <td>
+            <strong><span class="flag-chip">${hFlag}</span>${esc(p.home_team)} vs <span class="flag-chip">${aFlag}</span>${esc(p.away_team)}</strong><span class="src-badge ${srcCls}">${p.source_type === "AUTO" ? "AUTO" : "MAN"}</span> ${shiftPill}
+            <div class="text-muted" style="font-size:11px;margin-top:2px"><span class="league-emoji">${lgEm}</span>${esc(p.league_name || "")}</div>
+          </td>
+          <td><strong>${esc(p.market_label)}</strong>${beforeNote}</td>
           <td class="mono">${p.model_prob}% · ${p.bookmaker_odds ? "@" + Number(p.bookmaker_odds).toFixed(2) : "Fair " + Number(p.fair_odds).toFixed(2)}</td>
           <td class="mono">${steamBadge}</td>
           <td class="mono">${p.actual_home_goals !== null ? `${p.actual_home_goals}–${p.actual_away_goals}` : `Proj ${p.projected_score || "—"}`}</td>
