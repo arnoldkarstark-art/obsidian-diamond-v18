@@ -552,9 +552,7 @@ html, body {
   white-space: nowrap;
 }
 .dual-clock .clk-wib { color: var(--ice); }
-@media (max-width: 960px) {
-  .dual-clock { display: none; }
-}
+.dual-clock { flex-shrink: 0; }
 
 .match-time.live {
   color: var(--coral);
@@ -3026,16 +3024,16 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
 }
 
 /* ---- Zoom-Proof & Mobile-Safe Progressive Topbar Breakpoints ---- */
-/* 110%–125% desktop zoom / 1280px–1420px laptops */
-@media (max-width: 1420px) {
+/* 100%–115% desktop zoom / 1380px–1520px laptops: keep 1-row topbar with compact clock & tabs */
+@media (max-width: 1520px) {
   .topbar { padding: 8px 14px; gap: 10px; }
-  .dual-clock { display: none; }
   .brand-sub { display: none; }
-  .seg-btn { padding: 6px 10px; font-size: 12px; }
+  .dual-clock { padding: 5px 8px; font-size: 10.5px; gap: 5px; }
+  .seg-btn { padding: 6px 9px; font-size: 12px; }
 }
 
-/* 125%–175% desktop zoom / laptops with Owner|Lock visible (clean 2-row topbar, ZERO overlap!) */
-@media (max-width: 1280px) {
+/* 115%–175% desktop zoom / laptops with Owner|Lock + Clock visible (clean 2-row topbar, ZERO overlap!) */
+@media (max-width: 1380px) {
   .topbar {
     flex-wrap: wrap;
     padding: 9px 14px;
@@ -3043,7 +3041,7 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
     column-gap: 10px;
   }
   .topbar-left { flex: 1 1 auto; }
-  .topbar-right { flex: 0 0 auto; }
+  .topbar-right { flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; }
   .segmented-nav {
     order: 3;
     width: 100%;
@@ -3060,8 +3058,8 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   }
 }
 
-/* Mobile phones & 200%+ zoom */
-@media (max-width: 780px) {
+/* Tablets & 175%–200% zoom */
+@media (max-width: 900px) {
   .topbar {
     padding: 8px 10px;
     row-gap: 7px;
@@ -3075,6 +3073,11 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
     gap: 4px;
   }
   .topbar-right { gap: 5px; }
+  .dual-clock {
+    padding: 4px 7px;
+    font-size: 10px;
+    gap: 4px;
+  }
   .status-trigger {
     padding: 5px 8px;
     font-size: 10.5px;
@@ -3102,14 +3105,26 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   }
 }
 
-/* Narrow phones (360px–460px) */
-@media (max-width: 480px) {
-  .topbar-left { gap: 7px; }
+/* Mobile phones (<= 640px): keep brand + compact controls on row 1, live clock + status clean, 5 tabs full-width */
+@media (max-width: 640px) {
+  .topbar-left { flex: 1 1 auto; gap: 7px; }
+  .topbar-right {
+    width: 100%;
+    order: 2;
+    justify-content: space-between;
+    gap: 5px;
+  }
+  .dual-clock {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding: 4px 8px;
+    font-size: 10.5px;
+  }
   .channel-pill .channel-handle { display: none; }
   .channel-pill { padding: 5px 7px; }
   #btn-sources .sep,
   #header-af-quota { display: none; }
-  .brand-title { font-size: 12.5px; }
+  .brand-title { font-size: 13px; }
   .seg-btn { font-size: 9px; padding: 5px 1px; }
   .seg-btn .count-chip { font-size: 8.5px; padding: 0 4px; }
 }
