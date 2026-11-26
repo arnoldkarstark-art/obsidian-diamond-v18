@@ -9,12 +9,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
+import zlib from "node:zlib";
 
 const ROOT = process.cwd();
 const DATA_DIR = path.join(ROOT, "data");
 const MEMORY_PATH = path.join(DATA_DIR, "memory.json");
 const PICKS_PATH = path.join(DATA_DIR, "daily_picks.json");
 const NEWS_PATH = path.join(DATA_DIR, "news_intel.json");
+const EMOJI_CACHE_PATH = path.join(DATA_DIR, "emoji_cache.json");
 const DASHBOARD_URL = process.env.DASHBOARD_URL || "https://enginebola.web.id/";
 
 const TZ_AMT = "Asia/Yerevan";
@@ -156,23 +158,668 @@ function createFileBackedStorage(memoryFile) {
   };
 }
 
+// ---- Telegram Premium Custom Emoji Support (Bot API 9.4+) ----
+const DEFAULT_EMOJI_PACKS = ["FootballTimeEmoji", "futbolga_doir"];
+
+const FCPRICE_LEAGUE_INDICES = {
+  stadium: 0,
+  uefa: 1,
+  fifa: 2,
+  ucl: 3,
+  ucl_ball: 4,
+  uel: 5,
+  uecl: 6,
+  premier_league: 7,
+  laliga: 8,
+  serie_a: 9,
+  bundesliga: 10,
+  ligue_1: 11,
+  liga_portugal: 12,
+  saudi_pro_league: 13,
+  eredivisie: 14,
+  super_lig: 15,
+  rpl: 16,
+  mls: 17,
+  euro: 18,
+  copa_america: 19,
+  ucl_trophy: 20,
+  uel_trophy: 21,
+  uecl_trophy: 22,
+  world_cup: 23,
+};
+
+const FCPRICE_CLUB_INDICES = {
+  real_madrid: 27,
+  barcelona: 28,
+  man_city: 29,
+  ac_milan: 30,
+  juventus: 31,
+  man_utd: 32,
+  bayern: 33,
+  dortmund: 34,
+  psg: 35,
+  atletico: 36,
+  inter: 37,
+  napoli: 38,
+  arsenal: 39,
+};
+
+function singleAltEmoji(str, fallback = "⚽") {
+  const s = String(str || "").trim();
+  if (!s) return fallback;
+  try {
+    const seg = new Intl.Segmenter("en", { granularity: "grapheme" });
+    const first = [...seg.segment(s)][0]?.segment;
+    return first || fallback;
+  } catch {
+    return [...s][0] || fallback;
+  }
+}
+
+function stripTgEmojiTags(html) {
+  return String(html || "").replace(/<tg-emoji\s+emoji-id="[^"]+">([\s\S]*?)<\/tg-emoji>/g, "$1");
+}
+
+function visibleTextLen(html) {
+  return String(html || "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .length;
+}
+
+function wrapTgEmoji(customEmojiId, fallbackEmoji) {
+  if (!customEmojiId) return fallbackEmoji;
+  const alt = singleAltEmoji(fallbackEmoji, "⚽");
+  return `<tg-emoji emoji-id="${String(customEmojiId)}">${alt}</tg-emoji>`;
+}
+
+function matchLeagueCustomKey(leagueName) {
+  const n = String(leagueName || "").toLowerCase();
+  if (n.includes("champions league") && !n.includes("afc") && !n.includes("concacaf") && !n.includes("caf")) return "ucl";
+  if (n.includes("europa league")) return "uel";
+  if (n.includes("conference league")) return "uecl";
+  if (n.includes("world cup")) return "world_cup";
+  if (n.includes("euro ") || n === "euro" || n.includes("european championship")) return "euro";
+  if (n.includes("copa america") || n.includes("copa américa")) return "copa_america";
+  if (n.includes("premier league") && !n.includes("russia") && !n.includes("egypt") && !n.includes("scot") && !n.includes("ukraine") && !n.includes("israel") && !n.includes("armenia")) return "premier_league";
+  if (n.includes("laliga") || n.includes("la liga")) return "laliga";
+  if (n === "serie a" || (n.includes("serie a") && !n.includes("brasil") && !n.includes("ecuador"))) return "serie_a";
+  if (n === "bundesliga" || (n.includes("bundesliga") && !n.includes("2.") && !n.includes("austria"))) return "bundesliga";
+  if (n === "ligue 1" || (n.includes("ligue 1") && !n.includes("tunisia") && !n.includes("algeria"))) return "ligue_1";
+  if (n.includes("liga portugal") || n.includes("primeira liga")) return "liga_portugal";
+  if (n.includes("saudi pro") || n.includes("roshn saudi")) return "saudi_pro_league";
+  if (n.includes("eredivisie")) return "eredivisie";
+  if (n.includes("super lig") || n.includes("süper lig")) return "super_lig";
+  if (n.includes("russian premier")) return "rpl";
+  if (n === "mls" || n.includes("major league soccer")) return "mls";
+  if (n.includes("uefa") || n.includes("nations league")) return "uefa";
+  if (n.includes("fifa")) return "fifa";
+  return null;
+}
+
+function matchClubCustomKey(teamName) {
+  const t = String(teamName || "").toLowerCase().trim();
+  if (/\breal madrid\b/.test(t)) return "real_madrid";
+  if (/\b(fc )?barcelona\b/.test(t) && !t.includes("sc") && !t.includes("guayaquil")) return "barcelona";
+  if (/\bman(chester)? city\b/.test(t)) return "man_city";
+  if (/\b(ac )?milan\b/.test(t) && !t.includes("inter")) return "ac_milan";
+  if (/\bjuventus\b/.test(t)) return "juventus";
+  if (/\bman(chester)? (united|utd)\b/.test(t)) return "man_utd";
+  if (/\bbayern\b/.test(t)) return "bayern";
+  if (/\b(borussia )?dortmund\b/.test(t)) return "dortmund";
+  if (/\b(paris saint[- ]germain|psg)\b/.test(t)) return "psg";
+  if (/\batl[eé]tico( de)? madrid\b/.test(t)) return "atletico";
+  if (/\binter(nazionale| milan)?\b/.test(t) && !t.includes("miami") && !t.includes("internacional") && !t.includes("turku")) return "inter";
+  if (/\bnapoli\b/.test(t)) return "napoli";
+  if (/\barsenal\b/.test(t) && !t.includes("sarandi") && !t.includes("tula")) return "arsenal";
+  return null;
+}
+
+async function loadCustomEmojiPacks(token) {
+  const resolver = {
+    enabled: false,
+    leagues: {},
+    clubs: {},
+    ui: {},
+    leagueIcon(leagueName, fallbackEmoji) {
+      const k = matchLeagueCustomKey(leagueName);
+      const id = k ? this.leagues[k] : null;
+      return id ? wrapTgEmoji(id, fallbackEmoji) : fallbackEmoji;
+    },
+    teamIcon(teamName, fallbackFlag) {
+      const k = matchClubCustomKey(teamName);
+      const id = k ? this.clubs[k] : null;
+      return id ? wrapTgEmoji(id, fallbackFlag) : fallbackFlag;
+    },
+    uiIcon(key, fallbackChar) {
+      const id = this.ui[key] || (key === "ball" ? this.leagues.ucl_ball : null) || (key === "stadium" ? this.leagues.stadium : null);
+      return id ? wrapTgEmoji(id, fallbackChar) : fallbackChar;
+    },
+  };
+
+  // Optional custom overrides via env JSON (never required)
+  const extraJson = (process.env.CUSTOM_EMOJI_MAP_JSON || "").trim();
+  if (extraJson) {
+    try {
+      const parsed = JSON.parse(extraJson);
+      if (parsed.leagues) Object.assign(resolver.leagues, parsed.leagues);
+      if (parsed.clubs) Object.assign(resolver.clubs, parsed.clubs);
+      if (parsed.ui) Object.assign(resolver.ui, parsed.ui);
+      resolver.enabled = true;
+    } catch {}
+  }
+
+  const cleanToken = String(token || "").replace(/^["']|["']$/g, "").trim();
+  if (!cleanToken) return resolver;
+
+  const packNames = String(process.env.TELEGRAM_EMOJI_PACKS || DEFAULT_EMOJI_PACKS.join(","))
+    .split(/[\s,;]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const uiEmojiCandidates = {
+    ball: ["⚽"],
+    radar: ["📡", "🛰️", "🔍", "⚡"],
+    target: ["🎯", "⭐", "💎"],
+    trophy: ["🏆", "🥇"],
+    fire: ["🔥", "💥"],
+    corner: ["🚩", "📐"],
+    chart: ["📊", "📈"],
+    ticket: ["🎟️", "🎫"],
+    shift: ["🔄", "🔁", "⚠️"],
+    stadium: ["🏟️"],
+  };
+
+  for (const name of packNames) {
+    try {
+      const resp = await fetch(`https://api.telegram.org/bot${cleanToken}/getStickerSet?name=${encodeURIComponent(name)}`);
+      const json = await resp.json().catch(() => ({}));
+      if (!resp.ok || !json.ok || !Array.isArray(json.result?.stickers)) {
+        console.warn(`[CustomEmoji] Pack "${name}" unavailable (HTTP ${resp.status}: ${json?.description || "not found"}).`);
+        continue;
+      }
+      const title = json.result.title || name;
+      const stickers = json.result.stickers;
+      const animCount = stickers.filter((s) => s.is_animated || s.is_video).length;
+      console.log(`[CustomEmoji] Loaded "${name}" ("${title}"): ${stickers.length} icons (${animCount} animated).`);
+
+      // Match the @FCprice Champions League / Leagues & Clubs grid pack (157 icons)
+      const isFcPricePack = /fcprice|лига чемпионов|champions/i.test(title) || stickers.length >= 140;
+      if (isFcPricePack) {
+        for (const [k, idx] of Object.entries(FCPRICE_LEAGUE_INDICES)) {
+          const cid = stickers[idx]?.custom_emoji_id;
+          if (cid && !resolver.leagues[k]) resolver.leagues[k] = cid;
+        }
+        for (const [k, idx] of Object.entries(FCPRICE_CLUB_INDICES)) {
+          const cid = stickers[idx]?.custom_emoji_id;
+          if (cid && !resolver.clubs[k]) resolver.clubs[k] = cid;
+        }
+        resolver.enabled = true;
+      }
+
+      // Scan all packs for animated/custom UI icons matching their base Unicode emoji (preferring animated icons!)
+      for (const [uiKey, baseList] of Object.entries(uiEmojiCandidates)) {
+        const matches = stickers.filter((s) => s.custom_emoji_id && baseList.includes(s.emoji));
+        if (!matches.length) continue;
+        const animHit = matches.find((s) => s.is_animated || s.is_video);
+        const pick = animHit || matches[0];
+        // Prefer animated icon over static icon if both packs provide one
+        if (!resolver.ui[uiKey] || (animHit && !resolver.ui[`${uiKey}_anim`])) {
+          resolver.ui[uiKey] = pick.custom_emoji_id;
+          if (animHit) resolver.ui[`${uiKey}_anim`] = true;
+          resolver.enabled = true;
+        }
+      }
+    } catch (e) {
+      console.warn(`[CustomEmoji] Pack "${name}" fetch error: ${e?.message || e}`);
+    }
+  }
+
+  console.log(`[CustomEmoji] Ready: enabled=${resolver.enabled} | leagues=${Object.keys(resolver.leagues).length} | clubs=${Object.keys(resolver.clubs).length} | ui=${Object.keys(resolver.ui).filter((k) => !k.endsWith("_anim")).length}`);
+  return resolver;
+}
+
+// ---- Zero-Dependency Pure-Node 100x100 Transparent PNG Resizer (for Telegram Custom Emoji) ----
+const PNG_CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+
+function pngCrc32(buf) {
+  let c = 0xffffffff;
+  for (let i = 0; i < buf.length; i++) c = PNG_CRC_TABLE[(c ^ buf[i]) & 0xff] ^ (c >>> 8);
+  return (c ^ 0xffffffff) >>> 0;
+}
+
+function pngChunk(type, data) {
+  const lenBuf = Buffer.alloc(4);
+  lenBuf.writeUInt32BE(data.length, 0);
+  const typeBuf = Buffer.from(type, "ascii");
+  const crcBuf = Buffer.alloc(4);
+  crcBuf.writeUInt32BE(pngCrc32(Buffer.concat([typeBuf, data])), 0);
+  return Buffer.concat([lenBuf, typeBuf, data, crcBuf]);
+}
+
+function decodePngToRgba(buf) {
+  if (!Buffer.isBuffer(buf) || buf.length < 33) throw new Error("Not a valid PNG");
+  const sig = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+  if (!buf.subarray(0, 8).equals(sig)) throw new Error("Invalid PNG signature");
+
+  let width = 0, height = 0, bitDepth = 0, colorType = 0, interlace = 0;
+  let plte = null, trns = null;
+  const idatChunks = [];
+  let off = 8;
+  while (off + 8 <= buf.length) {
+    const len = buf.readUInt32BE(off);
+    const type = buf.subarray(off + 4, off + 8).toString("ascii");
+    const data = buf.subarray(off + 8, off + 8 + len);
+    off += 12 + len;
+    if (type === "IHDR") {
+      width = data.readUInt32BE(0);
+      height = data.readUInt32BE(4);
+      bitDepth = data[8];
+      colorType = data[9];
+      interlace = data[12];
+    } else if (type === "PLTE") {
+      plte = data;
+    } else if (type === "tRNS") {
+      trns = data;
+    } else if (type === "IDAT") {
+      idatChunks.push(data);
+    } else if (type === "IEND") {
+      break;
+    }
+  }
+  if (!width || !height || interlace !== 0) throw new Error(`Unsupported PNG (${width}x${height}, interlace=${interlace})`);
+  const channels = colorType === 0 ? 1 : colorType === 2 ? 3 : colorType === 3 ? 1 : colorType === 4 ? 2 : colorType === 6 ? 4 : 0;
+  if (!channels) throw new Error(`Unsupported PNG colorType=${colorType}`);
+
+  const raw = zlib.inflateSync(Buffer.concat(idatChunks));
+  const bpp = Math.max(1, Math.ceil((channels * bitDepth) / 8));
+  const stride = Math.ceil((width * channels * bitDepth) / 8);
+  const recon = new Uint8Array(height * stride);
+  const paeth = (a, b, c) => {
+    const p = a + b - c;
+    const pa = Math.abs(p - a), pb = Math.abs(p - b), pc = Math.abs(p - c);
+    return (pa <= pb && pa <= pc) ? a : (pb <= pc ? b : c);
+  };
+
+  let inPos = 0;
+  for (let y = 0; y < height; y++) {
+    const filter = raw[inPos++];
+    const rowOff = y * stride;
+    for (let x = 0; x < stride; x++) {
+      const v = raw[inPos++];
+      const a = x >= bpp ? recon[rowOff + x - bpp] : 0;
+      const b = y > 0 ? recon[rowOff - stride + x] : 0;
+      const c = (x >= bpp && y > 0) ? recon[rowOff - stride + x - bpp] : 0;
+      let val = v;
+      if (filter === 1) val = (v + a) & 0xff;
+      else if (filter === 2) val = (v + b) & 0xff;
+      else if (filter === 3) val = (v + ((a + b) >> 1)) & 0xff;
+      else if (filter === 4) val = (v + paeth(a, b, c)) & 0xff;
+      recon[rowOff + x] = val;
+    }
+  }
+
+  const rgba = new Uint8Array(width * height * 4);
+  const sampleAt = (rowOff, idx) => {
+    if (bitDepth === 8) return recon[rowOff + idx];
+    if (bitDepth === 16) return recon[rowOff + idx * 2];
+    const perByte = 8 / bitDepth;
+    const mask = (1 << bitDepth) - 1;
+    const byteVal = recon[rowOff + Math.floor(idx / perByte)];
+    const shift = 8 - bitDepth * ((idx % perByte) + 1);
+    return (byteVal >> shift) & mask;
+  };
+  const scaleGray = (v) => (bitDepth < 8 ? Math.round((v * 255) / ((1 << bitDepth) - 1)) : v);
+
+  for (let y = 0; y < height; y++) {
+    const rowOff = y * stride;
+    for (let x = 0; x < width; x++) {
+      const dst = (y * width + x) * 4;
+      if (colorType === 6) {
+        rgba[dst] = sampleAt(rowOff, x * 4);
+        rgba[dst + 1] = sampleAt(rowOff, x * 4 + 1);
+        rgba[dst + 2] = sampleAt(rowOff, x * 4 + 2);
+        rgba[dst + 3] = sampleAt(rowOff, x * 4 + 3);
+      } else if (colorType === 2) {
+        const r = sampleAt(rowOff, x * 3), g = sampleAt(rowOff, x * 3 + 1), b = sampleAt(rowOff, x * 3 + 2);
+        let a = 255;
+        if (trns && trns.length >= 6 && r === trns[1] && g === trns[3] && b === trns[5]) a = 0;
+        rgba[dst] = r; rgba[dst + 1] = g; rgba[dst + 2] = b; rgba[dst + 3] = a;
+      } else if (colorType === 3) {
+        const pi = sampleAt(rowOff, x);
+        rgba[dst] = plte ? (plte[pi * 3] || 0) : 0;
+        rgba[dst + 1] = plte ? (plte[pi * 3 + 1] || 0) : 0;
+        rgba[dst + 2] = plte ? (plte[pi * 3 + 2] || 0) : 0;
+        rgba[dst + 3] = (trns && pi < trns.length) ? trns[pi] : 255;
+      } else if (colorType === 4) {
+        const g = scaleGray(sampleAt(rowOff, x * 2));
+        rgba[dst] = g; rgba[dst + 1] = g; rgba[dst + 2] = g;
+        rgba[dst + 3] = sampleAt(rowOff, x * 2 + 1);
+      } else if (colorType === 0) {
+        const gv = sampleAt(rowOff, x);
+        const g = scaleGray(gv);
+        let a = 255;
+        if (trns && trns.length >= 2 && gv === trns[1]) a = 0;
+        rgba[dst] = g; rgba[dst + 1] = g; rgba[dst + 2] = g; rgba[dst + 3] = a;
+      }
+    }
+  }
+  return { width, height, rgba };
+}
+
+function encodeRgbaToPng(width, height, rgba) {
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(width, 0);
+  ihdr.writeUInt32BE(height, 4);
+  ihdr[8] = 8; // bit depth
+  ihdr[9] = 6; // RGBA
+  ihdr[10] = 0; ihdr[11] = 0; ihdr[12] = 0;
+
+  const stride = width * 4;
+  const raw = Buffer.alloc(height * (1 + stride));
+  for (let y = 0; y < height; y++) {
+    const outRow = y * (1 + stride);
+    raw[outRow] = 0; // filter None
+    Buffer.from(rgba.buffer, rgba.byteOffset + y * stride, stride).copy(raw, outRow + 1);
+  }
+  const compressed = zlib.deflateSync(raw, { level: 9 });
+  return Buffer.concat([
+    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    pngChunk("IHDR", ihdr),
+    pngChunk("IDAT", compressed),
+    pngChunk("IEND", Buffer.alloc(0)),
+  ]);
+}
+
+function resizePngTo100x100(pngBuf) {
+  const { width: sw, height: sh, rgba: src } = decodePngToRgba(pngBuf);
+  const CANVAS = 100;
+  const FIT = 94; // subtle 3px transparent breathing room so crests never clip
+  const scale = Math.min(FIT / sw, FIT / sh);
+  const dw = Math.max(1, Math.round(sw * scale));
+  const dh = Math.max(1, Math.round(sh * scale));
+  const ox = Math.floor((CANVAS - dw) / 2);
+  const oy = Math.floor((CANVAS - dh) / 2);
+  const dst = new Uint8Array(CANVAS * CANVAS * 4);
+
+  // Premultiplied-alpha area-box resampling prevents dark/white halos on transparent edges
+  const rx = sw / dw, ry = sh / dh;
+  for (let y = 0; y < dh; y++) {
+    const y0 = y * ry, y1 = Math.min(sh, (y + 1) * ry);
+    const iy0 = Math.floor(y0), iy1 = Math.min(sh - 1, Math.ceil(y1) - 1);
+    for (let x = 0; x < dw; x++) {
+      const x0 = x * rx, x1 = Math.min(sw, (x + 1) * rx);
+      const ix0 = Math.floor(x0), ix1 = Math.min(sw - 1, Math.ceil(x1) - 1);
+      let rSum = 0, gSum = 0, bSum = 0, aSum = 0, wSum = 0;
+      for (let sy = iy0; sy <= iy1; sy++) {
+        const wy = Math.min(y1, sy + 1) - Math.max(y0, sy);
+        if (wy <= 0) continue;
+        for (let sx = ix0; sx <= ix1; sx++) {
+          const wx = Math.min(x1, sx + 1) - Math.max(x0, sx);
+          if (wx <= 0) continue;
+          const w = wx * wy;
+          const p = (sy * sw + sx) * 4;
+          const a = src[p + 3] / 255;
+          rSum += src[p] * a * w;
+          gSum += src[p + 1] * a * w;
+          bSum += src[p + 2] * a * w;
+          aSum += a * w;
+          wSum += w;
+        }
+      }
+      const di = ((oy + y) * CANVAS + (ox + x)) * 4;
+      if (wSum > 0 && aSum > 0.001) {
+        dst[di] = Math.min(255, Math.round(rSum / aSum));
+        dst[di + 1] = Math.min(255, Math.round(gSum / aSum));
+        dst[di + 2] = Math.min(255, Math.round(bSum / aSum));
+        dst[di + 3] = Math.min(255, Math.round((aSum / wSum) * 255));
+      }
+    }
+  }
+  return encodeRgbaToPng(CANVAS, CANVAS, dst);
+}
+
+// ---- Dynamic Bot-Owned Custom Emoji Pack Auto-Generator (Auto-200 Rollover + Git-Persisted Cache) ----
+function loadDynamicEmojiCache(memoryPath, cachePath) {
+  const merged = { teams: {}, leagues: {}, pack_index: 1 };
+  // 1. Load from memory.json (always committed by existing GitHub Actions workflow!)
+  if (fs.existsSync(memoryPath)) {
+    try {
+      const m = JSON.parse(fs.readFileSync(memoryPath, "utf8"));
+      if (m?.emoji_cache?.teams) Object.assign(merged.teams, m.emoji_cache.teams);
+      if (m?.emoji_cache?.leagues) Object.assign(merged.leagues, m.emoji_cache.leagues);
+      if (m?.emoji_cache?.pack_index) merged.pack_index = Math.max(1, Number(m.emoji_cache.pack_index));
+    } catch {}
+  }
+  // 2. Overlay dedicated emoji_cache.json if present
+  if (fs.existsSync(cachePath)) {
+    try {
+      const c = JSON.parse(fs.readFileSync(cachePath, "utf8"));
+      if (c?.teams) Object.assign(merged.teams, c.teams);
+      if (c?.leagues) Object.assign(merged.leagues, c.leagues);
+      if (c?.pack_index) merged.pack_index = Math.max(merged.pack_index, Number(c.pack_index));
+    } catch {}
+  }
+  return merged;
+}
+
+function saveDynamicEmojiCache(cacheObj, cachePath, memoryPath) {
+  try {
+    fs.writeFileSync(cachePath, JSON.stringify(cacheObj, null, 2), "utf8");
+  } catch {}
+  // Also mirror into memory.json so existing GitHub Actions commits persist it automatically!
+  if (fs.existsSync(memoryPath)) {
+    try {
+      const m = JSON.parse(fs.readFileSync(memoryPath, "utf8"));
+      m.emoji_cache = cacheObj;
+      fs.writeFileSync(memoryPath, JSON.stringify(m, null, 2), "utf8");
+    } catch {}
+  }
+}
+
+async function createDynamicBadgeEngine({ token, ownerId, botUsername, basePack }) {
+  const cleanToken = String(token || "").replace(/^["']|["']$/g, "").trim();
+  const cleanOwner = String(ownerId || "").trim();
+  const cleanBot = String(botUsername || "").replace(/^@/, "").trim().toLowerCase();
+  const cache = loadDynamicEmojiCache(MEMORY_PATH, EMOJI_CACHE_PATH);
+  const canUpload = !!(cleanToken && /^\d+$/.test(cleanOwner) && cleanBot);
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  let uploadsThisRun = 0;
+  let dirty = false;
+  const MAX_UPLOADS = parseInt(process.env.MAX_EMOJI_UPLOADS || "24", 10);
+
+  async function registerPngAsCustomEmoji(pngBuf, altEmoji) {
+    if (!canUpload || uploadsThisRun >= MAX_UPLOADS) return null;
+    const png100 = resizePngTo100x100(pngBuf);
+    if (png100.length > 64 * 1024) throw new Error(`Resized PNG too large (${png100.length} bytes)`);
+
+    // Auto-rollover every 200 badges (Telegram's hard limit per custom_emoji sticker set)
+    let packIdx = Math.max(1, Number(cache.pack_index || 1));
+    let setName = "";
+    let setExists = false;
+    for (let guard = 0; guard < 15; guard++) {
+      setName = `enginebola_badges_${packIdx}_by_${cleanBot}`;
+      const chkResp = await fetch(`https://api.telegram.org/bot${cleanToken}/getStickerSet?name=${encodeURIComponent(setName)}`);
+      const chkJson = await chkResp.json().catch(() => ({}));
+      if (chkResp.ok && chkJson.ok && Array.isArray(chkJson.result?.stickers)) {
+        if (chkJson.result.stickers.length >= 200) {
+          packIdx++;
+          continue;
+        }
+        setExists = true;
+        break;
+      } else {
+        setExists = false;
+        break;
+      }
+    }
+    cache.pack_index = packIdx;
+
+    const stickerMeta = {
+      sticker: "attach://badge",
+      format: "static",
+      emoji_list: [singleAltEmoji(altEmoji, "⚽")],
+    };
+    const fd = new FormData();
+    fd.append("user_id", cleanOwner);
+    fd.append("name", setName);
+    if (!setExists) {
+      fd.append("title", `Engine Bola Badges #${packIdx}`);
+      fd.append("sticker_type", "custom_emoji");
+      fd.append("stickers", JSON.stringify([stickerMeta]));
+    } else {
+      fd.append("sticker", JSON.stringify(stickerMeta));
+    }
+    fd.append("badge", new Blob([png100], { type: "image/png" }), "badge.png");
+
+    const method = setExists ? "addStickerToSet" : "createNewStickerSet";
+    const upResp = await fetch(`https://api.telegram.org/bot${cleanToken}/${method}`, { method: "POST", body: fd });
+    const upJson = await upResp.json().catch(() => ({}));
+    if (!upResp.ok || !upJson.ok) {
+      throw new Error(`${method} failed: ${upJson?.description || upResp.status}`);
+    }
+
+    // Retrieve the newly created custom_emoji_id from the updated set
+    const getResp = await fetch(`https://api.telegram.org/bot${cleanToken}/getStickerSet?name=${encodeURIComponent(setName)}`);
+    const getJson = await getResp.json().catch(() => ({}));
+    const stickers = getJson?.result?.stickers || [];
+    const newId = stickers[stickers.length - 1]?.custom_emoji_id || null;
+    if (newId) {
+      uploadsThisRun++;
+      dirty = true;
+      await sleep(350);
+    }
+    return newId;
+  }
+
+  async function downloadFirstPng(urls) {
+    for (const u of urls) {
+      try {
+        const r = await fetch(u, { headers: { "User-Agent": "Mozilla/5.0" } });
+        if (!r.ok) continue;
+        const buf = Buffer.from(await r.arrayBuffer());
+        if (buf.length > 100 && buf[0] === 0x89 && buf[1] === 0x50) return buf;
+      } catch {}
+    }
+    return null;
+  }
+
+  async function prewarmTeam(teamId, teamName, fallbackEmoji) {
+    const id = String(teamId || "").trim();
+    if (!id || id.startsWith("espn:") || !/^\d+$/.test(id)) return;
+    if (cache.teams[id]) return;
+    // Skip upload if already covered by existing FootballTimeEmoji / futbolga_doir pack
+    const existingPackKey = matchClubCustomKey(teamName);
+    if (existingPackKey && basePack?.clubs?.[existingPackKey]) return;
+    if (!canUpload || uploadsThisRun >= MAX_UPLOADS) return;
+    try {
+      const png = await downloadFirstPng([
+        `https://images.fotmob.com/image_resources/logo/teamlogo/${id}.png`,
+        `https://images.fotmob.com/image_resources/logo/teamlogo/${id}_small.png`,
+      ]);
+      if (!png) return;
+      const cid = await registerPngAsCustomEmoji(png, fallbackEmoji || "⚽");
+      if (cid) {
+        cache.teams[id] = cid;
+        console.log(`[AutoBadge] Registered team crest: ${teamName} (#${id}) -> ${cid}`);
+      }
+    } catch (e) {
+      console.warn(`[AutoBadge] Team ${teamName} (#${id}) skipped: ${e?.message || e}`);
+    }
+  }
+
+  async function prewarmLeague(leagueId, leagueName, fallbackEmoji) {
+    const id = String(leagueId || "").trim();
+    if (!id || !/^\d+$/.test(id)) return;
+    if (cache.leagues[id]) return;
+    const existingPackKey = matchLeagueCustomKey(leagueName);
+    if (existingPackKey && basePack?.leagues?.[existingPackKey]) return;
+    if (!canUpload || uploadsThisRun >= MAX_UPLOADS) return;
+    try {
+      const png = await downloadFirstPng([
+        `https://images.fotmob.com/image_resources/logo/leaguelogo/dark/${id}.png`,
+        `https://images.fotmob.com/image_resources/logo/leaguelogo/${id}.png`,
+      ]);
+      if (!png) return;
+      const cid = await registerPngAsCustomEmoji(png, fallbackEmoji || "🏆");
+      if (cid) {
+        cache.leagues[id] = cid;
+        console.log(`[AutoBadge] Registered league logo: ${leagueName} (#${id}) -> ${cid}`);
+      }
+    } catch (e) {
+      console.warn(`[AutoBadge] League ${leagueName} (#${id}) skipped: ${e?.message || e}`);
+    }
+  }
+
+  return {
+    canUpload,
+    cache,
+    async prewarmBatch(items) {
+      const seenT = new Set();
+      const seenL = new Set();
+      for (const it of items) {
+        if (it.leagueId && !seenL.has(String(it.leagueId))) {
+          seenL.add(String(it.leagueId));
+          await prewarmLeague(it.leagueId, it.leagueName, it.leagueFallback);
+        }
+        if (it.homeId && !seenT.has(String(it.homeId))) {
+          seenT.add(String(it.homeId));
+          await prewarmTeam(it.homeId, it.homeName, it.homeFallback);
+        }
+        if (it.awayId && !seenT.has(String(it.awayId))) {
+          seenT.add(String(it.awayId));
+          await prewarmTeam(it.awayId, it.awayName, it.awayFallback);
+        }
+      }
+      if (dirty) {
+        saveDynamicEmojiCache(cache, EMOJI_CACHE_PATH, MEMORY_PATH);
+        console.log(`[AutoBadge] Saved cache: ${Object.keys(cache.teams).length} teams, ${Object.keys(cache.leagues).length} leagues (pack #${cache.pack_index}, +${uploadsThisRun} new).`);
+      }
+    },
+    teamIcon(teamId, teamName, fallbackFlag) {
+      const id = String(teamId || "").trim();
+      if (id && cache.teams[id]) return wrapTgEmoji(cache.teams[id], fallbackFlag);
+      return basePack.teamIcon(teamName, fallbackFlag);
+    },
+    leagueIcon(leagueId, leagueName, fallbackEmoji) {
+      const id = String(leagueId || "").trim();
+      if (id && cache.leagues[id]) return wrapTgEmoji(cache.leagues[id], fallbackEmoji);
+      return basePack.leagueIcon(leagueName, fallbackEmoji);
+    },
+    uiIcon(key, fallbackChar) {
+      return basePack.uiIcon(key, fallbackChar);
+    },
+  };
+}
+
 async function sendTelegram(token, chatId, htmlText) {
   if (!token || !chatId) {
     console.log("TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set — printing message to stdout instead:\n" + htmlText);
     return { skipped: true };
   }
-  // Split cleanly on double-newlines if message > 3900 chars
+  // Split cleanly on double-newlines using visible text length (Telegram counts parsed text, not <tg-emoji> HTML attributes)
   const chunks = [];
-  if (htmlText.length <= 3900) {
+  if (visibleTextLen(htmlText) <= 3850 && htmlText.length <= 14000) {
     chunks.push(htmlText);
   } else {
     let cur = "";
     for (const block of htmlText.split("\n\n")) {
-      if ((cur + "\n\n" + block).length > 3800 && cur) {
+      const candidate = cur ? `${cur}\n\n${block}` : block;
+      if ((visibleTextLen(candidate) > 3750 || candidate.length > 13500) && cur) {
         chunks.push(cur);
         cur = block;
       } else {
-        cur = cur ? `${cur}\n\n${block}` : block;
+        cur = candidate;
       }
     }
     if (cur) chunks.push(cur);
@@ -216,14 +863,16 @@ async function sendTelegram(token, chatId, htmlText) {
     const targetId = chatIds[rIdx];
     let recipientOk = true;
     let lastErr = null;
+    let stripCustomEmoji = false;
     for (let i = 0; i < chunks.length; i++) {
       let sent = false;
       for (let attempt = 1; attempt <= 3; attempt++) {
         // On retry after 429, drop inline_keyboard & use plain dashboard link in case Telegram throttles URL buttons on new bots
-        const useButton = attempt === 1 && i === chunks.length - 1;
+        const useButton = (attempt === 1 || stripCustomEmoji) && i === chunks.length - 1;
+        const baseChunk = stripCustomEmoji ? stripTgEmojiTags(chunks[i]) : chunks[i];
         const textOut = (!useButton && i === chunks.length - 1)
-          ? `${chunks[i]}\n\n🔗 ${DASHBOARD_URL}`
-          : chunks[i];
+          ? `${baseChunk}\n\n🔗 ${DASHBOARD_URL}`
+          : baseChunk;
         const body = {
           chat_id: targetId,
           text: textOut,
@@ -246,6 +895,12 @@ async function sendTelegram(token, chatId, htmlText) {
           sent = true;
           break;
         }
+        // Automatic safe fallback if Telegram rejects <tg-emoji> on a channel or non-eligible chat
+        if (resp.status === 400 && !stripCustomEmoji && /<tg-emoji\b/.test(chunks[i])) {
+          console.warn(`[Telegram CustomEmoji Fallback] Recipient #${rIdx + 1} returned HTTP 400 (${json?.description || "?"}) — retrying cleanly with Unicode flag/emoji fallback...`);
+          stripCustomEmoji = true;
+          continue;
+        }
         if (resp.status === 429 && attempt < 3) {
           const waitSec = Math.min(75, Math.max(5, Number(json?.parameters?.retry_after || 20) + 5));
           console.warn(`[Telegram 429] Recipient #${rIdx + 1} rate limited (retry_after=${json?.parameters?.retry_after}) — waiting ${waitSec}s before retry ${attempt + 1}/3...`);
@@ -262,7 +917,7 @@ async function sendTelegram(token, chatId, htmlText) {
       }
       if (i < chunks.length - 1) await sleep(1200);
     }
-    results.push({ recipient: rIdx + 1, ok: recipientOk, ...(lastErr ? { error: lastErr } : {}) });
+    results.push({ recipient: rIdx + 1, ok: recipientOk, custom_emoji_stripped: stripCustomEmoji, ...(lastErr ? { error: lastErr } : {}) });
     if (rIdx < chatIds.length - 1) await sleep(1200);
   }
 
@@ -507,9 +1162,10 @@ async function main() {
 
   console.log(`[Obsidian V18.6 Auto-Bot] Start ${todayAmt} (${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB) · Mode=${botMode.toUpperCase()}`);
 
-  // Helper to resolve Telegram recipients via Cloudflare Access Gate (with TELEGRAM_CHAT_ID fallback)
-  async function resolveTelegramTargets() {
+  // Helper to resolve Telegram recipients & Owner ID via Cloudflare Access Gate (with env fallback)
+  async function resolveTelegramContext() {
     let targetChatIds = (process.env.TELEGRAM_CHAT_ID || "").trim();
+    let ownerId = (process.env.TELEGRAM_OWNER_ID || "").trim();
     const gateUrl = (process.env.OBSIDIAN_GATE_URL || "").trim().replace(/\/$/, "");
     const syncSecret = (process.env.BOT_SYNC_SECRET || "").trim();
     if (gateUrl && syncSecret) {
@@ -518,9 +1174,12 @@ async function main() {
           headers: { Authorization: `Bearer ${syncSecret}` },
         });
         const subJson = await subResp.json().catch(() => ({}));
-        if (subResp.ok && subJson.ok && Array.isArray(subJson.chat_ids) && subJson.chat_ids.length) {
-          targetChatIds = subJson.chat_ids.join(",");
-          console.log(`[Access Gate] Synced ${subJson.chat_ids.length} target(s) (${subJson.mode || "list"}) from Cloudflare KV.`);
+        if (subResp.ok && subJson.ok) {
+          if (Array.isArray(subJson.chat_ids) && subJson.chat_ids.length) {
+            targetChatIds = subJson.chat_ids.join(",");
+            console.log(`[Access Gate] Synced ${subJson.chat_ids.length} target(s) (${subJson.mode || "list"}) from Cloudflare KV.`);
+          }
+          if (subJson.owner_id && !ownerId) ownerId = String(subJson.owner_id).trim();
         } else {
           console.warn(`[Access Gate] Subscriber sync returned HTTP ${subResp.status}; falling back to TELEGRAM_CHAT_ID.`);
         }
@@ -528,7 +1187,20 @@ async function main() {
         console.warn(`[Access Gate] Subscriber sync error (${e?.message || e}); falling back to TELEGRAM_CHAT_ID.`);
       }
     }
-    return targetChatIds;
+    if (!ownerId) {
+      const numHit = targetChatIds.split(/[\s,;]+/).find((id) => /^\d{6,}$/.test(id.trim()));
+      if (numHit) ownerId = numHit.trim();
+    }
+    let botUsername = (process.env.TELEGRAM_BOT_USERNAME || "").trim();
+    const tgTok = (process.env.TELEGRAM_BOT_TOKEN || "").replace(/^["']|["']$/g, "").trim();
+    if (tgTok && !botUsername) {
+      try {
+        const meR = await fetch(`https://api.telegram.org/bot${tgTok}/getMe`);
+        const meJ = await meR.json().catch(() => ({}));
+        if (meR.ok && meJ.ok && meJ.result?.username) botUsername = meJ.result.username;
+      } catch {}
+    }
+    return { targetChatIds, ownerId, botUsername };
   }
 
   // 1. Auto-settle all finished matches (server-side = no browser CORS block -> exact corners & 1H goals!)
@@ -553,6 +1225,18 @@ async function main() {
     flat = [...openToday, ...tFlat.filter((m) => !m.finished)];
     activeDate = openToday.length ? `${todayAmt} + ${tmrwAmt}` : tmrwAmt;
   }
+
+  // Resolve Telegram target, owner_id & botUsername once; load curated + auto-generated custom emoji packs
+  const tgToken = (process.env.TELEGRAM_BOT_TOKEN || "").trim();
+  const tgCtx = await resolveTelegramContext();
+  const basePack = await loadCustomEmojiPacks(tgToken);
+  const emojiPack = await createDynamicBadgeEngine({
+    token: tgToken,
+    ownerId: tgCtx.ownerId,
+    botUsername: tgCtx.botUsername,
+    basePack,
+  });
+  console.log(`[AutoBadge] Dynamic crest auto-gen: ${emojiPack.canUpload ? `ACTIVE (@${tgCtx.botUsername}, pack #${emojiPack.cache.pack_index})` : "OFF (dry-run or missing owner_id)"} | cached teams=${Object.keys(emojiPack.cache.teams).length}, leagues=${Object.keys(emojiPack.cache.leagues).length}`);
 
   // ---- STAGE 2: CONFIRMED-XI SNIPER MODE (T-75' to T-10' pre-kickoff window, zero spam) ----
   if (botMode === "xi_sniper") {
@@ -594,10 +1278,11 @@ async function main() {
       } catch {}
     }
 
-    // Save updated memory (with Confirmed-XI updates & any auto-settlements)
+    // Save updated memory (with Confirmed-XI updates & preserved emoji_cache)
     const backupObj = JSON.parse(eng.exportBackup());
     backupObj.synced_by = "github_actions_xi_sniper";
     backupObj.usage = eng.getUsage();
+    backupObj.emoji_cache = emojiPack.cache;
     fs.writeFileSync(MEMORY_PATH, JSON.stringify(backupObj, null, 2), "utf8");
     fs.writeFileSync(XI_NOTIFIED_PATH, JSON.stringify(notified, null, 2), "utf8");
 
@@ -606,19 +1291,34 @@ async function main() {
       return;
     }
 
+    // Auto-generate & cache 100x100 custom emoji crests for any new teams/leagues in this Confirmed-XI alert
+    await emojiPack.prewarmBatch(
+      confirmedAudits.map((a) => ({
+        leagueId: a.league_id,
+        leagueName: a.league_name,
+        leagueFallback: a.league_emoji || eng.getLeagueEmoji(a.league_name, a.country_code),
+        homeId: a.home.id,
+        homeName: a.home.name,
+        homeFallback: a.home.flag || eng.getTeamFlag(a.home.name, a.league_name, a.country_code),
+        awayId: a.away.id,
+        awayName: a.away.name,
+        awayFallback: a.away.flag || eng.getTeamFlag(a.away.name, a.league_name, a.country_code),
+      }))
+    );
+
     const shiftedCount = confirmedAudits.filter((a) => a.xi_shift && a.xi_shift.changed).length;
     const xiLines = [];
-    xiLines.push(`⚽ <b>ENGINE BOLA · UPDATE LINI PEMAIN RESMI</b>`);
+    xiLines.push(`${emojiPack.uiIcon("ball", "⚽")} <b>ENGINE BOLA · UPDATE LINI PEMAIN RESMI</b>`);
     xiLines.push(`<i>${escHtml(fmtDateIndo(now))} · ${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB</i>`);
-    xiLines.push(`<i>Susunan pemain (Starting XI) resmi telah terkonfirmasi untuk ${confirmedAudits.length} pertandingan berikut${shiftedCount ? ` · 🔄 <b>${shiftedCount} prediksi berubah pasca XI!</b>` : ""}:</i>`);
+    xiLines.push(`<i>Susunan pemain (Starting XI) resmi telah terkonfirmasi untuk ${confirmedAudits.length} pertandingan berikut${shiftedCount ? ` · ${emojiPack.uiIcon("shift", "🔄")} <b>${shiftedCount} prediksi berubah pasca XI!</b>` : ""}:</i>`);
 
     confirmedAudits.forEach((a, idx) => {
       const sp = a.verdict.sniper_pick;
       const v = a.verdict;
       const cm = a.corners_model;
-      const lgEm = a.league_emoji || eng.getLeagueEmoji(a.league_name, a.country_code);
-      const hFlag = a.home.flag || eng.getTeamFlag(a.home.name, a.league_name, a.country_code);
-      const aFlag = a.away.flag || eng.getTeamFlag(a.away.name, a.league_name, a.country_code);
+      const lgEm = emojiPack.leagueIcon(a.league_id, a.league_name, a.league_emoji || eng.getLeagueEmoji(a.league_name, a.country_code));
+      const hFlag = emojiPack.teamIcon(a.home.id, a.home.name, a.home.flag || eng.getTeamFlag(a.home.name, a.league_name, a.country_code));
+      const aFlag = emojiPack.teamIcon(a.away.id, a.away.name, a.away.flag || eng.getTeamFlag(a.away.name, a.league_name, a.country_code));
       const priInfo = humanizeMarket(v.market_key, v.primary_bet, a.home.name, a.away.name);
       const spInfo = sp ? humanizeMarket(sp.key, sp.label, a.home.name, a.away.name) : null;
       const card = [
@@ -628,14 +1328,14 @@ async function main() {
       ];
       if (a.xi_shift && a.xi_shift.changed && a.xi_shift.before) {
         const bInfo = humanizeMarket(a.xi_shift.before.market_key, a.xi_shift.before.market_label, a.home.name, a.away.name);
-        card.push(`🔄 <b>PERUBAHAN PASCA XI RESMI:</b>`);
+        card.push(`${emojiPack.uiIcon("shift", "🔄")} <b>PERUBAHAN PASCA XI RESMI:</b>`);
         card.push(`   • Sebelum (Pre-XI): <s>${escHtml(bInfo.title)}</s> (${Math.round(a.xi_shift.before.model_prob)}%)`);
         card.push(`   • Sekarang (Resmi XI): <b>${escHtml(priInfo.title)}</b> (${Math.round(a.xi_shift.after.model_prob)}%)`);
         card.push(`   • <b>Kenapa:</b> <i>${escHtml(a.xi_shift.why)}</i>`);
         card.push(`   • <b>Arah:</b> <i>${escHtml(a.xi_shift.how)}</i>`);
       } else if (a.xi_shift && a.xi_shift.significant) {
         const d = a.xi_shift.prob_delta;
-        card.push(`📊 <b>PERGESERAN PELUANG PASCA XI (${d >= 0 ? "+" : ""}${d}%):</b> <i>${escHtml(a.xi_shift.why)}</i>`);
+        card.push(`${emojiPack.uiIcon("chart", "📊")} <b>PERGESERAN PELUANG PASCA XI (${d >= 0 ? "+" : ""}${d}%):</b> <i>${escHtml(a.xi_shift.why)}</i>`);
       }
       if (sp && spInfo) {
         card.push(`▸ <b>Pilihan Aman: ${escHtml(spInfo.title)}</b> (<b>${Math.round(sp.model_prob)}%</b>)`);
@@ -652,7 +1352,7 @@ async function main() {
       if (cm.high_volume_10_15) {
         const cParts = [`Total Over (10.5) <b>${Math.round(cm.p_over_10_5)}%</b>`, `Over (11.5) <b>${Math.round(cm.p_over_11_5)}%</b>`, `Over (12.5) <b>${Math.round(cm.p_over_12_5)}%</b>`];
         if (cm.p_over_13_5 >= 35) cParts.push(`Over (13.5) <b>${Math.round(cm.p_over_13_5)}%</b>`);
-        card.push(`▸ 🚩 Corners (~${Math.round(cm.total_corners_lambda)} est.): ${cParts.join(" · ")}`);
+        card.push(`▸ ${emojiPack.uiIcon("corner", "🚩")} Corners (~${Math.round(cm.total_corners_lambda)} est.): ${cParts.join(" · ")}`);
       }
       xiLines.push("");
       xiLines.push(`<blockquote>${card.join("\n")}</blockquote>`);
@@ -663,9 +1363,8 @@ async function main() {
 
     const msg = xiLines.join("\n");
     try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), msg); } catch {}
-    const targetChatIds = await resolveTelegramTargets();
     try {
-      const tgRes = await sendTelegram((process.env.TELEGRAM_BOT_TOKEN || "").trim(), targetChatIds, msg);
+      const tgRes = await sendTelegram(tgToken, tgCtx.targetChatIds, msg);
       console.log("[Telegram XI Sniper]", tgRes);
     } catch (e) {
       console.warn(`::warning title=Telegram XI Sniper not delivered::${e?.message || e}`);
@@ -682,15 +1381,19 @@ async function main() {
   const backupObj = JSON.parse(eng.exportBackup());
   backupObj.synced_by = "github_actions_auto_bot";
   backupObj.usage = eng.getUsage();
+  backupObj.emoji_cache = emojiPack.cache;
   fs.writeFileSync(MEMORY_PATH, JSON.stringify(backupObj, null, 2), "utf8");
 
   const compactPick = (a, m) => ({
     match_id: a.match_id,
+    league_id: a.league_id || "",
     league: a.league_name,
     league_emoji: a.league_emoji || eng.getLeagueEmoji(a.league_name, a.country_code),
     country_code: a.country_code || "",
+    home_id: a.home.id || "",
     home: a.home.name,
     home_flag: a.home.flag || eng.getTeamFlag(a.home.name, a.league_name, a.country_code),
+    away_id: a.away.id || "",
     away: a.away.name,
     away_flag: a.away.flag || eng.getTeamFlag(a.away.name, a.league_name, a.country_code),
     kickoff_utc: a.kickoff_utc,
@@ -718,10 +1421,13 @@ async function main() {
   });
   const highCorners1015 = (scanRes.high_corners_10_15 || []).slice(0, 3).map((c) => ({
     match_id: c.analysis.match_id,
+    league_id: c.analysis.league_id || "",
     league: c.analysis.league_name,
     league_emoji: c.analysis.league_emoji || eng.getLeagueEmoji(c.analysis.league_name, c.analysis.country_code),
+    home_id: c.analysis.home.id || "",
     home: c.analysis.home.name,
     home_flag: c.analysis.home.flag || eng.getTeamFlag(c.analysis.home.name, c.analysis.league_name, c.analysis.country_code),
+    away_id: c.analysis.away.id || "",
     away: c.analysis.away.name,
     away_flag: c.analysis.away.flag || eng.getTeamFlag(c.analysis.away.name, c.analysis.league_name, c.analysis.country_code),
     kickoff_dual: fmtKickoffDual(c.analysis.kickoff_utc),
@@ -793,9 +1499,29 @@ async function main() {
     "utf8"
   );
 
+  // 3b. Auto-generate & cache 100x100 custom emoji crests for any new teams/leagues in today's report
+  const toPrewarm = [
+    ...sniperPicks,
+    ...topAnchors,
+    ...(highCorners1015.length ? highCorners1015 : topCorners),
+    ...topBtts,
+    ...(autoParlay3?.legs || []),
+  ].map((x) => ({
+    leagueId: x.league_id,
+    leagueName: x.league,
+    leagueFallback: x.league_emoji,
+    homeId: x.home_id,
+    homeName: x.home,
+    homeFallback: x.home_flag,
+    awayId: x.away_id,
+    awayName: x.away,
+    awayFallback: x.away_flag,
+  }));
+  await emojiPack.prewarmBatch(toPrewarm);
+
   // 4. Build sleek, editorial, beginner-friendly Telegram HTML brief
   const lines = [];
-  lines.push(`⚽ <b>ENGINE BOLA · DAILY RADAR</b>`);
+  lines.push(`${emojiPack.uiIcon("ball", "⚽")} <b>ENGINE BOLA · DAILY RADAR</b>`);
   lines.push(`<i>${escHtml(fmtDateIndo(now))} · ${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB</i>`);
 
   // Compact executive recap (never clutters the channel with verbose debug logs)
@@ -805,7 +1531,7 @@ async function main() {
     const nl = newlySettled.filter((p) => p.status === "LOST" || p.status === "HALF_LOST").length;
     const np = newlySettled.filter((p) => p.status === "PUSH").length;
     const rec = [
-      `📊 <b>REKAP HASIL SEMALAM (${newlySettled.length} Laga)</b>`,
+      `${emojiPack.uiIcon("chart", "📊")} <b>REKAP HASIL SEMALAM (${newlySettled.length} Laga)</b>`,
       `Menang <b>${nw}</b> · Seri/Refund <b>${np}</b> · Kalah <b>${nl}</b>`,
       `<i>Model otomatis mengevaluasi hasil &amp; memperbarui kalibrasi. Rincian lengkap 5W1H tersedia di VIP Dashboard.</i>`,
     ];
@@ -813,15 +1539,15 @@ async function main() {
     lines.push(`<blockquote>${rec.join("\n")}</blockquote>`);
   } else if (s.settled > 0) {
     lines.push("");
-    lines.push(`<blockquote>📊 <b>REKAM JEJAK MODEL</b>\nAkurasi: <b>${s.hit_rate}%</b> (${s.wins} Menang · ${s.pushes} Seri · ${s.losses} Kalah)</blockquote>`);
+    lines.push(`<blockquote>${emojiPack.uiIcon("chart", "📊")} <b>REKAM JEJAK MODEL</b>\nAkurasi: <b>${s.hit_rate}%</b> (${s.wins} Menang · ${s.pushes} Seri · ${s.losses} Kalah)</blockquote>`);
   }
 
   // Helper to render one clean editorial match card
   const renderPickCard = (p, idx, isSniper = false) => {
     const info = humanizeMarket(p.market_key, p.market, p.home, p.away);
-    const lgEm = p.league_emoji || eng.getLeagueEmoji(p.league, p.country_code);
-    const hFlag = p.home_flag || eng.getTeamFlag(p.home, p.league, p.country_code);
-    const aFlag = p.away_flag || eng.getTeamFlag(p.away, p.league, p.country_code);
+    const lgEm = emojiPack.leagueIcon(p.league_id, p.league, p.league_emoji || eng.getLeagueEmoji(p.league, p.country_code));
+    const hFlag = emojiPack.teamIcon(p.home_id, p.home, p.home_flag || eng.getTeamFlag(p.home, p.league, p.country_code));
+    const aFlag = emojiPack.teamIcon(p.away_id, p.away, p.away_flag || eng.getTeamFlag(p.away, p.league, p.country_code));
     const xiLine = p.xi_confirmed
       ? `Susunan Pemain: <b>Resmi Terkonfirmasi ✓</b>`
       : `Susunan Pemain: <i>Menunggu rilis resmi (T-60' sebelum kickoff)</i>`;
@@ -836,7 +1562,7 @@ async function main() {
     ];
     if (p.xi_shift && p.xi_shift.changed && p.xi_shift.before) {
       const bInfo = humanizeMarket(p.xi_shift.before.market_key, p.xi_shift.before.market_label, p.home, p.away);
-      card.push(`▸ 🔄 <b>XI Shift:</b> <s>${escHtml(bInfo.title)}</s> → <b>${escHtml(info.title)}</b> (<i>${escHtml(p.xi_shift.why)}</i>)`);
+      card.push(`▸ ${emojiPack.uiIcon("shift", "🔄")} <b>XI Shift:</b> <s>${escHtml(bInfo.title)}</s> → <b>${escHtml(info.title)}</b> (<i>${escHtml(p.xi_shift.why)}</i>)`);
     }
     if (info.explain) {
       card.push(`▸ Arti Singkat: <i>${escHtml(info.explain)}</i>`);
@@ -852,7 +1578,7 @@ async function main() {
 
   if (sniperPicks.length) {
     lines.push("");
-    lines.push(`🎯 <b>PILIHAN UTAMA · AKURASI TINGGI</b>`);
+    lines.push(`${emojiPack.uiIcon("target", "🎯")} <b>PILIHAN UTAMA · AKURASI TINGGI</b>`);
     lines.push(`<i>Seleksi paling ketat — fokus peluang tertinggi &amp; proteksi modal.</i>`);
     sniperPicks.forEach((p, idx) => {
       lines.push("");
@@ -861,7 +1587,7 @@ async function main() {
   }
 
   lines.push("");
-  lines.push(`📡 <b>ANALISIS PILIHAN HARI INI</b>`);
+  lines.push(`${emojiPack.uiIcon("radar", "📡")} <b>ANALISIS PILIHAN HARI INI</b>`);
   lines.push(`<i>Disaring dari ${scanRes.scanned} pertandingan prioritas hari ini.</i>`);
   if (!topAnchors.length) {
     lines.push("");
@@ -875,7 +1601,7 @@ async function main() {
 
   if (highCorners1015.length) {
     lines.push("");
-    lines.push(`🚩 <b>RADAR CORNERS TINGGI (10–15+ CORNERS)</b>`);
+    lines.push(`${emojiPack.uiIcon("corner", "🚩")} <b>RADAR CORNERS TINGGI (10–15+ CORNERS)</b>`);
     lines.push(`<i>Laga dengan intensitas serangan sayap &amp; potensi tendangan sudut tinggi.</i>`);
     const cRows = highCorners1015.map((c) => {
       const tiers = [
@@ -885,16 +1611,22 @@ async function main() {
       ];
       if (c.p_over_13_5 >= 35) tiers.push(`Over (13.5) <b>${Math.round(c.p_over_13_5)}%</b>`);
       if (c.p_over_14_5 >= 30) tiers.push(`Over (14.5) <b>${Math.round(c.p_over_14_5)}%</b>`);
-      return `${c.home_flag} <b>${escHtml(c.home)} vs ${c.away_flag} ${escHtml(c.away)}</b> · ${c.league_emoji} <i>${escHtml(c.league)}</i>\nEst. <b>~${Math.round(c.total_corners_lambda)} corners</b> → ${tiers.join(" · ")}`;
+      const hf = emojiPack.teamIcon(c.home_id, c.home, c.home_flag);
+      const af = emojiPack.teamIcon(c.away_id, c.away, c.away_flag);
+      const lg = emojiPack.leagueIcon(c.league_id, c.league, c.league_emoji);
+      return `${hf} <b>${escHtml(c.home)} vs ${af} ${escHtml(c.away)}</b> · ${lg} <i>${escHtml(c.league)}</i>\nEst. <b>~${Math.round(c.total_corners_lambda)} corners</b> → ${tiers.join(" · ")}`;
     });
     lines.push("");
     lines.push(`<blockquote>${cRows.join("\n—\n")}</blockquote>`);
   } else if (topCorners.length) {
     lines.push("");
-    lines.push(`🚩 <b>PILIHAN CORNERS TERBAIK</b>`);
+    lines.push(`${emojiPack.uiIcon("corner", "🚩")} <b>PILIHAN CORNERS TERBAIK</b>`);
     const cRows = topCorners.map((c) => {
       const info = humanizeMarket(c.market_key, c.market, c.home, c.away);
-      return `• ${c.home_flag} <b>${escHtml(c.home)} vs ${c.away_flag} ${escHtml(c.away)}</b> (${c.league_emoji} ${escHtml(c.league)}) — <b>${escHtml(info.title)}</b> (<b>${Math.round(c.model_prob)}%</b>)`;
+      const hf = emojiPack.teamIcon(c.home_id, c.home, c.home_flag);
+      const af = emojiPack.teamIcon(c.away_id, c.away, c.away_flag);
+      const lg = emojiPack.leagueIcon(c.league_id, c.league, c.league_emoji);
+      return `• ${hf} <b>${escHtml(c.home)} vs ${af} ${escHtml(c.away)}</b> (${lg} ${escHtml(c.league)}) — <b>${escHtml(info.title)}</b> (<b>${Math.round(c.model_prob)}%</b>)`;
     });
     lines.push("");
     lines.push(`<blockquote>${cRows.join("\n")}</blockquote>`);
@@ -902,33 +1634,39 @@ async function main() {
 
   if (topBtts.length) {
     lines.push("");
-    lines.push(`🔥 <b>BOTH TEAMS TO SCORE (BTTS)</b>`);
+    lines.push(`${emojiPack.uiIcon("fire", "🔥")} <b>BOTH TEAMS TO SCORE (BTTS)</b>`);
     const bRows = topBtts.map((b) => {
       const info = humanizeMarket(b.market_key, b.market, b.home, b.away);
-      return `• ${b.home_flag} <b>${escHtml(b.home)} vs ${b.away_flag} ${escHtml(b.away)}</b> (${b.league_emoji} ${escHtml(b.league)}) — <b>${escHtml(info.title)}</b> (<b>${Math.round(b.model_prob)}%</b>)`;
+      const hf = emojiPack.teamIcon(b.home_id, b.home, b.home_flag);
+      const af = emojiPack.teamIcon(b.away_id, b.away, b.away_flag);
+      const lg = emojiPack.leagueIcon(b.league_id, b.league, b.league_emoji);
+      return `• ${hf} <b>${escHtml(b.home)} vs ${af} ${escHtml(b.away)}</b> (${lg} ${escHtml(b.league)}) — <b>${escHtml(info.title)}</b> (<b>${Math.round(b.model_prob)}%</b>)`;
     });
     lines.push("");
     lines.push(`<blockquote>${bRows.join("\n")}</blockquote>`);
   }
 
-  // Append compact 3-Leg Auto-Parlay Safe only if final message remains under 3850 chars (1 single Telegram message!)
+  // Append compact 3-Leg Auto-Parlay Safe only if final visible message remains under 3850 chars (1 single Telegram message!)
   if (autoParlay3 && autoParlay3.legs && autoParlay3.legs.length >= 3) {
     const pRows = autoParlay3.legs.map((l) => {
       const info = humanizeMarket(l.market.key, l.market.label, l.home, l.away);
-      return `${l.index}. ${l.home_flag} <b>${escHtml(l.home)} vs ${l.away_flag} ${escHtml(l.away)}</b> (${l.league_emoji} ${escHtml(l.league)})\n   ▸ <b>${escHtml(info.title)}</b> (${Math.round(l.market.model_prob)}% · ${l.used_odds}x)`;
+      const hf = emojiPack.teamIcon(l.home_id, l.home, l.home_flag);
+      const af = emojiPack.teamIcon(l.away_id, l.away, l.away_flag);
+      const lg = emojiPack.leagueIcon(l.league_id, l.league, l.league_emoji);
+      return `${l.index}. ${hf} <b>${escHtml(l.home)} vs ${af} ${escHtml(l.away)}</b> (${lg} ${escHtml(l.league)})\n   ▸ <b>${escHtml(info.title)}</b> (${Math.round(l.market.model_prob)}% · ${l.used_odds}x)`;
     });
     const parlayBlock = [
       ``,
-      `🎟️ <b>AUTO-PARLAY 3-LEG SAFE</b> · Total <b>${autoParlay3.combined_odds.toFixed(2)}x</b> (Win <b>${autoParlay3.combined_win_prob}%</b>)`,
+      `${emojiPack.uiIcon("ticket", "🎟️")} <b>AUTO-PARLAY 3-LEG SAFE</b> · Total <b>${autoParlay3.combined_odds.toFixed(2)}x</b> (Win <b>${autoParlay3.combined_win_prob}%</b>)`,
       `<blockquote>${pRows.join("\n")}</blockquote>`,
     ].join("\n");
-    if ((lines.join("\n").length + parlayBlock.length + 180) < 3850) {
+    if ((visibleTextLen(lines.join("\n")) + visibleTextLen(parlayBlock) + 220) < 3850) {
       lines.push(parlayBlock);
     }
   }
 
   lines.push("");
-  lines.push(`<i>Catatan: Analisis bertanda "Menunggu rilis resmi" belum menyertakan daftar pemain starter. Update otomatis dikirim 1 jam sebelum kickoff saat Starting XI resmi keluar — termasuk penanda 🔄 jika prediksi berubah.</i>`);
+  lines.push(`<i>Catatan: Analisis bertanda "Menunggu rilis resmi" belum menyertakan daftar pemain starter. Update otomatis dikirim 1 jam sebelum kickoff saat Starting XI resmi keluar — termasuk penanda ${emojiPack.uiIcon("shift", "🔄")} jika prediksi berubah.</i>`);
 
   // Technical calibration metrics stay in stdout logs (not cluttering public channel)
   const fp = analytics.weights.factor_penalties || {};
@@ -937,13 +1675,11 @@ async function main() {
   const msg = lines.join("\n");
   try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), msg); } catch {}
 
-  const targetChatIds = await resolveTelegramTargets();
-
   let tgRes;
   try {
     tgRes = await sendTelegram(
-      (process.env.TELEGRAM_BOT_TOKEN || "").trim(),
-      targetChatIds,
+      tgToken,
+      tgCtx.targetChatIds,
       msg
     );
   } catch (e) {
