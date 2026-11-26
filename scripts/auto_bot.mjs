@@ -872,7 +872,14 @@ async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null,
 
   const richChunks = chunkTelegramHtml(htmlText);
   const chanChunks = channelFallbackHtml ? chunkTelegramHtml(channelFallbackHtml) : richChunks;
-  const disableChannelCustom = String(process.env.DISABLE_CHANNEL_CUSTOM_EMOJI || "").toLowerCase() === "true";
+  const forceChannelCustom = String(process.env.FORCE_CHANNEL_CUSTOM_EMOJI || "").toLowerCase() === "true";
+  const hasPremiumPublisher = Boolean(
+    String(process.env.TG_API_ID || "").trim() &&
+    String(process.env.TG_API_HASH || "").trim() &&
+    String(process.env.TG_SESSION_STRING || "").trim()
+  );
+  const pendingPath = path.join(DATA_DIR, "pending_channel_post.json");
+  const delegatedChannels = [];
 
   const results = [];
   for (let rIdx = 0; rIdx < chatIds.length; rIdx++) {
@@ -890,7 +897,13 @@ async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null,
       }
     }
     const isBroadcastChannel = chatType === "channel" || (!chatType && targetId.startsWith("@"));
-    const useChannelFallback = isBroadcastChannel && disableChannelCustom && !!channelFallbackHtml;
+    if (isBroadcastChannel && hasPremiumPublisher) {
+      delegatedChannels.push(targetId);
+      results.push({ recipient: rIdx + 1, type: "channel", mode: "delegated_to_premium_mtproto", ok: true });
+      console.log(`[PremiumPublisher Handoff] Queued ${targetId} for FULL club-crest MTProto channel publish (auto-forwards full crests to Discussion Group).`);
+      continue;
+    }
+    const useChannelFallback = isBroadcastChannel && !forceChannelCustom && !!channelFallbackHtml;
     const chunks = useChannelFallback ? chanChunks : richChunks;
     let recipientOk = true;
     let lastErr = null;
@@ -952,11 +965,30 @@ async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null,
     if (rIdx < chatIds.length - 1) await sleep(1200);
   }
 
+  if (delegatedChannels.length) {
+    try {
+      fs.writeFileSync(
+        pendingPath,
+        JSON.stringify({
+          created_at: new Date().toISOString(),
+          targets: delegatedChannels,
+          dashboard_url: DASHBOARD_URL,
+          html: htmlText,
+        }, null, 2),
+        "utf8"
+      );
+    } catch (e) {
+      console.warn(`[PremiumPublisher Handoff] Failed to write pending payload: ${e?.message || e}`);
+    }
+  } else if (fs.existsSync(pendingPath)) {
+    try { fs.unlinkSync(pendingPath); } catch {}
+  }
+
   const delivered = results.filter((r) => r.ok).length;
   if (delivered === 0) {
     throw new Error(`Telegram sendMessage failed for all ${chatIds.length} recipient(s): ${results[0]?.error || "unknown"}`);
   }
-  return { ok: delivered === chatIds.length, delivered, total: chatIds.length, results };
+  return { ok: delivered === chatIds.length, delivered, total: chatIds.length, delegated_channels: delegatedChannels, results };
 }
 
 function rcShort(code) {
