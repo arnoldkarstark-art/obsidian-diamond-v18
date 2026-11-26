@@ -97,13 +97,14 @@ html, body {
   position: sticky;
   top: 0;
   z-index: 40;
-  height: 60px;
-  padding: 0 20px;
+  min-height: 60px;
+  height: auto;
+  padding: 8px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  background: rgba(6, 11, 20, 0.72);
+  gap: 12px;
+  background: rgba(6, 11, 20, 0.78);
   backdrop-filter: blur(26px) saturate(165%);
   -webkit-backdrop-filter: blur(26px) saturate(165%);
   border-bottom: 1px solid var(--border-hairline);
@@ -112,8 +113,17 @@ html, body {
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 10px;
+  flex-shrink: 0;
   min-width: 0;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .brand-mark {
@@ -144,6 +154,7 @@ html, body {
   display: flex;
   flex-direction: column;
   line-height: 1.08;
+  flex-shrink: 0;
 }
 
 .brand-title {
@@ -152,12 +163,14 @@ html, body {
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--ink-primary);
+  white-space: nowrap;
 }
 
 .brand-sub {
   font-size: 10.5px;
   color: var(--ink-tertiary);
   letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 /* Official Telegram Channel Pill in Topbar */
@@ -166,7 +179,7 @@ html, body {
   align-items: center;
   gap: 6px;
   padding: 5px 11px;
-  margin-left: 4px;
+  margin-left: 2px;
   border-radius: var(--radius-pill);
   background: rgba(56, 217, 255, 0.10);
   border: 1px solid rgba(56, 217, 255, 0.24);
@@ -176,6 +189,7 @@ html, body {
   font-weight: 600;
   letter-spacing: 0.01em;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: transform 200ms var(--ease-spring), background 180ms ease, border-color 180ms ease, color 180ms ease;
 }
 .channel-pill svg {
@@ -201,6 +215,8 @@ html, body {
 /* Apple Segmented Navigation */
 .segmented-nav {
   display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-hairline);
   border-radius: 10px;
@@ -214,14 +230,17 @@ html, body {
   background: transparent;
   color: var(--ink-secondary);
   font-family: inherit;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
-  padding: 6px 14px;
+  padding: 6px 12px;
   border-radius: 7px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: background 150ms ease, color 150ms ease;
 }
 
@@ -235,7 +254,7 @@ html, body {
 
 .count-chip {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10.5px;
   padding: 1px 6px;
   border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.14);
@@ -249,11 +268,13 @@ html, body {
   border-radius: var(--radius-pill);
   color: var(--ink-secondary);
   font-family: inherit;
-  font-size: 12px;
-  padding: 6px 12px;
+  font-size: 11.5px;
+  padding: 6px 11px;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
   cursor: pointer;
   transition: background 150ms ease, border-color 150ms ease;
 }
@@ -2972,7 +2993,102 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   border-color: rgba(56, 217, 255, 0.3);
 }
 
+/* ---- Cross-Platform Real Flag Images (FlagCDN) & Official League Logos (Windows/macOS/Mobile) ---- */
+.flag-img {
+  width: 17px;
+  height: 12px;
+  object-fit: cover;
+  border-radius: 2.5px;
+  display: inline-block;
+  vertical-align: -1.5px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
+  flex-shrink: 0;
+}
+.flag-chip-lg .flag-img {
+  width: 20px;
+  height: 14px;
+  border-radius: 3px;
+  vertical-align: -2px;
+}
+.league-logo-img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: -2.5px;
+  flex-shrink: 0;
+}
+.flag-chip, .league-emoji {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  vertical-align: middle;
+}
+
+/* ---- Zoom-Proof & Mobile-Safe Progressive Topbar Breakpoints ---- */
+/* 110%–125% desktop zoom / 1280px–1420px laptops */
+@media (max-width: 1420px) {
+  .topbar { padding: 8px 14px; gap: 10px; }
+  .dual-clock { display: none; }
+  .brand-sub { display: none; }
+  .seg-btn { padding: 6px 10px; font-size: 12px; }
+}
+
+/* 125%–175% desktop zoom / laptops with Owner|Lock visible (clean 2-row topbar, ZERO overlap!) */
+@media (max-width: 1280px) {
+  .topbar {
+    flex-wrap: wrap;
+    padding: 9px 14px;
+    row-gap: 8px;
+    column-gap: 10px;
+  }
+  .topbar-left { flex: 1 1 auto; }
+  .topbar-right { flex: 0 0 auto; }
+  .segmented-nav {
+    order: 3;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .seg-btn {
+    padding: 7px 6px;
+    font-size: 12px;
+  }
+  .workspace {
+    height: auto;
+    min-height: calc(100vh - 104px);
+  }
+}
+
+/* Mobile phones & 200%+ zoom */
 @media (max-width: 780px) {
+  .topbar {
+    padding: 8px 10px;
+    row-gap: 7px;
+    column-gap: 6px;
+  }
+  .brand-mark { width: 30px; height: 30px; }
+  .brand-title { font-size: 13px; }
+  .channel-pill {
+    padding: 4px 8px;
+    font-size: 10.5px;
+    gap: 4px;
+  }
+  .topbar-right { gap: 5px; }
+  .status-trigger {
+    padding: 5px 8px;
+    font-size: 10.5px;
+    gap: 5px;
+  }
+  .seg-btn {
+    flex-direction: column;
+    gap: 2px;
+    padding: 5px 2px;
+    font-size: 9.5px;
+    line-height: 1.1;
+  }
+  .nav-ico { font-size: 12px; }
+  .nav-ico-radar .eb-radar-svg { width: 13px; height: 13px; }
   .xi-shift-compare {
     grid-template-columns: 1fr;
     gap: 8px;
@@ -2984,6 +3100,18 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   .xi-shift-explain {
     grid-template-columns: 1fr;
   }
+}
+
+/* Narrow phones (360px–460px) */
+@media (max-width: 480px) {
+  .topbar-left { gap: 7px; }
+  .channel-pill .channel-handle { display: none; }
+  .channel-pill { padding: 5px 7px; }
+  #btn-sources .sep,
+  #header-af-quota { display: none; }
+  .brand-title { font-size: 12.5px; }
+  .seg-btn { font-size: 9px; padding: 5px 1px; }
+  .seg-btn .count-chip { font-size: 8.5px; padding: 0 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3635,7 +3763,7 @@ const ObsidianEngine = (() => {
 
   // ---- Global Team Flag & League Representative Emoji Engine ----
   const ISO3_TO_FLAG = {
-    ENG: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", SCO: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", WAL: "🏴󠁧󠁢󠁷󠁬󠁳󠁿", NIR: "🇬🇧", GBR: "🇬🇧",
+    ENG: "\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}", SCO: "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}", WAL: "\u{1F3F4}\u{E0067}\u{E0062}\u{E0077}\u{E006C}\u{E0073}\u{E007F}", NIR: "🇬🇧", GBR: "🇬🇧",
     ESP: "🇪🇸", ITA: "🇮🇹", GER: "🇩🇪", DEU: "🇩🇪", FRA: "🇫🇷", NED: "🇳🇱", NLD: "🇳🇱",
     POR: "🇵🇹", PRT: "🇵🇹", BEL: "🇧🇪", TUR: "🇹🇷", SUI: "🇨🇭", CHE: "🇨🇭", AUT: "🇦🇹",
     DEN: "🇩🇰", DNK: "🇩🇰", SWE: "🇸🇪", NOR: "🇳🇴", FIN: "🇫🇮", ISL: "🇮🇸", IRL: "🇮🇪",
@@ -3683,7 +3811,7 @@ const ObsidianEngine = (() => {
     const flag = countryCodeToFlag(cc);
     if (flag && cc !== "INT") return flag;
     const kwMap = [
-      [/premier league|championship|league one|league two|fa cup|efl|carabao|national league/, "🏴󠁧󠁢󠁥󠁮󠁧󠁿"],
+      [/premier league|championship|league one|league two|fa cup|efl|carabao|national league/, "\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}"],
       [/la liga|laliga|segunda federacion|copa del rey|copa de la reina|primera federacion/, "🇪🇸"],
       [/serie a|serie b|serie c|coppa italia/, ln.includes("série") || ln.includes("brasileir") ? "🇧🇷" : "🇮🇹"],
       [/bundesliga|dfb|regionalliga/, "🇩🇪"],
@@ -3691,7 +3819,7 @@ const ObsidianEngine = (() => {
       [/eredivisie|eerste divisie|knvb/, "🇳🇱"],
       [/primeira liga|liga portugal|taça/, "🇵🇹"],
       [/süper lig|super lig|turkish/, "🇹🇷"],
-      [/premiership|highland|lowland|scottish/, "🏴󠁧󠁢󠁳󠁣󠁴󠁿"],
+      [/premiership|highland|lowland|scottish/, "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}"],
       [/pro league|belgian|jupiler/, "🇧🇪"],
       [/brasileir|série a|série b|copa do brasil|paulista|carioca/, "🇧🇷"],
       [/liga profesional|primera nacional|copa argentina/, "🇦🇷"],
@@ -3712,7 +3840,7 @@ const ObsidianEngine = (() => {
   }
 
   const NATION_TEAM_FLAGS = [
-    ["england", "🏴󠁧󠁢󠁥󠁮󠁧󠁿"], ["scotland", "🏴󠁧󠁢󠁳󠁣󠁴󠁿"], ["wales", "🏴󠁧󠁢󠁷󠁬󠁳󠁿"], ["northern ireland", "🇬🇧"],
+    ["england", "\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}"], ["scotland", "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}"], ["wales", "\u{1F3F4}\u{E0067}\u{E0062}\u{E0077}\u{E006C}\u{E0073}\u{E007F}"], ["northern ireland", "🇬🇧"],
     ["spain", "🇪🇸"], ["italy", "🇮🇹"], ["germany", "🇩🇪"], ["france", "🇫🇷"], ["netherlands", "🇳🇱"],
     ["portugal", "🇵🇹"], ["belgium", "🇧🇪"], ["turkey", "🇹🇷"], ["türkiye", "🇹🇷"], ["switzerland", "🇨🇭"],
     ["austria", "🇦🇹"], ["denmark", "🇩🇰"], ["sweden", "🇸🇪"], ["norway", "🇳🇴"], ["finland", "🇫🇮"],
@@ -3733,7 +3861,7 @@ const ObsidianEngine = (() => {
   ];
 
   const CLUB_COUNTRY_RULES = [
-    [/arsenal|chelsea|liverpool|manchester|tottenham|newcastle|aston villa|brighton|west ham|crystal palace|bournemouth|fulham|brentford|nottingham|everton|wolves|wolverhampton|leicester|southampton|ipswich|leeds|burnley|sunderland|stoke|millwall|watford|blackburn|west brom|bolton|birmingham|sheffield|coventry|middlesbrough|norwich|bristol|hull|luton|preston|derby|portsmouth|cardiff|swansea|plymouth|oxford|qpr/, "🏴󠁧󠁢󠁥󠁮󠁧󠁿"],
+    [/arsenal|chelsea|liverpool|manchester|tottenham|newcastle|aston villa|brighton|west ham|crystal palace|bournemouth|fulham|brentford|nottingham|everton|wolves|wolverhampton|leicester|southampton|ipswich|leeds|burnley|sunderland|stoke|millwall|watford|blackburn|west brom|bolton|birmingham|sheffield|coventry|middlesbrough|norwich|bristol|hull|luton|preston|derby|portsmouth|cardiff|swansea|plymouth|oxford|qpr/, "\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}"],
     [/real madrid|barcelona|atlético madrid|atletico madrid|villarreal|real sociedad|athletic club|athletic bilbao|real betis|sevilla|valencia|girona|celta|mallorca|osasuna|getafe|rayo vallecano|espanyol|alaves|las palmas|valladolid|leganes|talavera|huelva/, "🇪🇸"],
     [/inter\b|internazionale|ac milan|\bmilan\b|juventus|napoli|atalanta|roma|lazio|fiorentina|bologna|torino|udinese|genoa|cagliari|empoli|parma|verona|lecce|monza|como|venezia|cremonese|avellino|palermo|sampdoria|sassuolo|spezia|pisa|bari|brescia|modena|cesena/, "🇮🇹"],
     [/bayern|dortmund|leverkusen|rb leipzig|leipzig|stuttgart|frankfurt|freiburg|hoffenheim|wolfsburg|werder bremen|gladbach|mainz|augsburg|union berlin|heidenheim|bochum|st\.?\s*pauli|kiel|hamburg|schalke|köln|koln|hertha|nürnberg/, "🇩🇪"],
@@ -3742,7 +3870,7 @@ const ObsidianEngine = (() => {
     [/benfica|porto|sporting cp|sporting lisbon|braga|vitoria guimaraes|famalicao|boavista|estoril|rio ave|gil vicente/, "🇵🇹"],
     [/club brugge|anderlecht|union st|st\.?\s*gilloise|genk|gent|antwerp|standard liege|mechelen|charleroi|westerlo/, "🇧🇪"],
     [/galatasaray|fenerbahçe|fenerbahce|beşiktaş|besiktas|trabzonspor|başakşehir|basaksehir|samsunspor|kasımpaşa|göztepe|antalyaspor|konyaspor|sivasspor/, "🇹🇷"],
-    [/celtic|rangers|aberdeen|hearts|hibernian|dundee|kilmarnock|motherwell|st mirren|inverurie|buckie/, "🏴󠁧󠁢󠁳󠁣󠁴󠁿"],
+    [/celtic|rangers|aberdeen|hearts|hibernian|dundee|kilmarnock|motherwell|st mirren|inverurie|buckie/, "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}"],
     [/shakhtar|dynamo kyiv|dnipro|zorya|kryvbas/, "🇺🇦"],
     [/slavia prague|sparta prague|viktoria plzen|plzeň|banik ostrava/, "🇨🇿"],
     [/salzburg|sturm graz|rapid wien|austria wien|lask/, "🇦🇹"],
@@ -6588,11 +6716,83 @@ function getAllSlateMatchesFlat() {
   return out;
 }
 
-function lgEmojiOf(lgName, cc, pre) {
+const KNOWN_LEAGUE_LOGO_IDS = [
+  [/champions league/i, 42, /(afc|concacaf|caf|asia|women)/i],
+  [/europa league/i, 73, null],
+  [/conference league/i, 10216, null],
+  [/premier league/i, 47, /(russia|egypt|scot|ukraine|israel|armenia|belarus|kazakh|wales|northern)/i],
+  [/championship/i, 48, /(scot|usl|women)/i],
+  [/la ?liga\b/i, 87, /(2|hypermotion)/i],
+  [/serie a\b/i, 55, /(brasil|ecuador|women)/i],
+  [/bundesliga\b/i, 54, /(2\.|austria|women)/i],
+  [/ligue 1\b/i, 53, /(tunisia|algeria|ivory)/i],
+  [/eredivisie/i, 57, null],
+  [/liga portugal|primeira liga/i, 61, null],
+  [/s[uü]per lig/i, 71, null],
+  [/mls|major league soccer/i, 130, null],
+  [/saudi pro|roshn saudi/i, 536, null],
+  [/world cup/i, 77, /(u17|u20|women|qual)/i],
+  [/nations league/i, 9806, null],
+  [/copa libertadores/i, 45, null],
+  [/brasileir[aã]o|serie a.*brasil/i, 268, null],
+  [/liga profesional/i, 112, null],
+];
+
+function emojiFlagToIso2(str) {
+  const s = String(str || "");
+  if (!s) return null;
+  // UK subdivision tag flags (England / Scotland / Wales) -> FlagCDN codes
+  if (s.includes("\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}")) return "gb-eng";
+  if (s.includes("\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}")) return "gb-sct";
+  if (s.includes("\u{1F3F4}\u{E0067}\u{E0062}\u{E0077}\u{E006C}\u{E0073}")) return "gb-wls";
+  // Standard 2-letter regional indicator pairs (e.g. FR, IT, ES, DE, EU, ID, AM)
+  const cps = [...s].map((ch) => ch.codePointAt(0));
+  for (let i = 0; i < cps.length - 1; i++) {
+    const a = cps[i], b = cps[i + 1];
+    if (a >= 0x1F1E6 && a <= 0x1F1FF && b >= 0x1F1E6 && b <= 0x1F1FF) {
+      return String.fromCharCode(97 + (a - 0x1F1E6), 97 + (b - 0x1F1E6));
+    }
+  }
+  return null;
+}
+
+function renderFlagImgOrEmoji(emojiStr, fallback = "⚽") {
+  const iso2 = emojiFlagToIso2(emojiStr);
+  if (iso2) {
+    return `<img class="flag-img" src="https://flagcdn.com/w40/${iso2}.png" srcset="https://flagcdn.com/w80/${iso2}.png 2x" alt="${iso2.toUpperCase()}" decoding="async" onerror="this.replaceWith(document.createTextNode('${fallback}'))" />`;
+  }
+  return esc(emojiStr || fallback);
+}
+
+function rawLgEmojiOf(lgName, cc, pre) {
   return pre || (ObsidianEngine.getLeagueEmoji ? ObsidianEngine.getLeagueEmoji(lgName || "", cc || "") : "⚽");
 }
-function teamFlagOf(teamName, lgName, cc, pre) {
+function rawTeamFlagOf(teamName, lgName, cc, pre) {
   return pre || (ObsidianEngine.getTeamFlag ? ObsidianEngine.getTeamFlag(teamName || "", lgName || "", cc || "") : "⚽");
+}
+function lgEmojiOf(lgName, cc, pre, lgId = "") {
+  const raw = rawLgEmojiOf(lgName, cc, pre);
+  // 1. Official FotMob dark-mode league logo if league_id is numeric or matches major competition
+  let idNum = /^\d+$/.test(String(lgId || "")) ? String(lgId) : "";
+  if (!idNum && lgName) {
+    const hit = KNOWN_LEAGUE_LOGO_IDS.find(([rx, _id, excl]) => rx.test(lgName) && (!excl || !excl.test(lgName)));
+    if (hit) idNum = String(hit[1]);
+  }
+  if (idNum) {
+    const fbIso = emojiFlagToIso2(raw);
+    const onErr = fbIso
+      ? `this.onerror=null;this.className='flag-img';this.src='https://flagcdn.com/w40/${fbIso}.png'`
+      : `this.replaceWith(document.createTextNode('🏆'))`;
+    return `<img class="league-logo-img" src="https://images.fotmob.com/image_resources/logo/leaguelogo/dark/${idNum}.png" alt="" decoding="async" onerror="${onErr}" />`;
+  }
+  // 2. Otherwise convert any regional/subdivision flag emoji inside `raw` into crisp FlagCDN image
+  const iso2 = emojiFlagToIso2(raw);
+  if (iso2) return renderFlagImgOrEmoji(raw, "🏆");
+  return esc(raw);
+}
+function teamFlagOf(teamName, lgName, cc, pre) {
+  const raw = rawTeamFlagOf(teamName, lgName, cc, pre);
+  return renderFlagImgOrEmoji(raw, "⚽");
 }
 function getSavedShiftForMatch(matchId) {
   try {
@@ -6684,7 +6884,7 @@ function renderMatchesList() {
     });
     if (!filtered.length) continue;
     visibleCount += filtered.length;
-    const lgEm = lgEmojiOf(lg.league_name, lg.country_code, lg.league_emoji);
+    const lgEm = lgEmojiOf(lg.league_name, lg.country_code, lg.league_emoji, lg.league_id);
 
     const rowsHtml = filtered.map((m) => {
       const isSelected = state.selectedMatchId === m.match_id;
@@ -6792,7 +6992,7 @@ function renderAnalysis(a) {
   const scoreDisplay = (a.is_live || a.finished) && a.home.score !== null ? `${a.home.score} – ${a.away.score}` : "vs";
   const stateBadge = a.is_live ? `<span class="tag tag-coral">LIVE ${a.live_minute ? a.live_minute + "'" : ""}</span>` : a.finished ? `<span class="tag">FULL TIME</span>` : `<span class="tag">${fmtKickoff(a.kickoff_utc)} · ${esc(a.match_date)}</span>`;
   const xiBadge = a.xi_confirmed ? `<span class="tag tag-emerald">CONFIRMED XI</span>` : `<span class="tag tag-amber">${esc(a.xi_status)}</span>`;
-  const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji);
+  const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji, a.league_id);
   const hFlag = teamFlagOf(a.home.name, a.league_name, a.country_code, a.home.flag);
   const aFlag = teamFlagOf(a.away.name, a.league_name, a.country_code, a.away.flag);
   const shiftCardHtml = renderXiShiftCard(a);
@@ -7165,7 +7365,7 @@ async function runDailyScanner() {
       <div class="surface-card" style="margin-bottom:18px;">
         <div class="card-head"><h2>${title}</h2><span class="tag ${badgeCls}">${items.length} plays</span></div>
         ${items.length ? `<div class="radar-cards-grid">${items.map(({ analysis: a, market: m }) => {
-          const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji);
+          const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji, a.league_id);
           const hFlag = teamFlagOf(a.home.name, a.league_name, a.country_code, a.home.flag);
           const aFlag = teamFlagOf(a.away.name, a.league_name, a.country_code, a.away.flag);
           const shiftPill = renderShiftPill(a.xi_shift || getSavedShiftForMatch(a.match_id));
@@ -7194,7 +7394,7 @@ async function runDailyScanner() {
         <div class="card-head"><h2>🔥 High-Volume Corners Radar (10–15+ Expected)</h2><span class="tag tag-gold">${highCorners.length} matches ≥10.5λ</span></div>
         ${highCorners.length ? `<div class="radar-cards-grid">${highCorners.map(c => {
           const a = c.analysis;
-          const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji);
+          const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji, a.league_id);
           const hFlag = teamFlagOf(a.home.name, a.league_name, a.country_code, a.home.flag);
           const aFlag = teamFlagOf(a.away.name, a.league_name, a.country_code, a.away.flag);
           return `
@@ -7238,7 +7438,7 @@ async function runDailyScanner() {
           <div class="card-head"><h2>Trap Games &amp; Veto Warnings</h2><span class="tag tag-coral">${res.traps.length} flagged</span></div>
           <div class="radar-cards-grid">
             ${res.traps.map(a => {
-              const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji);
+              const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji, a.league_id);
               const hFlag = teamFlagOf(a.home.name, a.league_name, a.country_code, a.home.flag);
               const aFlag = teamFlagOf(a.away.name, a.league_name, a.country_code, a.away.flag);
               return `
@@ -7463,7 +7663,7 @@ function renderAutoParlay() {
           ? `<span class="tag tag-emerald" style="font-size:10px;padding:1px 7px">XI✓ RESMI</span>`
           : `<span class="tag tag-gold" style="font-size:10px;padding:1px 7px">⏳ PRE-XI</span>`;
         const pushBit = m.push_prob > 0 ? ` · Shield ${m.push_prob}%` : "";
-        const lgEm = lgEmojiOf(leg.league, "", leg.league_emoji);
+        const lgEm = lgEmojiOf(leg.league, "", leg.league_emoji, leg.league_id);
         const hFlag = teamFlagOf(leg.home, leg.league, "", leg.home_flag);
         const aFlag = teamFlagOf(leg.away, leg.league, "", leg.away_flag);
         const shiftPill = renderShiftPill(leg.xi_shift || getSavedShiftForMatch(leg.match_id));
@@ -7570,9 +7770,9 @@ function copyAutoParlayTicket(ticket, stake, modeLabel) {
     `Stake: ${stake} -> Est. Payout: ${estPayout}`,
     `--------------------------------`,
     ...ticket.legs.map((l) => {
-      const lgEm = lgEmojiOf(l.league, "", l.league_emoji);
-      const hFlag = teamFlagOf(l.home, l.league, "", l.home_flag);
-      const aFlag = teamFlagOf(l.away, l.league, "", l.away_flag);
+      const lgEm = rawLgEmojiOf(l.league, "", l.league_emoji);
+      const hFlag = rawTeamFlagOf(l.home, l.league, "", l.home_flag);
+      const aFlag = rawTeamFlagOf(l.away, l.league, "", l.away_flag);
       return `${l.index}. ${hFlag} ${l.home} vs ${aFlag} ${l.away} (${lgEm} ${l.league})\n   Pick: ${l.market.label} | ${l.market.model_prob}% | ${l.odds_source === "LIVE" ? "Odds" : "Fair"} ${l.used_odds} | ${l.xi_confirmed ? "XI✓" : "Pre-XI"}`;
     }),
     `--------------------------------`,
