@@ -5258,9 +5258,12 @@ const ObsidianEngine = (() => {
       return {
         index: idx + 1,
         match_id: a.match_id,
+        league_id: a.league_id || "",
         league: a.league_name,
         league_emoji: a.league_emoji || getLeagueEmoji(a.league_name, a.country_code),
+        home_id: a.home.id || "",
         home: a.home.name,
+        away_id: a.away.id || "",
         away: a.away.name,
         home_flag: a.home.flag || getTeamFlag(a.home.name, a.league_name, a.country_code),
         away_flag: a.away.flag || getTeamFlag(a.away.name, a.league_name, a.country_code),
