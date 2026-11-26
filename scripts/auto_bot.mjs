@@ -802,12 +802,7 @@ async function createDynamicBadgeEngine({ token, ownerId, botUsername, basePack 
   };
 }
 
-async function sendTelegram(token, chatId, htmlText) {
-  if (!token || !chatId) {
-    console.log("TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set — printing message to stdout instead:\n" + htmlText);
-    return { skipped: true };
-  }
-  // Split cleanly on double-newlines using visible text length (Telegram counts parsed text, not <tg-emoji> HTML attributes)
+function chunkTelegramHtml(htmlText) {
   const chunks = [];
   if (visibleTextLen(htmlText) <= 3850 && htmlText.length <= 14000) {
     chunks.push(htmlText);
@@ -824,14 +819,24 @@ async function sendTelegram(token, chatId, htmlText) {
     }
     if (cur) chunks.push(cur);
   }
+  return chunks;
+}
+
+async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null) {
+  if (!token || !chatId) {
+    console.log("TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set — printing message to stdout instead:\n" + htmlText);
+    return { skipped: true };
+  }
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const cleanToken = String(token || "").replace(/^["']|["']$/g, "").trim();
-  const chatIds = String(chatId || "")
-    .replace(/^["']|["']$/g, "")
-    .split(/[\s,;]+/)
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const chatIds = [...new Set(
+    String(chatId || "")
+      .replace(/^["']|["']$/g, "")
+      .split(/[\s,;]+/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+  )];
 
   if (!chatIds.length) {
     console.log("TELEGRAM_CHAT_ID empty — skipping Telegram send.");
@@ -858,9 +863,16 @@ async function sendTelegram(token, chatId, htmlText) {
     if (String(e?.message || "").startsWith("Telegram token")) throw e;
   }
 
+  const richChunks = chunkTelegramHtml(htmlText);
+  const chanChunks = channelFallbackHtml ? chunkTelegramHtml(channelFallbackHtml) : richChunks;
+
   const results = [];
   for (let rIdx = 0; rIdx < chatIds.length; rIdx++) {
     const targetId = chatIds[rIdx];
+    // Broadcast channels (@channel) strip <tg-emoji> unless bot has Fragment username -> send clean rich-flag channel version;
+    // Private DMs & Groups/Supergroups render full <tg-emoji> club crests & league logos via Bot API 9.4 + Owner Premium!
+    const isPublicChannel = targetId.startsWith("@");
+    const chunks = (isPublicChannel && channelFallbackHtml) ? chanChunks : richChunks;
     let recipientOk = true;
     let lastErr = null;
     let stripCustomEmoji = false;
@@ -917,7 +929,7 @@ async function sendTelegram(token, chatId, htmlText) {
       }
       if (i < chunks.length - 1) await sleep(1200);
     }
-    results.push({ recipient: rIdx + 1, ok: recipientOk, custom_emoji_stripped: stripCustomEmoji, ...(lastErr ? { error: lastErr } : {}) });
+    results.push({ recipient: rIdx + 1, mode: isPublicChannel ? "channel_unicode" : "premium_custom_emoji", ok: recipientOk, custom_emoji_stripped: stripCustomEmoji, ...(lastErr ? { error: lastErr } : {}) });
     if (rIdx < chatIds.length - 1) await sleep(1200);
   }
 
@@ -925,7 +937,7 @@ async function sendTelegram(token, chatId, htmlText) {
   if (delivered === 0) {
     throw new Error(`Telegram sendMessage failed for all ${chatIds.length} recipient(s): ${results[0]?.error || "unknown"}`);
   }
-  return { ok: delivered === chatIds.length, delivered, total: chatIds.length, chunks: chunks.length };
+  return { ok: delivered === chatIds.length, delivered, total: chatIds.length, results };
 }
 
 function rcShort(code) {
@@ -1191,6 +1203,15 @@ async function main() {
       const numHit = targetChatIds.split(/[\s,;]+/).find((id) => /^\d{6,}$/.test(id.trim()));
       if (numHit) ownerId = numHit.trim();
     }
+    // Auto-mirror to Owner DM so Owner receives full Premium <tg-emoji> club crests & league logos (Bot API 9.4+)
+    if (ownerId && String(process.env.DISABLE_OWNER_DM_MIRROR || "").toLowerCase() !== "true") {
+      const list = targetChatIds.split(/[\s,;]+/).map((s) => s.trim()).filter(Boolean);
+      if (!list.includes(ownerId)) {
+        list.push(ownerId);
+        targetChatIds = list.join(",");
+        console.log("[Owner DM Mirror] Enabled full Premium custom-emoji copy to Owner DM alongside channel.");
+      }
+    }
     let botUsername = (process.env.TELEGRAM_BOT_USERNAME || "").trim();
     const tgTok = (process.env.TELEGRAM_BOT_TOKEN || "").replace(/^["']|["']$/g, "").trim();
     if (tgTok && !botUsername) {
@@ -1236,6 +1257,11 @@ async function main() {
     botUsername: tgCtx.botUsername,
     basePack,
   });
+  const plainEmojiPack = {
+    teamIcon: (_id, _name, fb) => fb,
+    leagueIcon: (_id, _name, fb) => fb,
+    uiIcon: (_key, fb) => fb,
+  };
   console.log(`[AutoBadge] Dynamic crest auto-gen: ${emojiPack.canUpload ? `ACTIVE (@${tgCtx.botUsername}, pack #${emojiPack.cache.pack_index})` : "OFF (dry-run or missing owner_id)"} | cached teams=${Object.keys(emojiPack.cache.teams).length}, leagues=${Object.keys(emojiPack.cache.leagues).length}`);
 
   // ---- STAGE 2: CONFIRMED-XI SNIPER MODE (T-75' to T-10' pre-kickoff window, zero spam) ----
@@ -1307,64 +1333,68 @@ async function main() {
     );
 
     const shiftedCount = confirmedAudits.filter((a) => a.xi_shift && a.xi_shift.changed).length;
-    const xiLines = [];
-    xiLines.push(`${emojiPack.uiIcon("ball", "⚽")} <b>ENGINE BOLA · UPDATE LINI PEMAIN RESMI</b>`);
-    xiLines.push(`<i>${escHtml(fmtDateIndo(now))} · ${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB</i>`);
-    xiLines.push(`<i>Susunan pemain (Starting XI) resmi telah terkonfirmasi untuk ${confirmedAudits.length} pertandingan berikut${shiftedCount ? ` · ${emojiPack.uiIcon("shift", "🔄")} <b>${shiftedCount} prediksi berubah pasca XI!</b>` : ""}:</i>`);
+    const buildXiMsg = (ep) => {
+      const xiLines = [];
+      xiLines.push(`${ep.uiIcon("ball", "⚽")} <b>ENGINE BOLA · UPDATE LINI PEMAIN RESMI</b>`);
+      xiLines.push(`<i>${escHtml(fmtDateIndo(now))} · ${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB</i>`);
+      xiLines.push(`<i>Susunan pemain (Starting XI) resmi telah terkonfirmasi untuk ${confirmedAudits.length} pertandingan berikut${shiftedCount ? ` · ${ep.uiIcon("shift", "🔄")} <b>${shiftedCount} prediksi berubah pasca XI!</b>` : ""}:</i>`);
 
-    confirmedAudits.forEach((a, idx) => {
-      const sp = a.verdict.sniper_pick;
-      const v = a.verdict;
-      const cm = a.corners_model;
-      const lgEm = emojiPack.leagueIcon(a.league_id, a.league_name, a.league_emoji || eng.getLeagueEmoji(a.league_name, a.country_code));
-      const hFlag = emojiPack.teamIcon(a.home.id, a.home.name, a.home.flag || eng.getTeamFlag(a.home.name, a.league_name, a.country_code));
-      const aFlag = emojiPack.teamIcon(a.away.id, a.away.name, a.away.flag || eng.getTeamFlag(a.away.name, a.league_name, a.country_code));
-      const priInfo = humanizeMarket(v.market_key, v.primary_bet, a.home.name, a.away.name);
-      const spInfo = sp ? humanizeMarket(sp.key, sp.label, a.home.name, a.away.name) : null;
-      const card = [
-        `<b>${idx + 1}. ${hFlag} ${escHtml(a.home.name)} vs ${aFlag} ${escHtml(a.away.name)}</b>`,
-        `${lgEm} ${escHtml(a.league_name)} · <code>${escHtml(fmtKickoffDual(a.kickoff_utc))}</code>`,
-        `Formasi Resmi: <b>${escHtml(a.home.formation)}</b> vs <b>${escHtml(a.away.formation)}</b>`,
-      ];
-      if (a.xi_shift && a.xi_shift.changed && a.xi_shift.before) {
-        const bInfo = humanizeMarket(a.xi_shift.before.market_key, a.xi_shift.before.market_label, a.home.name, a.away.name);
-        card.push(`${emojiPack.uiIcon("shift", "🔄")} <b>PERUBAHAN PASCA XI RESMI:</b>`);
-        card.push(`   • Sebelum (Pre-XI): <s>${escHtml(bInfo.title)}</s> (${Math.round(a.xi_shift.before.model_prob)}%)`);
-        card.push(`   • Sekarang (Resmi XI): <b>${escHtml(priInfo.title)}</b> (${Math.round(a.xi_shift.after.model_prob)}%)`);
-        card.push(`   • <b>Kenapa:</b> <i>${escHtml(a.xi_shift.why)}</i>`);
-        card.push(`   • <b>Arah:</b> <i>${escHtml(a.xi_shift.how)}</i>`);
-      } else if (a.xi_shift && a.xi_shift.significant) {
-        const d = a.xi_shift.prob_delta;
-        card.push(`${emojiPack.uiIcon("chart", "📊")} <b>PERGESERAN PELUANG PASCA XI (${d >= 0 ? "+" : ""}${d}%):</b> <i>${escHtml(a.xi_shift.why)}</i>`);
-      }
-      if (sp && spInfo) {
-        card.push(`▸ <b>Pilihan Aman: ${escHtml(spInfo.title)}</b> (<b>${Math.round(sp.model_prob)}%</b>)`);
-        if (spInfo.explain) card.push(`   <i>${escHtml(spInfo.explain)}</i>`);
-      }
-      const priceNote = v.bookmaker_odds
-        ? ` · Odds <b>${v.bookmaker_odds}</b>`
-        : ` · Fair Odds <b>${v.fair_odds}</b>`;
-      card.push(`▸ <b>Pilihan Utama: ${escHtml(priInfo.title)}</b> (<b>${Math.round(v.model_prob)}%</b>${priceNote})`);
-      if (priInfo.explain && (!sp || sp.key !== v.market_key)) {
-        card.push(`   <i>${escHtml(priInfo.explain)}</i>`);
-      }
-      card.push(`▸ Porsi Modal: <b>${escHtml(stakeDescriptor(v.stake_units))}</b> · Est. <b>~${a.goal_model.total_lambda.toFixed(1)} gol</b>`);
-      if (cm.high_volume_10_15) {
-        const cParts = [`Total Over (10.5) <b>${Math.round(cm.p_over_10_5)}%</b>`, `Over (11.5) <b>${Math.round(cm.p_over_11_5)}%</b>`, `Over (12.5) <b>${Math.round(cm.p_over_12_5)}%</b>`];
-        if (cm.p_over_13_5 >= 35) cParts.push(`Over (13.5) <b>${Math.round(cm.p_over_13_5)}%</b>`);
-        card.push(`▸ ${emojiPack.uiIcon("corner", "🚩")} Corners (~${Math.round(cm.total_corners_lambda)} est.): ${cParts.join(" · ")}`);
-      }
+      confirmedAudits.forEach((a, idx) => {
+        const sp = a.verdict.sniper_pick;
+        const v = a.verdict;
+        const cm = a.corners_model;
+        const lgEm = ep.leagueIcon(a.league_id, a.league_name, a.league_emoji || eng.getLeagueEmoji(a.league_name, a.country_code));
+        const hFlag = ep.teamIcon(a.home.id, a.home.name, a.home.flag || eng.getTeamFlag(a.home.name, a.league_name, a.country_code));
+        const aFlag = ep.teamIcon(a.away.id, a.away.name, a.away.flag || eng.getTeamFlag(a.away.name, a.league_name, a.country_code));
+        const priInfo = humanizeMarket(v.market_key, v.primary_bet, a.home.name, a.away.name);
+        const spInfo = sp ? humanizeMarket(sp.key, sp.label, a.home.name, a.away.name) : null;
+        const card = [
+          `<b>${idx + 1}. ${hFlag} ${escHtml(a.home.name)} vs ${aFlag} ${escHtml(a.away.name)}</b>`,
+          `${lgEm} ${escHtml(a.league_name)} · <code>${escHtml(fmtKickoffDual(a.kickoff_utc))}</code>`,
+          `Formasi Resmi: <b>${escHtml(a.home.formation)}</b> vs <b>${escHtml(a.away.formation)}</b>`,
+        ];
+        if (a.xi_shift && a.xi_shift.changed && a.xi_shift.before) {
+          const bInfo = humanizeMarket(a.xi_shift.before.market_key, a.xi_shift.before.market_label, a.home.name, a.away.name);
+          card.push(`${ep.uiIcon("shift", "🔄")} <b>PERUBAHAN PASCA XI RESMI:</b>`);
+          card.push(`   • Sebelum (Pre-XI): <s>${escHtml(bInfo.title)}</s> (${Math.round(a.xi_shift.before.model_prob)}%)`);
+          card.push(`   • Sekarang (Resmi XI): <b>${escHtml(priInfo.title)}</b> (${Math.round(a.xi_shift.after.model_prob)}%)`);
+          card.push(`   • <b>Kenapa:</b> <i>${escHtml(a.xi_shift.why)}</i>`);
+          card.push(`   • <b>Arah:</b> <i>${escHtml(a.xi_shift.how)}</i>`);
+        } else if (a.xi_shift && a.xi_shift.significant) {
+          const d = a.xi_shift.prob_delta;
+          card.push(`${ep.uiIcon("chart", "📊")} <b>PERGESERAN PELUANG PASCA XI (${d >= 0 ? "+" : ""}${d}%):</b> <i>${escHtml(a.xi_shift.why)}</i>`);
+        }
+        if (sp && spInfo) {
+          card.push(`▸ <b>Pilihan Aman: ${escHtml(spInfo.title)}</b> (<b>${Math.round(sp.model_prob)}%</b>)`);
+          if (spInfo.explain) card.push(`   <i>${escHtml(spInfo.explain)}</i>`);
+        }
+        const priceNote = v.bookmaker_odds
+          ? ` · Odds <b>${v.bookmaker_odds}</b>`
+          : ` · Fair Odds <b>${v.fair_odds}</b>`;
+        card.push(`▸ <b>Pilihan Utama: ${escHtml(priInfo.title)}</b> (<b>${Math.round(v.model_prob)}%</b>${priceNote})`);
+        if (priInfo.explain && (!sp || sp.key !== v.market_key)) {
+          card.push(`   <i>${escHtml(priInfo.explain)}</i>`);
+        }
+        card.push(`▸ Porsi Modal: <b>${escHtml(stakeDescriptor(v.stake_units))}</b> · Est. <b>~${a.goal_model.total_lambda.toFixed(1)} gol</b>`);
+        if (cm.high_volume_10_15) {
+          const cParts = [`Total Over (10.5) <b>${Math.round(cm.p_over_10_5)}%</b>`, `Over (11.5) <b>${Math.round(cm.p_over_11_5)}%</b>`, `Over (12.5) <b>${Math.round(cm.p_over_12_5)}%</b>`];
+          if (cm.p_over_13_5 >= 35) cParts.push(`Over (13.5) <b>${Math.round(cm.p_over_13_5)}%</b>`);
+          card.push(`▸ ${ep.uiIcon("corner", "🚩")} Corners (~${Math.round(cm.total_corners_lambda)} est.): ${cParts.join(" · ")}`);
+        }
+        xiLines.push("");
+        xiLines.push(`<blockquote>${card.join("\n")}</blockquote>`);
+      });
+
       xiLines.push("");
-      xiLines.push(`<blockquote>${card.join("\n")}</blockquote>`);
-    });
+      xiLines.push(`<i>Seluruh analisis di atas telah memperhitungkan daftar pemain starter resmi &amp; otomatis menandai jika prediksi berubah dari Pre-XI.</i>`);
+      return xiLines.join("\n");
+    };
 
-    xiLines.push("");
-    xiLines.push(`<i>Seluruh analisis di atas telah memperhitungkan daftar pemain starter resmi &amp; otomatis menandai jika prediksi berubah dari Pre-XI.</i>`);
-
-    const msg = xiLines.join("\n");
-    try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), msg); } catch {}
+    const richMsg = buildXiMsg(emojiPack);
+    const channelMsg = buildXiMsg(plainEmojiPack);
+    try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), richMsg); } catch {}
     try {
-      const tgRes = await sendTelegram(tgToken, tgCtx.targetChatIds, msg);
+      const tgRes = await sendTelegram(tgToken, tgCtx.targetChatIds, richMsg, channelMsg);
       console.log("[Telegram XI Sniper]", tgRes);
     } catch (e) {
       console.warn(`::warning title=Telegram XI Sniper not delivered::${e?.message || e}`);
@@ -1519,168 +1549,173 @@ async function main() {
   }));
   await emojiPack.prewarmBatch(toPrewarm);
 
-  // 4. Build sleek, editorial, beginner-friendly Telegram HTML brief
-  const lines = [];
-  lines.push(`${emojiPack.uiIcon("ball", "⚽")} <b>ENGINE BOLA · DAILY RADAR</b>`);
-  lines.push(`<i>${escHtml(fmtDateIndo(now))} · ${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB</i>`);
+  // 4. Build sleek, editorial, beginner-friendly Telegram HTML brief (rich custom-emoji crests for DM/Groups + full Unicode flags for @channel)
+  const buildDailyMsg = (ep) => {
+    const lines = [];
+    lines.push(`${ep.uiIcon("ball", "⚽")} <b>ENGINE BOLA · DAILY RADAR</b>`);
+    lines.push(`<i>${escHtml(fmtDateIndo(now))} · ${fmtTime(now, TZ_AMT)} AMT / ${fmtTime(now, TZ_WIB)} WIB</i>`);
 
-  // Compact executive recap (never clutters the channel with verbose debug logs)
-  const s = analytics.summary;
-  if (newlySettled.length > 0) {
-    const nw = newlySettled.filter((p) => p.status === "WON" || p.status === "HALF_WON").length;
-    const nl = newlySettled.filter((p) => p.status === "LOST" || p.status === "HALF_LOST").length;
-    const np = newlySettled.filter((p) => p.status === "PUSH").length;
-    const rec = [
-      `${emojiPack.uiIcon("chart", "📊")} <b>REKAP HASIL SEMALAM (${newlySettled.length} Laga)</b>`,
-      `Menang <b>${nw}</b> · Seri/Refund <b>${np}</b> · Kalah <b>${nl}</b>`,
-      `<i>Model otomatis mengevaluasi hasil &amp; memperbarui kalibrasi. Rincian lengkap 5W1H tersedia di VIP Dashboard.</i>`,
-    ];
-    lines.push("");
-    lines.push(`<blockquote>${rec.join("\n")}</blockquote>`);
-  } else if (s.settled > 0) {
-    lines.push("");
-    lines.push(`<blockquote>${emojiPack.uiIcon("chart", "📊")} <b>REKAM JEJAK MODEL</b>\nAkurasi: <b>${s.hit_rate}%</b> (${s.wins} Menang · ${s.pushes} Seri · ${s.losses} Kalah)</blockquote>`);
-  }
-
-  // Helper to render one clean editorial match card
-  const renderPickCard = (p, idx, isSniper = false) => {
-    const info = humanizeMarket(p.market_key, p.market, p.home, p.away);
-    const lgEm = emojiPack.leagueIcon(p.league_id, p.league, p.league_emoji || eng.getLeagueEmoji(p.league, p.country_code));
-    const hFlag = emojiPack.teamIcon(p.home_id, p.home, p.home_flag || eng.getTeamFlag(p.home, p.league, p.country_code));
-    const aFlag = emojiPack.teamIcon(p.away_id, p.away, p.away_flag || eng.getTeamFlag(p.away, p.league, p.country_code));
-    const xiLine = p.xi_confirmed
-      ? `Susunan Pemain: <b>Resmi Terkonfirmasi ✓</b>`
-      : `Susunan Pemain: <i>Menunggu rilis resmi (T-60' sebelum kickoff)</i>`;
-    const priceBit = p.bookmaker_odds
-      ? ` · Odds <b>${p.bookmaker_odds}</b>`
-      : ` · Fair Odds <b>${p.fair_odds}</b>`;
-    const card = [
-      `<b>${idx + 1}. ${hFlag} ${escHtml(p.home)} vs ${aFlag} ${escHtml(p.away)}</b>`,
-      `${lgEm} ${escHtml(p.league)} · <code>${escHtml(p.kickoff_dual)}</code>`,
-      `▸ Rekomendasi: <b>${escHtml(info.title)}</b>`,
-      `▸ Peluang: <b>${Math.round(p.model_prob)}%</b>${priceBit}${isSniper ? "" : ` · Porsi <b>${escHtml(stakeDescriptor(p.stake_units))}</b>`}`,
-    ];
-    if (p.xi_shift && p.xi_shift.changed && p.xi_shift.before) {
-      const bInfo = humanizeMarket(p.xi_shift.before.market_key, p.xi_shift.before.market_label, p.home, p.away);
-      card.push(`▸ ${emojiPack.uiIcon("shift", "🔄")} <b>XI Shift:</b> <s>${escHtml(bInfo.title)}</s> → <b>${escHtml(info.title)}</b> (<i>${escHtml(p.xi_shift.why)}</i>)`);
-    }
-    if (info.explain) {
-      card.push(`▸ Arti Singkat: <i>${escHtml(info.explain)}</i>`);
-    }
-    card.push(`▸ Estimasi Tempo: <b>~${Number(p.total_lambda || 2.5).toFixed(1)} gol</b> · ${xiLine}`);
-    // Only show truly meaningful breaking news (skip generic TEAM_NEWS fluff!)
-    const sigTag = (p.news_signals || []).map(newsTagIndo).find(Boolean);
-    if (sigTag && p.news_headline) {
-      card.push(`▸ ${escHtml(sigTag)}: <i>${escHtml(p.news_headline.slice(0, 95))}</i>`);
-    }
-    return `<blockquote>${card.join("\n")}</blockquote>`;
-  };
-
-  if (sniperPicks.length) {
-    lines.push("");
-    lines.push(`${emojiPack.uiIcon("target", "🎯")} <b>PILIHAN UTAMA · AKURASI TINGGI</b>`);
-    lines.push(`<i>Seleksi paling ketat — fokus peluang tertinggi &amp; proteksi modal.</i>`);
-    sniperPicks.forEach((p, idx) => {
-      lines.push("");
-      lines.push(renderPickCard(p, idx, true));
-    });
-  }
-
-  lines.push("");
-  lines.push(`${emojiPack.uiIcon("radar", "📡")} <b>ANALISIS PILIHAN HARI INI</b>`);
-  lines.push(`<i>Disaring dari ${scanRes.scanned} pertandingan prioritas hari ini.</i>`);
-  if (!topAnchors.length) {
-    lines.push("");
-    lines.push(`<blockquote><i>Belum ada pertandingan yang memenuhi standar seleksi ketat saat ini.</i></blockquote>`);
-  } else {
-    topAnchors.forEach((p, idx) => {
-      lines.push("");
-      lines.push(renderPickCard(p, idx, false));
-    });
-  }
-
-  if (highCorners1015.length) {
-    lines.push("");
-    lines.push(`${emojiPack.uiIcon("corner", "🚩")} <b>RADAR CORNERS TINGGI (10–15+ CORNERS)</b>`);
-    lines.push(`<i>Laga dengan intensitas serangan sayap &amp; potensi tendangan sudut tinggi.</i>`);
-    const cRows = highCorners1015.map((c) => {
-      const tiers = [
-        `Total Over (10.5) <b>${Math.round(c.p_over_10_5)}%</b>`,
-        `Over (11.5) <b>${Math.round(c.p_over_11_5)}%</b>`,
-        `Over (12.5) <b>${Math.round(c.p_over_12_5)}%</b>`,
+    // Compact executive recap (never clutters the channel with verbose debug logs)
+    const s = analytics.summary;
+    if (newlySettled.length > 0) {
+      const nw = newlySettled.filter((p) => p.status === "WON" || p.status === "HALF_WON").length;
+      const nl = newlySettled.filter((p) => p.status === "LOST" || p.status === "HALF_LOST").length;
+      const np = newlySettled.filter((p) => p.status === "PUSH").length;
+      const rec = [
+        `${ep.uiIcon("chart", "📊")} <b>REKAP HASIL SEMALAM (${newlySettled.length} Laga)</b>`,
+        `Menang <b>${nw}</b> · Seri/Refund <b>${np}</b> · Kalah <b>${nl}</b>`,
+        `<i>Model otomatis mengevaluasi hasil &amp; memperbarui kalibrasi. Rincian lengkap 5W1H tersedia di VIP Dashboard.</i>`,
       ];
-      if (c.p_over_13_5 >= 35) tiers.push(`Over (13.5) <b>${Math.round(c.p_over_13_5)}%</b>`);
-      if (c.p_over_14_5 >= 30) tiers.push(`Over (14.5) <b>${Math.round(c.p_over_14_5)}%</b>`);
-      const hf = emojiPack.teamIcon(c.home_id, c.home, c.home_flag);
-      const af = emojiPack.teamIcon(c.away_id, c.away, c.away_flag);
-      const lg = emojiPack.leagueIcon(c.league_id, c.league, c.league_emoji);
-      return `${hf} <b>${escHtml(c.home)} vs ${af} ${escHtml(c.away)}</b> · ${lg} <i>${escHtml(c.league)}</i>\nEst. <b>~${Math.round(c.total_corners_lambda)} corners</b> → ${tiers.join(" · ")}`;
-    });
-    lines.push("");
-    lines.push(`<blockquote>${cRows.join("\n—\n")}</blockquote>`);
-  } else if (topCorners.length) {
-    lines.push("");
-    lines.push(`${emojiPack.uiIcon("corner", "🚩")} <b>PILIHAN CORNERS TERBAIK</b>`);
-    const cRows = topCorners.map((c) => {
-      const info = humanizeMarket(c.market_key, c.market, c.home, c.away);
-      const hf = emojiPack.teamIcon(c.home_id, c.home, c.home_flag);
-      const af = emojiPack.teamIcon(c.away_id, c.away, c.away_flag);
-      const lg = emojiPack.leagueIcon(c.league_id, c.league, c.league_emoji);
-      return `• ${hf} <b>${escHtml(c.home)} vs ${af} ${escHtml(c.away)}</b> (${lg} ${escHtml(c.league)}) — <b>${escHtml(info.title)}</b> (<b>${Math.round(c.model_prob)}%</b>)`;
-    });
-    lines.push("");
-    lines.push(`<blockquote>${cRows.join("\n")}</blockquote>`);
-  }
-
-  if (topBtts.length) {
-    lines.push("");
-    lines.push(`${emojiPack.uiIcon("fire", "🔥")} <b>BOTH TEAMS TO SCORE (BTTS)</b>`);
-    const bRows = topBtts.map((b) => {
-      const info = humanizeMarket(b.market_key, b.market, b.home, b.away);
-      const hf = emojiPack.teamIcon(b.home_id, b.home, b.home_flag);
-      const af = emojiPack.teamIcon(b.away_id, b.away, b.away_flag);
-      const lg = emojiPack.leagueIcon(b.league_id, b.league, b.league_emoji);
-      return `• ${hf} <b>${escHtml(b.home)} vs ${af} ${escHtml(b.away)}</b> (${lg} ${escHtml(b.league)}) — <b>${escHtml(info.title)}</b> (<b>${Math.round(b.model_prob)}%</b>)`;
-    });
-    lines.push("");
-    lines.push(`<blockquote>${bRows.join("\n")}</blockquote>`);
-  }
-
-  // Append compact 3-Leg Auto-Parlay Safe only if final visible message remains under 3850 chars (1 single Telegram message!)
-  if (autoParlay3 && autoParlay3.legs && autoParlay3.legs.length >= 3) {
-    const pRows = autoParlay3.legs.map((l) => {
-      const info = humanizeMarket(l.market.key, l.market.label, l.home, l.away);
-      const hf = emojiPack.teamIcon(l.home_id, l.home, l.home_flag);
-      const af = emojiPack.teamIcon(l.away_id, l.away, l.away_flag);
-      const lg = emojiPack.leagueIcon(l.league_id, l.league, l.league_emoji);
-      return `${l.index}. ${hf} <b>${escHtml(l.home)} vs ${af} ${escHtml(l.away)}</b> (${lg} ${escHtml(l.league)})\n   ▸ <b>${escHtml(info.title)}</b> (${Math.round(l.market.model_prob)}% · ${l.used_odds}x)`;
-    });
-    const parlayBlock = [
-      ``,
-      `${emojiPack.uiIcon("ticket", "🎟️")} <b>AUTO-PARLAY 3-LEG SAFE</b> · Total <b>${autoParlay3.combined_odds.toFixed(2)}x</b> (Win <b>${autoParlay3.combined_win_prob}%</b>)`,
-      `<blockquote>${pRows.join("\n")}</blockquote>`,
-    ].join("\n");
-    if ((visibleTextLen(lines.join("\n")) + visibleTextLen(parlayBlock) + 220) < 3850) {
-      lines.push(parlayBlock);
+      lines.push("");
+      lines.push(`<blockquote>${rec.join("\n")}</blockquote>`);
+    } else if (s.settled > 0) {
+      lines.push("");
+      lines.push(`<blockquote>${ep.uiIcon("chart", "📊")} <b>REKAM JEJAK MODEL</b>\nAkurasi: <b>${s.hit_rate}%</b> (${s.wins} Menang · ${s.pushes} Seri · ${s.losses} Kalah)</blockquote>`);
     }
-  }
 
-  lines.push("");
-  lines.push(`<i>Catatan: Analisis bertanda "Menunggu rilis resmi" belum menyertakan daftar pemain starter. Update otomatis dikirim 1 jam sebelum kickoff saat Starting XI resmi keluar — termasuk penanda ${emojiPack.uiIcon("shift", "🔄")} jika prediksi berubah.</i>`);
+    // Helper to render one clean editorial match card
+    const renderPickCard = (p, idx, isSniper = false) => {
+      const info = humanizeMarket(p.market_key, p.market, p.home, p.away);
+      const lgEm = ep.leagueIcon(p.league_id, p.league, p.league_emoji || eng.getLeagueEmoji(p.league, p.country_code));
+      const hFlag = ep.teamIcon(p.home_id, p.home, p.home_flag || eng.getTeamFlag(p.home, p.league, p.country_code));
+      const aFlag = ep.teamIcon(p.away_id, p.away, p.away_flag || eng.getTeamFlag(p.away, p.league, p.country_code));
+      const xiLine = p.xi_confirmed
+        ? `Susunan Pemain: <b>Resmi Terkonfirmasi ✓</b>`
+        : `Susunan Pemain: <i>Menunggu rilis resmi (T-60' sebelum kickoff)</i>`;
+      const priceBit = p.bookmaker_odds
+        ? ` · Odds <b>${p.bookmaker_odds}</b>`
+        : ` · Fair Odds <b>${p.fair_odds}</b>`;
+      const card = [
+        `<b>${idx + 1}. ${hFlag} ${escHtml(p.home)} vs ${aFlag} ${escHtml(p.away)}</b>`,
+        `${lgEm} ${escHtml(p.league)} · <code>${escHtml(p.kickoff_dual)}</code>`,
+        `▸ Rekomendasi: <b>${escHtml(info.title)}</b>`,
+        `▸ Peluang: <b>${Math.round(p.model_prob)}%</b>${priceBit}${isSniper ? "" : ` · Porsi <b>${escHtml(stakeDescriptor(p.stake_units))}</b>`}`,
+      ];
+      if (p.xi_shift && p.xi_shift.changed && p.xi_shift.before) {
+        const bInfo = humanizeMarket(p.xi_shift.before.market_key, p.xi_shift.before.market_label, p.home, p.away);
+        card.push(`▸ ${ep.uiIcon("shift", "🔄")} <b>XI Shift:</b> <s>${escHtml(bInfo.title)}</s> → <b>${escHtml(info.title)}</b> (<i>${escHtml(p.xi_shift.why)}</i>)`);
+      }
+      if (info.explain) {
+        card.push(`▸ Arti Singkat: <i>${escHtml(info.explain)}</i>`);
+      }
+      card.push(`▸ Estimasi Tempo: <b>~${Number(p.total_lambda || 2.5).toFixed(1)} gol</b> · ${xiLine}`);
+      // Only show truly meaningful breaking news (skip generic TEAM_NEWS fluff!)
+      const sigTag = (p.news_signals || []).map(newsTagIndo).find(Boolean);
+      if (sigTag && p.news_headline) {
+        card.push(`▸ ${escHtml(sigTag)}: <i>${escHtml(p.news_headline.slice(0, 95))}</i>`);
+      }
+      return `<blockquote>${card.join("\n")}</blockquote>`;
+    };
+
+    if (sniperPicks.length) {
+      lines.push("");
+      lines.push(`${ep.uiIcon("target", "🎯")} <b>PILIHAN UTAMA · AKURASI TINGGI</b>`);
+      lines.push(`<i>Seleksi paling ketat — fokus peluang tertinggi &amp; proteksi modal.</i>`);
+      sniperPicks.forEach((p, idx) => {
+        lines.push("");
+        lines.push(renderPickCard(p, idx, true));
+      });
+    }
+
+    lines.push("");
+    lines.push(`${ep.uiIcon("radar", "📡")} <b>ANALISIS PILIHAN HARI INI</b>`);
+    lines.push(`<i>Disaring dari ${scanRes.scanned} pertandingan prioritas hari ini.</i>`);
+    if (!topAnchors.length) {
+      lines.push("");
+      lines.push(`<blockquote><i>Belum ada pertandingan yang memenuhi standar seleksi ketat saat ini.</i></blockquote>`);
+    } else {
+      topAnchors.forEach((p, idx) => {
+        lines.push("");
+        lines.push(renderPickCard(p, idx, false));
+      });
+    }
+
+    if (highCorners1015.length) {
+      lines.push("");
+      lines.push(`${ep.uiIcon("corner", "🚩")} <b>RADAR CORNERS TINGGI (10–15+ CORNERS)</b>`);
+      lines.push(`<i>Laga dengan intensitas serangan sayap &amp; potensi tendangan sudut tinggi.</i>`);
+      const cRows = highCorners1015.map((c) => {
+        const tiers = [
+          `Total Over (10.5) <b>${Math.round(c.p_over_10_5)}%</b>`,
+          `Over (11.5) <b>${Math.round(c.p_over_11_5)}%</b>`,
+          `Over (12.5) <b>${Math.round(c.p_over_12_5)}%</b>`,
+        ];
+        if (c.p_over_13_5 >= 35) tiers.push(`Over (13.5) <b>${Math.round(c.p_over_13_5)}%</b>`);
+        if (c.p_over_14_5 >= 30) tiers.push(`Over (14.5) <b>${Math.round(c.p_over_14_5)}%</b>`);
+        const hf = ep.teamIcon(c.home_id, c.home, c.home_flag);
+        const af = ep.teamIcon(c.away_id, c.away, c.away_flag);
+        const lg = ep.leagueIcon(c.league_id, c.league, c.league_emoji);
+        return `${hf} <b>${escHtml(c.home)} vs ${af} ${escHtml(c.away)}</b> · ${lg} <i>${escHtml(c.league)}</i>\nEst. <b>~${Math.round(c.total_corners_lambda)} corners</b> → ${tiers.join(" · ")}`;
+      });
+      lines.push("");
+      lines.push(`<blockquote>${cRows.join("\n—\n")}</blockquote>`);
+    } else if (topCorners.length) {
+      lines.push("");
+      lines.push(`${ep.uiIcon("corner", "🚩")} <b>PILIHAN CORNERS TERBAIK</b>`);
+      const cRows = topCorners.map((c) => {
+        const info = humanizeMarket(c.market_key, c.market, c.home, c.away);
+        const hf = ep.teamIcon(c.home_id, c.home, c.home_flag);
+        const af = ep.teamIcon(c.away_id, c.away, c.away_flag);
+        const lg = ep.leagueIcon(c.league_id, c.league, c.league_emoji);
+        return `• ${hf} <b>${escHtml(c.home)} vs ${af} ${escHtml(c.away)}</b> (${lg} ${escHtml(c.league)}) — <b>${escHtml(info.title)}</b> (<b>${Math.round(c.model_prob)}%</b>)`;
+      });
+      lines.push("");
+      lines.push(`<blockquote>${cRows.join("\n")}</blockquote>`);
+    }
+
+    if (topBtts.length) {
+      lines.push("");
+      lines.push(`${ep.uiIcon("fire", "🔥")} <b>BOTH TEAMS TO SCORE (BTTS)</b>`);
+      const bRows = topBtts.map((b) => {
+        const info = humanizeMarket(b.market_key, b.market, b.home, b.away);
+        const hf = ep.teamIcon(b.home_id, b.home, b.home_flag);
+        const af = ep.teamIcon(b.away_id, b.away, b.away_flag);
+        const lg = ep.leagueIcon(b.league_id, b.league, b.league_emoji);
+        return `• ${hf} <b>${escHtml(b.home)} vs ${af} ${escHtml(b.away)}</b> (${lg} ${escHtml(b.league)}) — <b>${escHtml(info.title)}</b> (<b>${Math.round(b.model_prob)}%</b>)`;
+      });
+      lines.push("");
+      lines.push(`<blockquote>${bRows.join("\n")}</blockquote>`);
+    }
+
+    // Append compact 3-Leg Auto-Parlay Safe only if final visible message remains under 3850 chars (1 single Telegram message!)
+    if (autoParlay3 && autoParlay3.legs && autoParlay3.legs.length >= 3) {
+      const pRows = autoParlay3.legs.map((l) => {
+        const info = humanizeMarket(l.market.key, l.market.label, l.home, l.away);
+        const hf = ep.teamIcon(l.home_id, l.home, l.home_flag);
+        const af = ep.teamIcon(l.away_id, l.away, l.away_flag);
+        const lg = ep.leagueIcon(l.league_id, l.league, l.league_emoji);
+        return `${l.index}. ${hf} <b>${escHtml(l.home)} vs ${af} ${escHtml(l.away)}</b> (${lg} ${escHtml(l.league)})\n   ▸ <b>${escHtml(info.title)}</b> (${Math.round(l.market.model_prob)}% · ${l.used_odds}x)`;
+      });
+      const parlayBlock = [
+        ``,
+        `${ep.uiIcon("ticket", "🎟️")} <b>AUTO-PARLAY 3-LEG SAFE</b> · Total <b>${autoParlay3.combined_odds.toFixed(2)}x</b> (Win <b>${autoParlay3.combined_win_prob}%</b>)`,
+        `<blockquote>${pRows.join("\n")}</blockquote>`,
+      ].join("\n");
+      if ((visibleTextLen(lines.join("\n")) + visibleTextLen(parlayBlock) + 220) < 3850) {
+        lines.push(parlayBlock);
+      }
+    }
+
+    lines.push("");
+    lines.push(`<i>Catatan: Analisis bertanda "Menunggu rilis resmi" belum menyertakan daftar pemain starter. Update otomatis dikirim 1 jam sebelum kickoff saat Starting XI resmi keluar — termasuk penanda ${ep.uiIcon("shift", "🔄")} jika prediksi berubah.</i>`);
+    return lines.join("\n");
+  };
 
   // Technical calibration metrics stay in stdout logs (not cluttering public channel)
   const fp = analytics.weights.factor_penalties || {};
   console.log(`[Neural Metrics] Goal×${analytics.weights.goal_lambda_scale} · Corner×${analytics.weights.corner_lambda_scale} · Pre-XI -${fp.pre_xi || 0} · AF ${backupObj.usage.api_football}/100 · News ${newsCalls}q`);
 
-  const msg = lines.join("\n");
-  try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), msg); } catch {}
+  const richMsg = buildDailyMsg(emojiPack);
+  const channelMsg = buildDailyMsg(plainEmojiPack);
+  try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), richMsg); } catch {}
 
   let tgRes;
   try {
     tgRes = await sendTelegram(
       tgToken,
       tgCtx.targetChatIds,
-      msg
+      richMsg,
+      channelMsg
     );
   } catch (e) {
     tgRes = { ok: false, error: String(e?.message || e) };
