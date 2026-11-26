@@ -1,39 +1,5 @@
 {
-  "generated_at": "2026-11-25T15:35:07.938Z",
+  "generated_at": "2026-11-26T05:53:12.983Z",
   "calls_used": 3,
-  "by_match": {
-    "5836956": {
-      "home": "Stoke City",
-      "away": "Millwall",
-      "fetched_at": "2026-11-25T15:35:15.058Z",
-      "risk_level": "ALERT",
-      "signals": [
-        "TEAM_NEWS",
-        "SUSPENSION_BAN"
-      ],
-      "headlines": [
-        {
-          "title": "Millwall handed partial stadium closure over discriminatory chants",
-          "source": "CNA",
-          "published_at": "2026-11-24T15:34:32Z",
-          "url": "https://www.channelnewsasia.com/sport/millwall-handed-partial-stadium-closure-over-discriminatory-chants-6579061",
-          "tag": "TEAM_NEWS"
-        },
-        {
-          "title": "Pick of the stats: Stoke City v Millwall",
-          "source": "BBC News",
-          "published_at": "2026-11-24T10:11:57Z",
-          "url": "https://www.bbc.com/sport/football/articles/cq8e060kx127o",
-          "tag": "TEAM_NEWS"
-        },
-        {
-          "title": "Millwall forced to partially close stadium after discriminatory chanting",
-          "source": "Sky Sports",
-          "published_at": "2026-11-23T18:18:00Z",
-          "url": "https://www.skysports.com/football/news/13615754/millwall-forced-to-partially-close-the-den-after-commission-proves-fa-charges-of-discriminatory-chanting",
-          "tag": "SUSPENSION_BAN"
-        }
-      ]
-    }
-  }
+  "by_match": {}
 }
