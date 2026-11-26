@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-11-26T07:22:52.527Z",
+  "generated_at": "2026-11-26T08:45:28.716Z",
   "calls_used": 3,
   "by_match": {
     "6112322": {
       "home": "Crystal Palace",
       "away": "Real Sociedad",
-      "fetched_at": "2026-11-26T07:23:03.481Z",
+      "fetched_at": "2026-11-26T08:45:44.489Z",
       "risk_level": "CLEAR",
       "signals": [
         "TEAM_NEWS"

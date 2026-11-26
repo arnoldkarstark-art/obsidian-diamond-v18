@@ -1,6 +1,6 @@
 {
   "version": "OBSIDIAN_V18_7",
-  "exported_at": "2026-11-26T07:23:03.002Z",
+  "exported_at": "2026-11-26T08:45:43.743Z",
   "predictions": [
     {
       "id": 1795672401270,
@@ -80,10 +80,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-3",
         "formation_away": "5-3-2",
-        "captured_at": "2026-11-26T07:23:02.468Z"
+        "captured_at": "2026-11-26T08:45:43.740Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:23:02.468Z"
+      "updated_at": "2026-11-26T08:45:43.740Z"
     },
     {
       "id": 1795672401064,
@@ -164,10 +164,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-3-3",
         "formation_away": "4-3-3",
-        "captured_at": "2026-11-26T07:23:02.998Z"
+        "captured_at": "2026-11-26T08:45:43.033Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:23:02.998Z"
+      "updated_at": "2026-11-26T08:45:43.033Z"
     },
     {
       "id": 1795672400794,
@@ -184,18 +184,18 @@
       "market_key": "home_over_0_5",
       "market_label": "Individual Total 1 Over (0.5) · Juventus",
       "model_prob": 83,
-      "raw_prob": 86.7,
-      "fair_odds": 1.21,
+      "raw_prob": 86.9,
+      "fair_odds": 1.2,
       "opening_odds": null,
       "bookmaker_odds": null,
       "steam_pct": null,
       "confidence": 62,
       "tier": "TIER 3: HIGH-VARIANCE PIVOT",
       "stake_units": 0.5,
-      "home_lambda": 2.02,
+      "home_lambda": 2.03,
       "away_lambda": 0.8,
-      "home_corners_lambda": 5.56,
-      "away_corners_lambda": 3.75,
+      "home_corners_lambda": 5.57,
+      "away_corners_lambda": 3.76,
       "projected_score": "2–0",
       "factors": {
         "xi_confirmed": false,
@@ -240,19 +240,19 @@
         "market_key": "home_over_0_5",
         "market_label": "Individual Total 1 Over (0.5) · Juventus",
         "model_prob": 83,
-        "fair_odds": 1.21,
+        "fair_odds": 1.2,
         "bookmaker_odds": null,
         "projected_score": "2–0",
-        "home_lambda": 2.02,
+        "home_lambda": 2.03,
         "away_lambda": 0.8,
-        "total_lambda": 2.82,
+        "total_lambda": 2.83,
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T07:23:01.156Z"
+        "captured_at": "2026-11-26T08:45:40.604Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:23:01.156Z"
+      "updated_at": "2026-11-26T08:45:40.604Z"
     },
     {
       "id": 1795672400159,
@@ -328,10 +328,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T07:23:00.944Z"
+        "captured_at": "2026-11-26T08:45:41.756Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:23:00.944Z"
+      "updated_at": "2026-11-26T08:45:41.756Z"
     },
     {
       "id": 1795672400011,
@@ -410,10 +410,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "3-4-2-1",
-        "captured_at": "2026-11-26T07:23:00.822Z"
+        "captured_at": "2026-11-26T08:45:40.871Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:23:00.822Z"
+      "updated_at": "2026-11-26T08:45:40.871Z"
     },
     {
       "id": 1795672399109,
@@ -429,7 +429,7 @@
       "market_family": "Result & AH",
       "market_key": "away_ah_p1",
       "market_label": "Asian Handicap 2 (+1) · Real Sociedad",
-      "model_prob": 82.5,
+      "model_prob": 82.4,
       "raw_prob": 83.1,
       "fair_odds": 1.21,
       "opening_odds": null,
@@ -438,7 +438,7 @@
       "confidence": 80,
       "tier": "TIER 2: VALUE HUNTER",
       "stake_units": 1.25,
-      "home_lambda": 1.43,
+      "home_lambda": 1.44,
       "away_lambda": 1.77,
       "home_corners_lambda": 3.47,
       "away_corners_lambda": 6.29,
@@ -491,20 +491,20 @@
       "pre_xi_snapshot": {
         "market_key": "away_ah_p1",
         "market_label": "Asian Handicap 2 (+1) · Real Sociedad",
-        "model_prob": 82.5,
+        "model_prob": 82.4,
         "fair_odds": 1.21,
         "bookmaker_odds": null,
         "projected_score": "1–1",
-        "home_lambda": 1.43,
+        "home_lambda": 1.44,
         "away_lambda": 1.77,
-        "total_lambda": 3.2,
+        "total_lambda": 3.21,
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "4-4-2",
-        "captured_at": "2026-11-26T07:22:59.533Z"
+        "captured_at": "2026-11-26T08:45:38.538Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:22:59.533Z"
+      "updated_at": "2026-11-26T08:45:38.538Z"
     },
     {
       "id": 1795672399208,
@@ -520,17 +520,17 @@
       "market_family": "Result & AH",
       "market_key": "home_dnb",
       "market_label": "Handicap 1 (0) · Union St.Gilloise DNB",
-      "model_prob": 82.9,
-      "raw_prob": 83.6,
-      "fair_odds": 1.21,
+      "model_prob": 83,
+      "raw_prob": 83.7,
+      "fair_odds": 1.2,
       "opening_odds": null,
       "bookmaker_odds": null,
       "steam_pct": null,
       "confidence": 80,
       "tier": "TIER 2: VALUE HUNTER",
       "stake_units": 1.25,
-      "home_lambda": 2.02,
-      "away_lambda": 0.8,
+      "home_lambda": 2.01,
+      "away_lambda": 0.79,
       "home_corners_lambda": 6.81,
       "away_corners_lambda": 5.96,
       "projected_score": "2–0",
@@ -573,20 +573,20 @@
       "pre_xi_snapshot": {
         "market_key": "home_dnb",
         "market_label": "Handicap 1 (0) · Union St.Gilloise DNB",
-        "model_prob": 82.9,
-        "fair_odds": 1.21,
+        "model_prob": 83,
+        "fair_odds": 1.2,
         "bookmaker_odds": null,
         "projected_score": "2–0",
-        "home_lambda": 2.02,
-        "away_lambda": 0.8,
-        "total_lambda": 2.82,
+        "home_lambda": 2.01,
+        "away_lambda": 0.79,
+        "total_lambda": 2.8,
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-2-1",
         "formation_away": "4-4-2",
-        "captured_at": "2026-11-26T07:22:59.957Z"
+        "captured_at": "2026-11-26T08:45:39.301Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:22:59.957Z"
+      "updated_at": "2026-11-26T08:45:39.301Z"
     },
     {
       "id": 1795672399325,
@@ -665,10 +665,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-2-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T07:22:59.793Z"
+        "captured_at": "2026-11-26T08:45:39.133Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:22:59.793Z"
+      "updated_at": "2026-11-26T08:45:39.133Z"
     },
     {
       "id": 1795672398392,
@@ -744,10 +744,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T07:22:58.394Z"
+        "captured_at": "2026-11-26T08:45:36.991Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:22:58.394Z"
+      "updated_at": "2026-11-26T08:45:36.991Z"
     },
     {
       "id": 1795672397634,
@@ -763,17 +763,17 @@
       "market_family": "Result & AH",
       "market_key": "away_ah_p1",
       "market_label": "Asian Handicap 2 (+1) · Milan",
-      "model_prob": 76.8,
-      "raw_prob": 77.4,
-      "fair_odds": 1.3,
+      "model_prob": 77.8,
+      "raw_prob": 78.5,
+      "fair_odds": 1.28,
       "opening_odds": null,
       "bookmaker_odds": null,
       "steam_pct": null,
-      "confidence": 77,
+      "confidence": 78,
       "tier": "TIER 2: VALUE HUNTER",
       "stake_units": 1.25,
-      "home_lambda": 1.39,
-      "away_lambda": 1.31,
+      "home_lambda": 1.36,
+      "away_lambda": 1.33,
       "home_corners_lambda": 7.5,
       "away_corners_lambda": 2.39,
       "projected_score": "1–1",
@@ -825,20 +825,20 @@
       "pre_xi_snapshot": {
         "market_key": "away_ah_p1",
         "market_label": "Asian Handicap 2 (+1) · Milan",
-        "model_prob": 76.8,
-        "fair_odds": 1.3,
+        "model_prob": 77.8,
+        "fair_odds": 1.28,
         "bookmaker_odds": null,
         "projected_score": "1–1",
-        "home_lambda": 1.39,
-        "away_lambda": 1.31,
-        "total_lambda": 2.7,
+        "home_lambda": 1.36,
+        "away_lambda": 1.33,
+        "total_lambda": 2.69,
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "4-4-1-1",
-        "captured_at": "2026-11-26T07:22:58.557Z"
+        "captured_at": "2026-11-26T08:45:37.184Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:22:58.557Z"
+      "updated_at": "2026-11-26T08:45:37.184Z"
     },
     {
       "id": 1795672397845,
@@ -915,10 +915,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T07:22:58.628Z"
+        "captured_at": "2026-11-26T08:45:37.586Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:22:58.628Z"
+      "updated_at": "2026-11-26T08:45:37.586Z"
     },
     {
       "id": 1795672396594,
@@ -997,10 +997,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-3",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T07:22:56.809Z"
+        "captured_at": "2026-11-26T08:45:34.561Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:22:56.809Z"
+      "updated_at": "2026-11-26T08:45:34.561Z"
     },
     {
       "id": 1795672396822,
@@ -1079,10 +1079,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-1-4-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T07:22:56.888Z"
+        "captured_at": "2026-11-26T08:45:35.120Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:22:56.888Z"
+      "updated_at": "2026-11-26T08:45:35.120Z"
     },
     {
       "id": 1795672396110,
@@ -1160,10 +1160,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-1-4-1",
         "formation_away": "4-3-3",
-        "captured_at": "2026-11-26T07:22:57.122Z"
+        "captured_at": "2026-11-26T08:45:34.246Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T07:22:57.122Z"
+      "updated_at": "2026-11-26T08:45:34.246Z"
     },
     {
       "id": 1795635747435,
@@ -5559,8 +5559,8 @@
   "synced_by": "github_actions_auto_bot",
   "usage": {
     "date": "2026-11-26",
-    "fotmob": 218,
-    "espn": 8,
+    "fotmob": 284,
+    "espn": 11,
     "api_football": 0
   },
   "emoji_cache": {
