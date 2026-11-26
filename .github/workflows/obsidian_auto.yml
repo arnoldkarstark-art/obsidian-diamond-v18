@@ -41,9 +41,26 @@ jobs:
           BOT_SYNC_SECRET: ${{ secrets.BOT_SYNC_SECRET }}
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          TG_API_ID: ${{ secrets.TG_API_ID }}
+          TG_API_HASH: ${{ secrets.TG_API_HASH }}
+          TG_SESSION_STRING: ${{ secrets.TG_SESSION_STRING }}
+          DISABLE_OWNER_DM_MIRROR: ${{ secrets.DISABLE_OWNER_DM_MIRROR }}
           GITHUB_SCHEDULE: ${{ github.event.schedule }}
           SCAN_LIMIT: "14"
         run: node scripts/auto_bot.mjs
+
+      - name: Publish Full Club Crests to Broadcast Channel (Telegram Premium MTProto)
+        env:
+          TG_API_ID: ${{ secrets.TG_API_ID }}
+          TG_API_HASH: ${{ secrets.TG_API_HASH }}
+          TG_SESSION_STRING: ${{ secrets.TG_SESSION_STRING }}
+        run: |
+          if [ -n "$TG_API_ID" ] && [ -n "$TG_API_HASH" ] && [ -n "$TG_SESSION_STRING" ] && [ -f data/pending_channel_post.json ]; then
+            python3 -m pip install --quiet --upgrade telethon
+            python3 scripts/tg_premium_publish.py
+          else
+            echo "[PremiumPublisher] Skipped (either secrets not configured or no broadcast channel queued)."
+          fi
 
       - name: Commit updated Memory, News Intel, XI Cache & Daily Picks for Browser Auto-Sync
         if: always()
