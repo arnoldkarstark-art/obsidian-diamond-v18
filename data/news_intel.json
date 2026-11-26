@@ -1,5 +1,24 @@
 {
-  "generated_at": "2026-11-26T06:43:53.772Z",
+  "generated_at": "2026-11-26T07:22:52.527Z",
   "calls_used": 3,
-  "by_match": {}
+  "by_match": {
+    "6112322": {
+      "home": "Crystal Palace",
+      "away": "Real Sociedad",
+      "fetched_at": "2026-11-26T07:23:03.481Z",
+      "risk_level": "CLEAR",
+      "signals": [
+        "TEAM_NEWS"
+      ],
+      "headlines": [
+        {
+          "title": "The Shortlist: Real Sociedad gem Jon Martin is well worth €60m punt for Barcelona, Real Madrid and Premier League heavyweights",
+          "source": "Yahoo Entertainment",
+          "published_at": "2026-11-25T07:00:00Z",
+          "url": "https://consent.yahoo.com/v2/collectConsent?sessionId=1_cc-session_ca18beb0-3925-42ce-bd72-f4ced97bd671",
+          "tag": "TEAM_NEWS"
+        }
+      ]
+    }
+  }
 }
