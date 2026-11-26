@@ -51,9 +51,9 @@ jobs:
           git config user.name "Obsidian V18 Bot"
           git config user.email "obsidian-bot@users.noreply.github.com"
           if [ -d data ]; then
-            git add data/memory.json data/daily_picks.json data/news_intel.json data/xi_notified.json || true
+            git add data/memory.json data/daily_picks.json data/news_intel.json data/xi_notified.json data/emoji_cache.json || true
             if ! git diff --cached --quiet; then
-              git commit -m "chore(auto): update memory.json (5W1H), news intel, XI cache & daily picks [skip ci]"
+              git commit -m "chore(auto): update memory.json (5W1H), emoji cache, news intel & daily picks [skip ci]"
               git push
             fi
           fi
