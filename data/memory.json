@@ -1,6 +1,6 @@
 {
   "version": "OBSIDIAN_V18_7",
-  "exported_at": "2026-11-26T09:37:20.179Z",
+  "exported_at": "2026-11-26T09:47:50.768Z",
   "predictions": [
     {
       "id": 1795672401270,
@@ -80,10 +80,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-3",
         "formation_away": "5-3-2",
-        "captured_at": "2026-11-26T09:37:19.638Z"
+        "captured_at": "2026-11-26T09:47:50.504Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:19.638Z"
+      "updated_at": "2026-11-26T09:47:50.504Z"
     },
     {
       "id": 1795672401064,
@@ -164,10 +164,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-3-3",
         "formation_away": "4-3-3",
-        "captured_at": "2026-11-26T09:37:20.176Z"
+        "captured_at": "2026-11-26T09:47:50.764Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:20.176Z"
+      "updated_at": "2026-11-26T09:47:50.765Z"
     },
     {
       "id": 1795672400794,
@@ -249,10 +249,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T09:37:18.442Z"
+        "captured_at": "2026-11-26T09:47:49.504Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:18.442Z"
+      "updated_at": "2026-11-26T09:47:49.504Z"
     },
     {
       "id": 1795672400159,
@@ -328,10 +328,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T09:37:18.385Z"
+        "captured_at": "2026-11-26T09:47:49.532Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:18.385Z"
+      "updated_at": "2026-11-26T09:47:49.532Z"
     },
     {
       "id": 1795672400011,
@@ -410,10 +410,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "3-4-2-1",
-        "captured_at": "2026-11-26T09:37:18.383Z"
+        "captured_at": "2026-11-26T09:47:49.064Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:18.383Z"
+      "updated_at": "2026-11-26T09:47:49.064Z"
     },
     {
       "id": 1795672399109,
@@ -501,10 +501,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "4-4-2",
-        "captured_at": "2026-11-26T09:37:16.703Z"
+        "captured_at": "2026-11-26T09:47:47.645Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:16.704Z"
+      "updated_at": "2026-11-26T09:47:47.645Z"
     },
     {
       "id": 1795672399208,
@@ -583,10 +583,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-2-1",
         "formation_away": "4-4-2",
-        "captured_at": "2026-11-26T09:37:16.802Z"
+        "captured_at": "2026-11-26T09:47:47.794Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:16.802Z"
+      "updated_at": "2026-11-26T09:47:47.794Z"
     },
     {
       "id": 1795672399325,
@@ -665,10 +665,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-2-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T09:37:16.515Z"
+        "captured_at": "2026-11-26T09:47:48.508Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:16.515Z"
+      "updated_at": "2026-11-26T09:47:48.508Z"
     },
     {
       "id": 1795672398392,
@@ -744,10 +744,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T09:37:14.345Z"
+        "captured_at": "2026-11-26T09:47:46.621Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:14.345Z"
+      "updated_at": "2026-11-26T09:47:46.621Z"
     },
     {
       "id": 1795672397634,
@@ -835,10 +835,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "4-4-1-1",
-        "captured_at": "2026-11-26T09:37:14.142Z"
+        "captured_at": "2026-11-26T09:47:46.414Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:14.142Z"
+      "updated_at": "2026-11-26T09:47:46.414Z"
     },
     {
       "id": 1795672397845,
@@ -915,10 +915,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T09:37:14.982Z"
+        "captured_at": "2026-11-26T09:47:46.421Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:14.982Z"
+      "updated_at": "2026-11-26T09:47:46.421Z"
     },
     {
       "id": 1795672396594,
@@ -997,10 +997,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-3",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T09:37:11.424Z"
+        "captured_at": "2026-11-26T09:47:45.103Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:11.424Z"
+      "updated_at": "2026-11-26T09:47:45.103Z"
     },
     {
       "id": 1795672396822,
@@ -1079,10 +1079,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-1-4-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T09:37:12.403Z"
+        "captured_at": "2026-11-26T09:47:45.132Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:12.403Z"
+      "updated_at": "2026-11-26T09:47:45.132Z"
     },
     {
       "id": 1795672396110,
@@ -1160,10 +1160,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-1-4-1",
         "formation_away": "4-3-3",
-        "captured_at": "2026-11-26T09:37:11.434Z"
+        "captured_at": "2026-11-26T09:47:45.193Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:37:11.434Z"
+      "updated_at": "2026-11-26T09:47:45.193Z"
     },
     {
       "id": 1795635747435,
@@ -5559,8 +5559,8 @@
   "synced_by": "github_actions_auto_bot",
   "usage": {
     "date": "2026-11-26",
-    "fotmob": 416,
-    "espn": 17,
+    "fotmob": 482,
+    "espn": 20,
     "api_football": 0
   },
   "emoji_cache": {
