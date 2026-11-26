@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T09:28:43.192Z",
+  "generated_at": "2026-11-26T09:37:05.800Z",
   "date_label": "2026-11-26",
   "scanned": 14,
   "sniper_picks": [],
@@ -22,8 +22,8 @@
       "xi_shift": null,
       "market_key": "home_dnb",
       "market": "Handicap 1 (0) · Union St.Gilloise DNB",
-      "model_prob": 83,
-      "fair_odds": 1.2,
+      "model_prob": 82.9,
+      "fair_odds": 1.21,
       "bookmaker_odds": null,
       "edge_pct": null,
       "push_prob": 22.4,

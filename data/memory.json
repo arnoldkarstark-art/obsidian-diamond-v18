@@ -1,6 +1,6 @@
 {
   "version": "OBSIDIAN_V18_7",
-  "exported_at": "2026-11-26T09:28:54.628Z",
+  "exported_at": "2026-11-26T09:37:20.179Z",
   "predictions": [
     {
       "id": 1795672401270,
@@ -80,10 +80,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-3",
         "formation_away": "5-3-2",
-        "captured_at": "2026-11-26T09:28:53.621Z"
+        "captured_at": "2026-11-26T09:37:19.638Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:53.621Z"
+      "updated_at": "2026-11-26T09:37:19.638Z"
     },
     {
       "id": 1795672401064,
@@ -164,10 +164,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-3-3",
         "formation_away": "4-3-3",
-        "captured_at": "2026-11-26T09:28:54.625Z"
+        "captured_at": "2026-11-26T09:37:20.176Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:54.625Z"
+      "updated_at": "2026-11-26T09:37:20.176Z"
     },
     {
       "id": 1795672400794,
@@ -249,10 +249,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T09:28:52.600Z"
+        "captured_at": "2026-11-26T09:37:18.442Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:52.600Z"
+      "updated_at": "2026-11-26T09:37:18.442Z"
     },
     {
       "id": 1795672400159,
@@ -328,10 +328,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T09:28:52.419Z"
+        "captured_at": "2026-11-26T09:37:18.385Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:52.419Z"
+      "updated_at": "2026-11-26T09:37:18.385Z"
     },
     {
       "id": 1795672400011,
@@ -410,10 +410,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "3-4-2-1",
-        "captured_at": "2026-11-26T09:28:52.504Z"
+        "captured_at": "2026-11-26T09:37:18.383Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:52.504Z"
+      "updated_at": "2026-11-26T09:37:18.383Z"
     },
     {
       "id": 1795672399109,
@@ -501,10 +501,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "4-4-2",
-        "captured_at": "2026-11-26T09:28:50.859Z"
+        "captured_at": "2026-11-26T09:37:16.703Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:50.859Z"
+      "updated_at": "2026-11-26T09:37:16.704Z"
     },
     {
       "id": 1795672399208,
@@ -520,9 +520,9 @@
       "market_family": "Result & AH",
       "market_key": "home_dnb",
       "market_label": "Handicap 1 (0) · Union St.Gilloise DNB",
-      "model_prob": 83,
-      "raw_prob": 83.7,
-      "fair_odds": 1.2,
+      "model_prob": 82.9,
+      "raw_prob": 83.6,
+      "fair_odds": 1.21,
       "opening_odds": null,
       "bookmaker_odds": null,
       "steam_pct": null,
@@ -573,8 +573,8 @@
       "pre_xi_snapshot": {
         "market_key": "home_dnb",
         "market_label": "Handicap 1 (0) · Union St.Gilloise DNB",
-        "model_prob": 83,
-        "fair_odds": 1.2,
+        "model_prob": 82.9,
+        "fair_odds": 1.21,
         "bookmaker_odds": null,
         "projected_score": "2–0",
         "home_lambda": 2.01,
@@ -583,10 +583,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-2-1",
         "formation_away": "4-4-2",
-        "captured_at": "2026-11-26T09:28:51.186Z"
+        "captured_at": "2026-11-26T09:37:16.802Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:51.186Z"
+      "updated_at": "2026-11-26T09:37:16.802Z"
     },
     {
       "id": 1795672399325,
@@ -665,10 +665,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-2-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T09:28:50.914Z"
+        "captured_at": "2026-11-26T09:37:16.515Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:50.914Z"
+      "updated_at": "2026-11-26T09:37:16.515Z"
     },
     {
       "id": 1795672398392,
@@ -744,10 +744,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T09:28:49.644Z"
+        "captured_at": "2026-11-26T09:37:14.345Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:49.644Z"
+      "updated_at": "2026-11-26T09:37:14.345Z"
     },
     {
       "id": 1795672397634,
@@ -835,10 +835,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-2-3-1",
         "formation_away": "4-4-1-1",
-        "captured_at": "2026-11-26T09:28:49.466Z"
+        "captured_at": "2026-11-26T09:37:14.142Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:49.466Z"
+      "updated_at": "2026-11-26T09:37:14.142Z"
     },
     {
       "id": 1795672397845,
@@ -915,10 +915,10 @@
         "tier": "TIER 3: HIGH-VARIANCE PIVOT",
         "formation_home": "4-2-3-1",
         "formation_away": "DATA GAP",
-        "captured_at": "2026-11-26T09:28:49.281Z"
+        "captured_at": "2026-11-26T09:37:14.982Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:49.281Z"
+      "updated_at": "2026-11-26T09:37:14.982Z"
     },
     {
       "id": 1795672396594,
@@ -997,10 +997,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "3-4-3",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T09:28:48.085Z"
+        "captured_at": "2026-11-26T09:37:11.424Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:48.085Z"
+      "updated_at": "2026-11-26T09:37:11.424Z"
     },
     {
       "id": 1795672396822,
@@ -1079,10 +1079,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-1-4-1",
         "formation_away": "4-2-3-1",
-        "captured_at": "2026-11-26T09:28:48.163Z"
+        "captured_at": "2026-11-26T09:37:12.403Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:48.163Z"
+      "updated_at": "2026-11-26T09:37:12.403Z"
     },
     {
       "id": 1795672396110,
@@ -1160,10 +1160,10 @@
         "tier": "TIER 2: VALUE HUNTER",
         "formation_home": "4-1-4-1",
         "formation_away": "4-3-3",
-        "captured_at": "2026-11-26T09:28:48.074Z"
+        "captured_at": "2026-11-26T09:37:11.434Z"
       },
       "xi_shift": null,
-      "updated_at": "2026-11-26T09:28:48.074Z"
+      "updated_at": "2026-11-26T09:37:11.434Z"
     },
     {
       "id": 1795635747435,
@@ -5559,8 +5559,8 @@
   "synced_by": "github_actions_auto_bot",
   "usage": {
     "date": "2026-11-26",
-    "fotmob": 350,
-    "espn": 14,
+    "fotmob": 416,
+    "espn": 17,
     "api_football": 0
   },
   "emoji_cache": {
