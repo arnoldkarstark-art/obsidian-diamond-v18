@@ -1,42 +1,5 @@
 {
-  "generated_at": "2026-11-26T15:32:15.168Z",
+  "generated_at": "2026-11-27T05:54:58.822Z",
   "calls_used": 3,
-  "by_match": {
-    "6112322": {
-      "home": "Crystal Palace",
-      "away": "Real Sociedad",
-      "fetched_at": "2026-11-26T15:32:28.575Z",
-      "risk_level": "CLEAR",
-      "signals": [
-        "TEAM_NEWS"
-      ],
-      "headlines": [
-        {
-          "title": "The Shortlist: Real Sociedad gem Jon Martin is well worth €60m punt for Barcelona, Real Madrid and Premier League heavyweights",
-          "source": "Yahoo Entertainment",
-          "published_at": "2026-11-25T07:00:00Z",
-          "url": "https://consent.yahoo.com/v2/collectConsent?sessionId=1_cc-session_ca18beb0-3925-42ce-bd72-f4ced97bd671",
-          "tag": "TEAM_NEWS"
-        }
-      ]
-    },
-    "6112352": {
-      "home": "Hoffenheim",
-      "away": "Sturm Graz",
-      "fetched_at": "2026-11-26T15:32:28.689Z",
-      "risk_level": "CLEAR",
-      "signals": [
-        "TEAM_NEWS"
-      ],
-      "headlines": [
-        {
-          "title": "TSG Hoffenheim vs. Sturm Graz preview: Team news and predicted lineups",
-          "source": "Bulinews.com",
-          "published_at": "2026-11-25T07:59:00Z",
-          "url": "https://bulinews.com/tsg-hoffenheim-sturm-graz-preview-team-news-and-predicted-lineups",
-          "tag": "TEAM_NEWS"
-        }
-      ]
-    }
-  }
+  "by_match": {}
 }
