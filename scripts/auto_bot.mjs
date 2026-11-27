@@ -1247,7 +1247,8 @@ async function main() {
   const afKey = (process.env.API_FOOTBALL_KEY || "").trim();
   if (afKey) {
     localStorage.setItem("obsidian_v18_af_key", afKey);
-    localStorage.setItem("obsidian_v18_af_autofill", "true");
+    localStorage.setItem("obsidian_v18_af_auto", "1");
+    console.log("[Obsidian V18.8 Auto-Bot] API-Football Secret active -> Auto-Fill Gaps ON");
   }
 
   const engineCode = loadEngineSource();
@@ -1255,7 +1256,7 @@ async function main() {
     localStorage,
     fetch: globalThis.fetch,
     console, Date, Math, Set, Map, Promise, JSON, Number, String, Array, Object, Boolean, Error, TypeError,
-    Intl, parseInt, parseFloat, isNaN, encodeURIComponent,
+    Intl, parseInt, parseFloat, isNaN, encodeURIComponent, URLSearchParams,
   };
   vm.createContext(ctx);
   vm.runInContext(engineCode + "\nglobalThis.ObsidianEngine = ObsidianEngine;", ctx);
