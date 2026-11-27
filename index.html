@@ -17,6 +17,7 @@
   <style>
 /* ENGINE BOLA — Kinetic Midnight Stadium & Fluid Liquid Glass System */
 :root {
+  color-scheme: dark;
   --bg-canvas: #04080f;
   --bg-elev-1: rgba(9, 15, 25, 0.72);
   --bg-elev-2: rgba(13, 21, 34, 0.80);
@@ -404,9 +405,10 @@ html, body {
 
 .date-chip:hover { color: var(--ink-primary); background: rgba(255, 255, 255, 0.08); }
 .date-chip.active {
-  background: var(--ink-primary);
-  color: #09090b;
-  border-color: transparent;
+  background: linear-gradient(135deg, rgba(56, 217, 255, 0.22), rgba(43, 224, 141, 0.16));
+  color: #eef8ff;
+  border-color: rgba(56, 217, 255, 0.48);
+  box-shadow: 0 2px 10px rgba(56, 217, 255, 0.12);
   font-weight: 600;
 }
 
@@ -1143,10 +1145,19 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
 }
 .btn:active { transform: scale(0.98); }
 .btn-primary {
-  background: var(--ink-primary);
-  color: #09090b;
+  background: linear-gradient(135deg, rgba(56, 217, 255, 0.20), rgba(43, 224, 141, 0.16));
+  border-color: rgba(56, 217, 255, 0.46);
+  color: #eef8ff;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(56, 217, 255, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
-.btn-primary:hover { background: #ffffff; }
+.btn-primary:hover {
+  background: linear-gradient(135deg, rgba(56, 217, 255, 0.30), rgba(43, 224, 141, 0.24));
+  border-color: rgba(56, 217, 255, 0.72);
+  color: #ffffff;
+  box-shadow: 0 6px 22px rgba(56, 217, 255, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
 .btn-secondary {
   background: rgba(255, 255, 255, 0.09);
   border-color: var(--border-subtle);
@@ -1262,14 +1273,44 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   border-bottom: 1px solid var(--border-hairline);
 }
 .slip-leg-row:last-child { border-bottom: none; }
+select {
+  color-scheme: dark;
+}
+select option, select optgroup {
+  background-color: #0b1524;
+  color: #e8f1fc;
+}
+select option:checked, select option:hover, select option:focus {
+  background-color: #163354;
+  color: #38d9ff;
+}
 .slip-select {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-subtle);
-  color: var(--ink-primary);
-  border-radius: 8px;
-  padding: 7px 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: rgba(11, 21, 36, 0.78);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2389b4d8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(118, 178, 255, 0.24);
+  color: #edf5ff;
+  border-radius: 9px;
+  padding: 7px 30px 7px 12px;
   font-family: inherit;
   font-size: 12.5px;
+  cursor: pointer;
+  color-scheme: dark;
+  transition: border-color 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
+}
+.slip-select:hover {
+  background-color: rgba(16, 30, 50, 0.88);
+  border-color: rgba(56, 217, 255, 0.44);
+}
+.slip-select:focus {
+  outline: none;
+  border-color: rgba(56, 217, 255, 0.65);
+  box-shadow: 0 0 0 3px rgba(56, 217, 255, 0.14);
 }
 
 .slip-results {
@@ -2634,19 +2675,89 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
 }
 .parlay-market-select {
   width: 100%;
-  background: rgba(255, 255, 255, 0.055);
-  border: 1px solid var(--border-hairline);
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: rgba(11, 21, 36, 0.78);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%2389b4d8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(118, 178, 255, 0.22);
   border-radius: 8px;
-  padding: 5px 8px;
-  color: var(--ink-secondary);
+  padding: 5px 26px 5px 9px;
+  color: var(--ink-primary);
   font-family: inherit;
   font-size: 11.5px;
   outline: none;
   cursor: pointer;
+  color-scheme: dark;
+}
+.parlay-market-select:hover {
+  border-color: rgba(56, 217, 255, 0.45);
+  background-color: rgba(16, 30, 50, 0.88);
 }
 .parlay-market-select:focus {
   border-color: var(--ice);
   color: var(--ink-primary);
+  box-shadow: 0 0 0 3px rgba(56, 217, 255, 0.14);
+}
+@supports (appearance: base-select) {
+  .slip-select, .parlay-market-select {
+    appearance: base-select;
+    background-image: none;
+    padding-right: 12px;
+  }
+  .slip-select::picker(select), .parlay-market-select::picker(select) {
+    appearance: base-select;
+    background: rgba(8, 16, 28, 0.88);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(56, 217, 255, 0.28);
+    border-radius: 10px;
+    padding: 4px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+    color: #eaf3ff;
+  }
+  .slip-select option, .parlay-market-select option {
+    background: transparent;
+    color: #dce9f8;
+    padding: 7px 10px;
+    border-radius: 7px;
+  }
+  .slip-select option:hover, .parlay-market-select option:hover,
+  .slip-select option:checked, .parlay-market-select option:checked {
+    background: rgba(56, 217, 255, 0.18);
+    color: #ffffff;
+  }
+}
+.wx-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  background: rgba(56, 217, 255, 0.10);
+  border: 1px solid rgba(56, 217, 255, 0.24);
+  color: #cfe9ff;
+}
+.wx-pill.warn {
+  background: rgba(245, 185, 66, 0.14);
+  border-color: rgba(245, 185, 66, 0.36);
+  color: var(--amber);
+}
+.fusion-intel-box {
+  margin-top: 12px;
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: rgba(10, 20, 35, 0.62);
+  border: 1px solid rgba(118, 178, 255, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
 }
 .parlay-leg-stats {
   display: flex;
@@ -3384,17 +3495,17 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
     <div id="sources-list" class="sources-list"></div>
     <div class="divider" style="margin:12px 0"></div>
     <div style="display:flex;flex-direction:column;gap:6px;">
-      <label style="font-size:11px;color:var(--ink-secondary)">Optional API-Football Fallback Key (stored only on this device):</label>
+      <label style="font-size:11px;color:var(--ink-secondary)">API-Football Key (Cloud Secret via <code>/setafkey</code> otomatis aktif, atau tempel key lokal di sini):</label>
       <div style="display:flex;gap:6px;">
-        <input id="af-key-input" type="password" placeholder="Paste API-Football key (stays local)" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid var(--border-subtle);border-radius:8px;padding:6px 9px;color:var(--ink-primary);font-size:12px;font-family:var(--font-mono)" />
+        <input id="af-key-input" type="password" placeholder="Opsional override lokal (Cloud Secret otomatis)" style="flex:1;background:rgba(11,21,36,0.78);border:1px solid rgba(118,178,255,0.24);border-radius:8px;padding:6px 9px;color:var(--ink-primary);font-size:12px;font-family:var(--font-mono)" />
         <button id="btn-save-af-key" class="btn btn-secondary btn-xs">Save</button>
       </div>
       <label style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-secondary);cursor:pointer;margin-top:4px;">
         <input id="af-autofill-chk" type="checkbox" />
-        <span>Auto-fill missing Odds / Injuries / XI via API-Football (cached 6h)</span>
+        <span>Auto-fill missing Odds (1xBet) / Injuries / XI / Stats &amp; H2H via API-Football (6h cache)</span>
       </label>
     </div>
-    <p class="popover-foot">FotMob &amp; ESPN always run first (0 quota). API-Football only fills real DATA GAPs (max 95/100/day).</p>
+    <p class="popover-foot">5-Source Fusion: FotMob + ESPN Summary + Open-Meteo Weather + Squad News jalan gratis; API-Football otomatis menambal sisa DATA GAP (max 95/100/hari, shared KV cache).</p>
   </aside>
 
   <!-- Main Workspace -->
@@ -4404,7 +4515,7 @@ const ObsidianEngine = (() => {
     return out;
   }
 
-  async function fetchEspnOdds(homeName, awayName, dateIso, force = false) {
+  async function fetchEspnScoreboardRaw(dateIso, force = false) {
     const compact = dateIso.replace(/-/g, "");
     const ck = `espnOdds:${compact}`;
     let sb = force ? null : cacheGet(ck);
@@ -4415,6 +4526,36 @@ const ObsidianEngine = (() => {
         cacheSet(ck, sb, 480);
       } catch { return null; }
     }
+    return sb;
+  }
+
+  function parseEspnEventOdds(comp) {
+    const o = (comp?.odds || [])[0];
+    if (!o) return null;
+    const pick = node => {
+      const raw = node?.close?.odds ?? node?.open?.odds;
+      if (raw === undefined || raw === null) return null;
+      if (String(raw).trim().toUpperCase() === "EVEN") return 2.0;
+      return americanToDec(raw);
+    };
+    const ml = o.moneyline || {}, tot = o.total || {};
+    const hml = pick(ml.home) || americanToDec(o.homeTeamOdds?.moneyLine);
+    const aml = pick(ml.away) || americanToDec(o.awayTeamOdds?.moneyLine);
+    const dml = pick(ml.draw) || americanToDec(o.drawOdds?.moneyLine);
+    const ov = pick(tot.over) || americanToDec(o.overOdds);
+    const un = pick(tot.under) || americanToDec(o.underOdds);
+    const hOpen = americanToDec(ml.home?.open?.odds);
+    if (!hml && !aml && !ov && !un) return null;
+    return {
+      provider: o.provider?.name || "DraftKings (ESPN)", source: "espn",
+      home_win: hml, home_win_open: hOpen, draw: dml, away_win: aml,
+      ou_line: parseNum(o.overUnder) || 2.5, over: ov, under: un
+    };
+  }
+
+  async function fetchEspnOdds(homeName, awayName, dateIso, force = false) {
+    const sb = await fetchEspnScoreboardRaw(dateIso, force);
+    if (!sb) return null;
     for (const ev of (sb.events || [])) {
       const comp = (ev.competitions || [{}])[0];
       const cs = comp.competitors || [];
@@ -4422,34 +4563,263 @@ const ObsidianEngine = (() => {
       const hc = cs.find(c => c.homeAway === "home") || cs[0];
       const ac = cs.find(c => c.homeAway === "away") || cs[1];
       if (namesMatch(homeName, hc.team?.displayName) && namesMatch(awayName, ac.team?.displayName)) {
-        const o = (comp.odds || [])[0];
-        if (!o) return null;
-        const pick = node => {
-          const raw = node?.close?.odds ?? node?.open?.odds;
-          if (raw === undefined || raw === null) return null;
-          if (String(raw).trim().toUpperCase() === "EVEN") return 2.0;
-          return americanToDec(raw);
-        };
-        const ml = o.moneyline || {}, tot = o.total || {};
-        const hml = pick(ml.home) || americanToDec(o.homeTeamOdds?.moneyLine);
-        const aml = pick(ml.away) || americanToDec(o.awayTeamOdds?.moneyLine);
-        const dml = pick(ml.draw) || americanToDec(o.drawOdds?.moneyLine);
-        const ov = pick(tot.over) || americanToDec(o.overOdds);
-        const un = pick(tot.under) || americanToDec(o.underOdds);
-        const hOpen = americanToDec(ml.home?.open?.odds);
-        if (!hml && !aml && !ov && !un) return null;
-        return {
-          provider: o.provider?.name || "DraftKings (ESPN)", source: "espn",
-          home_win: hml, home_win_open: hOpen, draw: dml, away_win: aml,
-          ou_line: parseNum(o.overUnder) || 2.5, over: ov, under: un
-        };
+        return parseEspnEventOdds(comp);
       }
     }
     return null;
   }
 
+  // Multi-Source Fusion: ESPN Match Summary (FREE, CORS-open — Last-5 Form, Standings, Venue City, Rosters & Live Squad News!)
+  async function fetchEspnMatchEnrichment(homeName, awayName, dateIso, explicitEspnId = null, explicitSlug = null) {
+    let eventId = explicitEspnId ? String(explicitEspnId).replace(/^espn:/, "") : null;
+    let leagueSlug = explicitSlug || null;
+    let odds = null;
+    let venueName = null, venueCity = null, venueCountry = null;
+
+    const sb = await fetchEspnScoreboardRaw(dateIso, false);
+    if (sb) {
+      for (const ev of (sb.events || [])) {
+        const comp = (ev.competitions || [{}])[0];
+        const cs = comp.competitors || [];
+        if (cs.length < 2) continue;
+        const hc = cs.find(c => c.homeAway === "home") || cs[0];
+        const ac = cs.find(c => c.homeAway === "away") || cs[1];
+        const idHit = eventId && String(ev.id) === eventId;
+        const nameHit = namesMatch(homeName, hc.team?.displayName) && namesMatch(awayName, ac.team?.displayName);
+        if (idHit || nameHit) {
+          eventId = String(ev.id);
+          leagueSlug = ev.season?.slug || leagueSlug || "eng.1";
+          odds = parseEspnEventOdds(comp);
+          venueName = comp.venue?.fullName || null;
+          venueCity = comp.venue?.address?.city || null;
+          venueCountry = comp.venue?.address?.country || null;
+          break;
+        }
+      }
+    }
+
+    const out = {
+      event_id: eventId, league_slug: leagueSlug, odds,
+      venue_name: venueName, venue_city: venueCity, venue_country: venueCountry,
+      home_recent: [], away_recent: [], home_rest_days: null, away_rest_days: null,
+      home_table: null, away_table: null,
+      home_formation: null, away_formation: null, xi_confirmed: false,
+      news: [], filled: []
+    };
+    if (!eventId) return out;
+
+    const ckSum = `espnSum:${eventId}`;
+    let sum = cacheGet(ckSum);
+    if (!sum) {
+      try {
+        sum = await fetchJson(`${ESPN_BASE}/all/summary?event=${encodeURIComponent(eventId)}`);
+        recordCall("espn");
+        cacheSet(ckSum, sum, 600);
+      } catch {
+        return out;
+      }
+    }
+    if (!sum) return out;
+
+    const gv = sum.gameInfo?.venue;
+    if (gv?.fullName && !out.venue_name) out.venue_name = gv.fullName;
+    if (gv?.address?.city && !out.venue_city) out.venue_city = gv.address.city;
+    if (gv?.address?.country && !out.venue_country) out.venue_country = gv.address.country;
+    if (out.venue_city) out.filled.push("Venue");
+
+    // 1. Parse Last-5 Recent Matches & Rest Days
+    const parseFormGroup = (grp, teamName) => {
+      const evs = (grp?.events || []).slice(0, 6);
+      const list = [];
+      for (const e of evs) {
+        const sc = String(e.score || "").match(/(\d+)\s*[-–]\s*(\d+)/);
+        if (!sc) continue;
+        const g1 = +sc[1], g2 = +sc[2];
+        const isH = String(e.atVs || "").toLowerCase() === "vs";
+        const res = String(e.gameResult || "").toUpperCase();
+        // ESPN score is usually winner-loser or home-away; align with gameResult W/L/D
+        let gf = g1, ga = g2;
+        if (res === "W" && gf < ga) { [gf, ga] = [ga, gf]; }
+        else if (res === "L" && gf > ga) { [gf, ga] = [ga, gf]; }
+        list.push({
+          date: e.gameDate || "", comp: e.leagueName || "", isHome: isH,
+          gf, ga, res: res === "W" || res === "L" || res === "D" ? res : (gf > ga ? "W" : gf < ga ? "L" : "D")
+        });
+      }
+      return list;
+    };
+    for (const fg of (sum.lastFiveGames || [])) {
+      const tn = fg.team?.displayName || "";
+      if (namesMatch(homeName, tn)) out.home_recent = parseFormGroup(fg, homeName);
+      else if (namesMatch(awayName, tn)) out.away_recent = parseFormGroup(fg, awayName);
+    }
+    if (out.home_recent.length || out.away_recent.length) out.filled.push("Form");
+
+    // 2. Parse League Standings Table Backup
+    const entries = sum.standings?.groups?.[0]?.standings?.entries || [];
+    if (entries.length) {
+      const totalTeams = entries.length;
+      const readStat = (en, name) => {
+        const s = (en.stats || []).find(x => x.name === name || x.abbreviation === name);
+        return s ? parseNum(s.value ?? s.displayValue) : null;
+      };
+      entries.forEach((en, idx) => {
+        const tn = en.team?.displayName || en.team?.name || "";
+        const played = readStat(en, "gamesPlayed") || 0;
+        const gf = readStat(en, "pointsFor") ?? readStat(en, "goalsFor") ?? 0;
+        const ga = readStat(en, "pointsAgainst") ?? readStat(en, "goalsAgainst") ?? 0;
+        const rank = readStat(en, "rank") || (idx + 1);
+        const row = { all: { idx: rank, total_teams: totalTeams, played, gf, ga }, home: null, away: null };
+        if (namesMatch(homeName, tn) && !out.home_table) out.home_table = row;
+        else if (namesMatch(awayName, tn) && !out.away_table) out.away_table = row;
+      });
+      if (out.home_table || out.away_table) out.filled.push("Table");
+    }
+
+    // 3. Parse Rosters / Confirmed XI Backup
+    const ros = sum.rosters || [];
+    if (ros.length >= 2) {
+      const hR = ros.find(r => namesMatch(homeName, r.team?.displayName)) || ros[0];
+      const aR = ros.find(r => namesMatch(awayName, r.team?.displayName)) || ros[1];
+      if (hR?.formation) out.home_formation = hR.formation;
+      if (aR?.formation) out.away_formation = aR.formation;
+      const hSt = (hR?.roster || []).filter(p => p.starter).length;
+      const aSt = (aR?.roster || []).filter(p => p.starter).length;
+      if (hSt >= 11 && aSt >= 11) {
+        out.xi_confirmed = true;
+        out.filled.push("XI");
+      }
+    }
+
+    // 4. Parse Live Squad/Match News Headlines
+    const arts = sum.news?.articles || [];
+    const hToks = normName(homeName).split(" ").filter(w => w.length >= 4);
+    const aToks = normName(awayName).split(" ").filter(w => w.length >= 4);
+    for (const a of arts.slice(0, 8)) {
+      const hl = String(a.headline || "").trim();
+      if (!hl) continue;
+      const low = hl.toLowerCase();
+      const relevant = hToks.some(t => low.includes(t)) || aToks.some(t => low.includes(t));
+      if (relevant) {
+        out.news.push({
+          headline: hl,
+          url: a.links?.web?.href || "",
+          published: a.published || "",
+          source: "ESPN News"
+        });
+      }
+    }
+    if (out.news.length) out.filled.push("News");
+    return out;
+  }
+
+  // Multi-Source Fusion: Open-Meteo Live Stadium Kickoff Weather (ZERO-KEY, CORS-OPEN!)
+  async function fetchStadiumWeather(city, kickoffUtc) {
+    const cleanCity = String(city || "").split(",")[0].trim();
+    if (!cleanCity || cleanCity.length < 2) return null;
+    const koDate = kickoffUtc ? new Date(kickoffUtc) : null;
+    if (!koDate || Number.isNaN(koDate.getTime())) return null;
+    // Only forecast within -6h .. +6 days of kickoff
+    const diffH = (koDate.getTime() - Date.now()) / 3600000;
+    if (diffH < -6 || diffH > 144) return null;
+
+    const geoKey = `geo:${cleanCity.toLowerCase()}`;
+    let coords = afCacheGet(geoKey);
+    if (!coords) {
+      try {
+        const g = await fetchJson(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cleanCity)}&count=1&language=en&format=json`);
+        const hit = g?.results?.[0];
+        if (!hit) return null;
+        coords = { lat: hit.latitude, lon: hit.longitude, name: hit.name, country: hit.country || "" };
+        afCacheSet(geoKey, coords, 86400 * 7);
+      } catch { return null; }
+    }
+    const dayStr = koDate.toISOString().slice(0, 10);
+    const wxKey = `wx:${coords.lat.toFixed(2)},${coords.lon.toFixed(2)}:${dayStr}`;
+    let wx = cacheGet(wxKey);
+    if (!wx) {
+      try {
+        wx = await fetchJson(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&hourly=temperature_2m,precipitation_probability,precipitation,wind_speed_10m&timezone=UTC&start_date=${dayStr}&end_date=${dayStr}`);
+        cacheSet(wxKey, wx, 5400);
+      } catch { return null; }
+    }
+    const times = wx?.hourly?.time || [];
+    const targetPrefix = koDate.toISOString().slice(0, 13); // YYYY-MM-DDTHH
+    let idx = times.findIndex(t => String(t).startsWith(targetPrefix));
+    if (idx < 0) idx = Math.min(koDate.getUTCHours(), Math.max(0, times.length - 1));
+    if (idx < 0 || !times.length) return null;
+
+    const temp = +(wx.hourly.temperature_2m?.[idx] ?? 15).toFixed(1);
+    const rainMm = +(wx.hourly.precipitation?.[idx] ?? 0).toFixed(1);
+    const rainProb = Math.round(wx.hourly.precipitation_probability?.[idx] ?? 0);
+    const wind = +(wx.hourly.wind_speed_10m?.[idx] ?? 0).toFixed(1);
+
+    let severity = "CLEAR", condition = "Dry / Good Pitch", icon = "☀️";
+    if (rainMm >= 2.5 || (rainMm >= 1.5 && wind >= 28)) {
+      severity = "HEAVY_RAIN"; condition = "Heavy Rain / Wet Pitch"; icon = "🌧️";
+    } else if (wind >= 34) {
+      severity = "HIGH_WIND"; condition = "High Wind / Gusts"; icon = "💨";
+    } else if (rainMm >= 0.4 || rainProb >= 60) {
+      severity = "LIGHT_RAIN"; condition = "Light Rain / Slick Surface"; icon = "🌦️";
+    } else if (temp <= 1) {
+      severity = "FREEZING"; condition = "Freezing / Cold Pitch"; icon = "❄️";
+    }
+    return {
+      city: coords.name, country: coords.country,
+      temp_c: temp, rain_mm: rainMm, rain_prob: rainProb, wind_kmh: wind,
+      severity, condition, icon
+    };
+  }
+
   const STORE_AF_AUTO = "obsidian_v18_af_auto";
-  function getAfAutoFill() { return localStorage.getItem(STORE_AF_AUTO) === "1"; }
+  const afCloudState = { checked: false, enabled: false, source: null, used: 0, limit: 100 };
+
+  function getWorkerAuthCtx() {
+    const gateUrl = (typeof window !== "undefined" && window.OBSIDIAN_AUTH_GATE_URL) ? String(window.OBSIDIAN_AUTH_GATE_URL).replace(/\/$/, "") : "";
+    const sessTok = (typeof localStorage !== "undefined") ? (localStorage.getItem("obsidian_v18_web_session") || "") : "";
+    return { gateUrl, sessTok };
+  }
+
+  async function syncAfCloudStatus(force = false) {
+    if (afCloudState.checked && !force) return { ...afCloudState };
+    const { gateUrl, sessTok } = getWorkerAuthCtx();
+    if (!gateUrl || !sessTok) return { ...afCloudState };
+    try {
+      const resp = await fetch(`${gateUrl}/api/af-status`, { headers: { Authorization: `Bearer ${sessTok}` } });
+      if (resp.ok) {
+        const j = await resp.json();
+        afCloudState.checked = true;
+        afCloudState.enabled = !!j.enabled;
+        afCloudState.source = j.source || null;
+        afCloudState.used = Number(j.used || 0);
+        afCloudState.limit = Number(j.limit || 100);
+      }
+    } catch {}
+    return { ...afCloudState };
+  }
+
+  function getAfStatus() {
+    const localKey = getAfKey();
+    const u = getUsage();
+    const mode = localKey ? "local" : (afCloudState.enabled ? "cloud" : "none");
+    const used = mode === "cloud" ? Math.max(afCloudState.used, u.api_football) : u.api_football;
+    return {
+      enabled: mode !== "none",
+      mode,
+      source: localKey ? "local_key" : afCloudState.source,
+      used,
+      limit: afCloudState.limit || 100,
+      auto_fill: getAfAutoFill()
+    };
+  }
+
+  // Defaults to ON whenever an API-Football key (Cloud Secret or Local Key) is active, unless explicitly turned OFF ("0")!
+  function getAfAutoFill() {
+    const raw = localStorage.getItem(STORE_AF_AUTO);
+    if (raw === "0") return false;
+    if (raw === "1") return true;
+    return !!(getAfKey() || afCloudState.enabled);
+  }
   function setAfAutoFill(v) { localStorage.setItem(STORE_AF_AUTO, v ? "1" : "0"); }
 
   function afCacheGet(k) {
@@ -4469,20 +4839,51 @@ const ObsidianEngine = (() => {
     try { localStorage.setItem(`afcache:${k}`, JSON.stringify({ val, exp: Date.now() + ttlSec * 1000 })); } catch {}
   }
 
+  async function fetchAfEndpoint(endpoint, params = {}) {
+    const localKey = getAfKey();
+    const qs = new URLSearchParams(params).toString();
+    // Mode A: Direct key (GitHub Actions Secret or local Settings override)
+    if (localKey) {
+      if (getUsage().api_football >= 95) return null;
+      const resp = await fetch(`${AF_BASE}/${endpoint}?${qs}`, { headers: { "x-apisports-key": localKey } });
+      if (!resp.ok) throw new Error(`AF HTTP ${resp.status}`);
+      recordCall("api_football");
+      return await resp.json();
+    }
+    // Mode B: Secure Cloudflare Worker Cloud Secret Proxy (/api/af with shared 6h KV cache!)
+    const { gateUrl, sessTok } = getWorkerAuthCtx();
+    if (!gateUrl || !sessTok) return null;
+    if (!afCloudState.checked) await syncAfCloudStatus(false);
+    if (!afCloudState.enabled) return null;
+    if (afCloudState.used >= Math.max(92, (afCloudState.limit || 100) - 4)) return null;
+
+    const resp = await fetch(`${gateUrl}/api/af?endpoint=${encodeURIComponent(endpoint)}&${qs}`, {
+      headers: { Authorization: `Bearer ${sessTok}` }
+    });
+    const hdrUsed = Number(resp.headers.get("X-AF-Used") || -1);
+    const hdrLim = Number(resp.headers.get("X-AF-Limit") || 0);
+    const hdrCache = resp.headers.get("X-AF-Cache") || "";
+    if (hdrUsed >= 0) afCloudState.used = hdrUsed;
+    if (hdrLim > 0) afCloudState.limit = hdrLim;
+    if (!resp.ok) return null;
+    if (hdrCache !== "HIT") recordCall("api_football");
+    return await resp.json();
+  }
+
   async function fetchApiFootballEnrichment(homeName, awayName, dateIso, gaps = {}) {
-    const key = getAfKey();
-    if (!key) return null;
-    if (getUsage().api_football >= 95) return null;
-    const headers = { "x-apisports-key": key };
+    if (!getAfKey() && !afCloudState.checked) await syncAfCloudStatus(false);
+    const st = getAfStatus();
+    if (!st.enabled) return null;
+    if (st.used >= 95) return null;
     try {
-      // 1. Shared daily fixture index (1 call/day cached 6h across ALL matches!)
+      // 1. Shared daily fixture index (1 call/day cached 6h locally + in Cloudflare KV across ALL matches!)
       const ckDay = `afDay:${dateIso}`;
       let day = afCacheGet(ckDay);
       if (!day) {
-        day = await fetchJson(`${AF_BASE}/fixtures?date=${dateIso}`, headers);
-        recordCall("api_football");
-        afCacheSet(ckDay, day, 21600);
+        day = await fetchAfEndpoint("fixtures", { date: dateIso });
+        if (day?.response) afCacheSet(ckDay, day, 21600);
       }
+      if (!day?.response?.length) return null;
       const match = (day.response || []).find(it =>
         namesMatch(homeName, it.teams?.home?.name) && namesMatch(awayName, it.teams?.away?.name)
       );
@@ -4493,38 +4894,56 @@ const ObsidianEngine = (() => {
         fixture_id: fid,
         referee: match.fixture?.referee || null,
         venue: match.fixture?.venue?.name || null,
+        venue_city: match.fixture?.venue?.city || null,
         odds: null,
         home_injuries: [],
         away_injuries: [],
         home_formation: null,
         away_formation: null,
         xi_confirmed: false,
+        home_stats: null,
+        away_stats: null,
+        h2h: null,
+        ai_consensus: null,
         filled: []
       };
       if (result.referee) result.filled.push("Ref");
 
-      // 2. Odds — ONLY if ESPN had no odds
-      if (gaps.needOdds && getUsage().api_football < 95) {
+      // 2. Odds — ONLY if ESPN had no odds (prioritize 1xBet -> Pinnacle -> Bet365 -> Betano!)
+      if (gaps.needOdds && getAfStatus().used < 95) {
         const ckO = `afOdds:${fid}`;
         let od = afCacheGet(ckO);
         if (!od) {
-          od = await fetchJson(`${AF_BASE}/odds?fixture=${fid}`, headers);
-          recordCall("api_football");
-          afCacheSet(ckO, od, 21600);
+          od = await fetchAfEndpoint("odds", { fixture: String(fid) });
+          if (od) afCacheSet(ckO, od, 21600);
         }
-        const bets = od.response?.[0]?.bookmakers?.[0]?.bets || [];
-        const parsed = { provider: "API-Football Consensus", source: "api_football" };
+        const bookmakers = od?.response?.[0]?.bookmakers || [];
+        const priorityBookies = ["1xbet", "pinnacle", "bet365", "betano", "marathonbet", "william hill"];
+        let chosenBk = null;
+        for (const pName of priorityBookies) {
+          chosenBk = bookmakers.find(b => String(b.name || "").toLowerCase().includes(pName));
+          if (chosenBk) break;
+        }
+        if (!chosenBk) chosenBk = bookmakers[0];
+        const bets = chosenBk?.bets || [];
+        const parsed = { provider: `${chosenBk?.name || "API-Football"} (API-FB)`, source: "api_football" };
         for (const b of bets) {
           const bn = (b.name || "").toLowerCase();
           for (const v of (b.values || [])) {
             const val = String(v.value || ""), odd = parseNum(v.odd);
+            if (!odd || odd <= 1.01) continue;
             if (bn === "match winner") {
               if (val.toLowerCase() === "home") parsed.home_win = odd;
               if (val.toLowerCase() === "draw") parsed.draw = odd;
               if (val.toLowerCase() === "away") parsed.away_win = odd;
-            } else if (bn.includes("goals over/under")) {
+            } else if (bn === "goals over/under" || bn.includes("goals over/under")) {
               if (val === "Over 2.5") { parsed.ou_line = 2.5; parsed.over = odd; }
               if (val === "Under 2.5") parsed.under = odd;
+              if (val === "Over 3.5") parsed.over_3_5 = odd;
+              if (val === "Under 3.5") parsed.under_3_5 = odd;
+            } else if (bn.includes("first half") && bn.includes("over/under")) {
+              if (val === "Over 0.5") parsed.h1_over_0_5 = odd;
+              if (val === "Under 0.5") parsed.h1_under_0_5 = odd;
             } else if (bn.includes("both teams score")) {
               if (val.toLowerCase() === "yes") parsed.btts_yes = odd;
               if (val.toLowerCase() === "no") parsed.btts_no = odd;
@@ -4537,17 +4956,16 @@ const ObsidianEngine = (() => {
         if (Object.keys(parsed).length > 2) { result.odds = parsed; result.filled.push("Odds"); }
       }
 
-      // 3. Injuries (STAR_WATCHLIST) — ONLY if FotMob didn't provide unavailable list
-      if (gaps.needInjuries && getUsage().api_football < 95) {
+      // 3. Injuries — ONLY if FotMob didn't provide unavailable list
+      if (gaps.needInjuries && getAfStatus().used < 95) {
         const ckI = `afInj:${fid}`;
         let inj = afCacheGet(ckI);
         if (!inj) {
-          inj = await fetchJson(`${AF_BASE}/injuries?fixture=${fid}`, headers);
-          recordCall("api_football");
-          afCacheSet(ckI, inj, 21600);
+          inj = await fetchAfEndpoint("injuries", { fixture: String(fid) });
+          if (inj) afCacheSet(ckI, inj, 21600);
         }
         const seen = new Set();
-        for (const row of (inj.response || [])) {
+        for (const row of (inj?.response || [])) {
           const pname = row.player?.name;
           if (!pname || seen.has(pname)) continue;
           seen.add(pname);
@@ -4562,15 +4980,14 @@ const ObsidianEngine = (() => {
       }
 
       // 4. Confirmed Lineups & Formations — ONLY if lineup wasn't already confirmed
-      if (gaps.needLineups && getUsage().api_football < 95) {
+      if (gaps.needLineups && getAfStatus().used < 95) {
         const ckL = `afLu:${fid}`;
         let lu = afCacheGet(ckL);
         if (!lu) {
-          lu = await fetchJson(`${AF_BASE}/fixtures/lineups?fixture=${fid}`, headers);
-          recordCall("api_football");
-          afCacheSet(ckL, lu, 3600);
+          lu = await fetchAfEndpoint("fixtures/lineups", { fixture: String(fid) });
+          if (lu) afCacheSet(ckL, lu, 1800);
         }
-        const teamsLu = lu.response || [];
+        const teamsLu = lu?.response || [];
         if (teamsLu.length >= 2) {
           const hL = teamsLu.find(x => namesMatch(homeName, x.team?.name)) || teamsLu[0];
           const aL = teamsLu.find(x => namesMatch(awayName, x.team?.name)) || teamsLu[1];
@@ -4580,6 +4997,65 @@ const ObsidianEngine = (() => {
             result.xi_confirmed = true;
             result.filled.push("Confirmed XI");
           }
+        }
+      }
+
+      // 5. NEW: Predictions Deep Telemetry & H2H (1 single call fills missing Season Splits, Last-5 Form, Clean Sheets, H2H & AI Consensus!)
+      if (gaps.needStats && getAfStatus().used < 95) {
+        const ckP = `afPred:${fid}`;
+        let pr = afCacheGet(ckP);
+        if (!pr) {
+          pr = await fetchAfEndpoint("predictions", { fixture: String(fid) });
+          if (pr) afCacheSet(ckP, pr, 21600);
+        }
+        const p0 = pr?.response?.[0];
+        if (p0) {
+          const parseTeamPred = (tNode, isHome) => {
+            if (!tNode) return null;
+            const lg = tNode.league || {};
+            const l5 = tNode.last_5 || {};
+            const played = parseNum(lg.fixtures?.played?.total) || 0;
+            const csTotal = parseNum(lg.clean_sheet?.total);
+            return {
+              played,
+              goals_pm: parseNum(lg.goals?.for?.average?.total),
+              conceded_pm: parseNum(lg.goals?.against?.average?.total),
+              split_goals_pm: parseNum(isHome ? lg.goals?.for?.average?.home : lg.goals?.for?.average?.away),
+              split_conceded_pm: parseNum(isHome ? lg.goals?.against?.average?.home : lg.goals?.against?.average?.away),
+              recent_gf: parseNum(l5.goals?.for?.average),
+              recent_ga: parseNum(l5.goals?.against?.average),
+              clean_sheet_rate: (csTotal !== null && played > 0) ? +((csTotal / played) * 100).toFixed(1) : null,
+              form_str: String(lg.form || "").slice(-5)
+            };
+          };
+          result.home_stats = parseTeamPred(p0.teams?.home, true);
+          result.away_stats = parseTeamPred(p0.teams?.away, false);
+          const h2hList = (p0.h2h || []).slice(0, 6);
+          if (h2hList.length) {
+            let hW = 0, dW = 0, aW = 0, totG = 0;
+            const scores = [];
+            for (const g of h2hList) {
+              const gh = parseNum(g.goals?.home), ga = parseNum(g.goals?.away);
+              if (gh === null || ga === null) continue;
+              totG += gh + ga;
+              const isHHome = namesMatch(homeName, g.teams?.home?.name);
+              const myG = isHHome ? gh : ga, oppG = isHHome ? ga : gh;
+              if (myG > oppG) hW++; else if (myG < oppG) aW++; else dW++;
+              scores.push(`${g.teams?.home?.name?.split(" ")[0] || "H"} ${gh}-${ga} ${g.teams?.away?.name?.split(" ")[0] || "A"}`);
+            }
+            const cnt = hW + dW + aW;
+            if (cnt > 0) {
+              result.h2h = { count: cnt, home_wins: hW, draws: dW, away_wins: aW, avg_goals: +(totG / cnt).toFixed(2), last_scores: scores.slice(0, 4) };
+            }
+          }
+          const pct = p0.predictions?.percent || {};
+          result.ai_consensus = {
+            advice: p0.predictions?.advice || null,
+            home_pct: parseNum(pct.home),
+            draw_pct: parseNum(pct.draw),
+            away_pct: parseNum(pct.away)
+          };
+          result.filled.push(result.h2h ? "Stats+H2H" : "Stats");
         }
       }
 
@@ -4739,14 +5215,34 @@ const ObsidianEngine = (() => {
     const hScore = raw ? ((started || finished) ? hdr.teams?.[0]?.score ?? null : null) : (stub?.home_score ?? null);
     const aScore = raw ? ((started || finished) ? hdr.teams?.[1]?.score ?? null : null) : (stub?.away_score ?? null);
 
-    const [hTeamRaw, aTeamRaw, espnOdds] = await Promise.all([
+    const [hTeamRaw, aTeamRaw, espnEnrich] = await Promise.all([
       isEspnId ? Promise.resolve(null) : fetchTeamRaw(hId),
       isEspnId ? Promise.resolve(null) : fetchTeamRaw(aId),
-      fetchEspnOdds(hName, aName, matchDate)
+      fetchEspnMatchEnrichment(hName, aName, matchDate, isEspnId ? matchId : null, isEspnId ? lgId : null)
     ]);
+    const espnOdds = espnEnrich?.odds || null;
 
     const hRest = extractRestAndRecent(hTeamRaw, hId, koUtc, matchId);
     const aRest = extractRestAndRecent(aTeamRaw, aId, koUtc, matchId);
+    // Multi-Source Form & Rest Fallback: fill missing recent_matches & rest_days from ESPN Summary lastFiveGames!
+    const fillRestFromEspn = (restObj, espnRec) => {
+      if (!espnRec || !espnRec.length) return;
+      if (!restObj.recent_matches || restObj.recent_matches.length < 3) {
+        restObj.recent_matches = espnRec;
+      }
+      if (restObj.rest_days === null && koUtc && espnRec[0]?.date) {
+        const koMs = Date.parse(koUtc), prevMs = Date.parse(espnRec[0].date);
+        if (!Number.isNaN(koMs) && !Number.isNaN(prevMs) && koMs > prevMs) {
+          const days = +((koMs - prevMs) / 86400000).toFixed(1);
+          if (days >= 1 && days <= 30) {
+            restObj.rest_days = days;
+            restObj.wed_sat_fatigue = days <= 3.3;
+          }
+        }
+      }
+    };
+    fillRestFromEspn(hRest, espnEnrich?.home_recent);
+    fillRestFromEspn(aRest, espnEnrich?.away_recent);
 
     let seasonId = "", statsLgId = lgId;
     if (hRest.season_id && hRest.primary_league_id === lgId) seasonId = hRest.season_id;
@@ -4783,33 +5279,46 @@ const ObsidianEngine = (() => {
       const er = String(p.unavailability?.expectedReturn || "");
       return { name: p.name || "Player", tier, status: er.toLowerCase().includes("doubt") ? "DOUBTFUL" : "OUT" };
     });
-    const hLu = { ...(content.lineup?.homeTeam || {}), formation: content.lineup?.homeTeam?.formation || hTeamRaw?.overview?.lastLineupStats?.formation || null };
-    const aLu = { ...(content.lineup?.awayTeam || {}), formation: content.lineup?.awayTeam?.formation || aTeamRaw?.overview?.lastLineupStats?.formation || null };
+    const hLu = { ...(content.lineup?.homeTeam || {}), formation: content.lineup?.homeTeam?.formation || hTeamRaw?.overview?.lastLineupStats?.formation || espnEnrich?.home_formation || null };
+    const aLu = { ...(content.lineup?.awayTeam || {}), formation: content.lineup?.awayTeam?.formation || aTeamRaw?.overview?.lastLineupStats?.formation || espnEnrich?.away_formation || null };
     let hUnav = parseUnav(hLu), aUnav = parseUnav(aLu);
     const hTblMatch = raw ? extractStandings(raw, hId) : {};
     const aTblMatch = raw ? extractStandings(raw, aId) : {};
-    const hTbl = hTblMatch?.all ? hTblMatch : extractStandingsFromTeam(hTeamRaw, hId);
-    const aTbl = aTblMatch?.all ? aTblMatch : extractStandingsFromTeam(aTeamRaw, aId);
+    const hTbl = hTblMatch?.all ? hTblMatch : (extractStandingsFromTeam(hTeamRaw, hId)?.all ? extractStandingsFromTeam(hTeamRaw, hId) : (espnEnrich?.home_table || {}));
+    const aTbl = aTblMatch?.all ? aTblMatch : (extractStandingsFromTeam(aTeamRaw, aId)?.all ? extractStandingsFromTeam(aTeamRaw, aId) : (espnEnrich?.away_table || {}));
     const liveStats = raw ? extractLiveStats(raw) : {};
 
     let odds = espnOdds ? { ...espnOdds } : {};
     const sourcesUsed = [raw ? "FotMob" : (hTeamRaw || aTeamRaw ? "FotMob Teams+CDN" : "ESPN")];
     if (espnOdds) sourcesUsed.push("ESPN Odds");
+    if (espnEnrich?.filled?.length) sourcesUsed.push(`ESPN (${espnEnrich.filled.slice(0, 3).join("+")})`);
 
-    // STRICT FALLBACK ENRICHMENT: Only invokes API-Football when requested (or Auto-Fill enabled) AND real DATA GAPs exist!
+    // MULTI-SOURCE GAP ENRICHMENT: Auto-invokes API-Football (Cloud Secret Proxy or GitHub/Local Key) whenever FotMob + ESPN still have gaps!
     let afEnrich = null;
     const luTypeRaw0 = String(content.lineup?.lineupType || "").toLowerCase();
     const hStarterCount = content.lineup?.homeTeam?.starters?.length || 0;
     const aStarterCount = content.lineup?.awayTeam?.starters?.length || 0;
     const isNonOfficialLu = !luTypeRaw0 || luTypeRaw0.includes("predict") || luTypeRaw0.includes("expect") || luTypeRaw0.includes("last");
     const fotmobXiOfficial = luTypeRaw0 === "standard" || luTypeRaw0.includes("confirm") || luTypeRaw0.includes("official") || (hStarterCount >= 11 && aStarterCount >= 11 && !isNonOfficialLu) || ((isLive || finished) && hStarterCount >= 11 && aStarterCount >= 11);
+    const hasSeasonGoals = (statPM(hSS, "xg") !== null || statPM(hSS, "goals_per_match", true) !== null || (hTbl.all?.played || 0) >= 3) &&
+                           (statPM(aSS, "xg") !== null || statPM(aSS, "goals_per_match", true) !== null || (aTbl.all?.played || 0) >= 3);
+    const hasRecentBoth = (hRest.recent_matches?.length || 0) >= 3 && (aRest.recent_matches?.length || 0) >= 3;
     const needOdds = !espnOdds;
     const needInjuries = !raw && hUnav.length === 0 && aUnav.length === 0;
-    const needLineups = !fotmobXiOfficial;
-    if ((fallbackAf || getAfAutoFill()) && (needOdds || needInjuries || needLineups)) {
-      afEnrich = await fetchApiFootballEnrichment(hName, aName, matchDate, { needOdds, needInjuries, needLineups });
+    const needLineups = !fotmobXiOfficial && !espnEnrich?.xi_confirmed;
+    const needStats = !hasSeasonGoals || !hasRecentBoth || fallbackAf;
+    if (!getAfKey() && !afCloudState.checked) await syncAfCloudStatus(false);
+    if ((fallbackAf || getAfAutoFill()) && (needOdds || needInjuries || needLineups || needStats)) {
+      afEnrich = await fetchApiFootballEnrichment(hName, aName, matchDate, { needOdds, needInjuries, needLineups, needStats });
       if (afEnrich) {
         if (afEnrich.odds && !espnOdds) odds = afEnrich.odds;
+        else if (afEnrich.odds && espnOdds) {
+          // Complement ESPN odds with 1xBet/Pinnacle BTTS, Over 3.5, 1H, Corners when ESPN didn't have them
+          if (!odds.btts_yes && afEnrich.odds.btts_yes) { odds.btts_yes = afEnrich.odds.btts_yes; odds.btts_no = afEnrich.odds.btts_no; }
+          if (!odds.over_3_5 && afEnrich.odds.over_3_5) { odds.over_3_5 = afEnrich.odds.over_3_5; odds.under_3_5 = afEnrich.odds.under_3_5; }
+          if (!odds.corners_over && afEnrich.odds.corners_over) { odds.corners_over = afEnrich.odds.corners_over; odds.corners_under = afEnrich.odds.corners_under; }
+          if (!odds.h1_over_0_5 && afEnrich.odds.h1_over_0_5) { odds.h1_over_0_5 = afEnrich.odds.h1_over_0_5; odds.h1_under_0_5 = afEnrich.odds.h1_under_0_5; }
+        }
         if (afEnrich.home_injuries.length && !hUnav.length) hUnav = afEnrich.home_injuries;
         if (afEnrich.away_injuries.length && !aUnav.length) aUnav = afEnrich.away_injuries;
         if (afEnrich.home_formation && !hLu.formation) hLu.formation = afEnrich.home_formation;
@@ -4818,22 +5327,34 @@ const ObsidianEngine = (() => {
       }
     }
 
-    const buildMetrics = (ss, tbl, rest, unav, isHome) => {
+    // Resolve Stadium City across ALL sources & fetch live kickoff weather from Open-Meteo (zero-key!)
+    const infoBox0 = content.matchFacts?.infoBox || {};
+    const fmCity = (typeof infoBox0.Stadium === "object" ? infoBox0.Stadium?.city : null) || hTeamRaw?.overview?.venue?.widget?.city || null;
+    const weatherCity = fmCity || espnEnrich?.venue_city || afEnrich?.venue_city || null;
+    const weather = (!finished && weatherCity && koUtc) ? await fetchStadiumWeather(weatherCity, koUtc) : null;
+    if (weather) sourcesUsed.push(`Open-Meteo (${weather.temp_c}°C)`);
+
+    const buildMetrics = (ss, tbl, rest, unav, isHome, afStats = null) => {
       const xg = statPM(ss, "xg"), xga = statPM(ss, "xga"), cor = statPM(ss, "corners");
       const bt = statPM(ss, "box_touches"), poss = statPM(ss, "possession", true), cr = statPM(ss, "crosses", true);
       const f3 = statPM(ss, "final_third_wins", true), bcm = statPM(ss, "big_chances_missed");
-      const mp = ss.matches_played || tbl.all?.played || 0;
-      const cs = (ss.clean_sheets?.value !== undefined && mp > 0) ? (ss.clean_sheets.value / mp) * 100 : null;
-      const gpm = statPM(ss, "goals_per_match", true) ?? (tbl.all?.played ? tbl.all.gf / tbl.all.played : null);
-      const gapm = statPM(ss, "conceded_per_match", true) ?? (tbl.all?.played ? tbl.all.ga / tbl.all.played : null);
+      const mp = ss.matches_played || tbl.all?.played || afStats?.played || 0;
+      const cs = (ss.clean_sheets?.value !== undefined && mp > 0) ? (ss.clean_sheets.value / mp) * 100 : (afStats?.clean_sheet_rate ?? null);
+      const gpm = statPM(ss, "goals_per_match", true) ?? (tbl.all?.played ? tbl.all.gf / tbl.all.played : null) ?? afStats?.goals_pm ?? null;
+      const gapm = statPM(ss, "conceded_per_match", true) ?? (tbl.all?.played ? tbl.all.ga / tbl.all.played : null) ?? afStats?.conceded_pm ?? null;
       const sp = isHome ? tbl.home : tbl.away;
-      const [rgf, rga, rn] = weightedRecent(rest.recent_matches, isHome);
+      const [rgf0, rga0, rn0] = weightedRecent(rest.recent_matches, isHome);
+      const rgf = rgf0 !== null ? rgf0 : (afStats?.recent_gf ?? null);
+      const rga = rga0 !== null ? rga0 : (afStats?.recent_ga ?? null);
+      const rn = rn0 > 0 ? rn0 : (afStats?.recent_gf != null ? 5 : 0);
+      const splitG = sp?.played >= 2 ? +(sp.gf / sp.played).toFixed(2) : (afStats?.split_goals_pm ?? null);
+      const splitGA = sp?.played >= 2 ? +(sp.ga / sp.played).toFixed(2) : (afStats?.split_conceded_pm ?? null);
       return {
         xg_pm: xg !== null ? +xg.toFixed(2) : null, xga_pm: xga !== null ? +xga.toFixed(2) : null,
         xg_diff_pm: (xg !== null && xga !== null) ? +(xg - xga).toFixed(2) : null,
         goals_pm: gpm !== null ? +gpm.toFixed(2) : null, conceded_pm: gapm !== null ? +gapm.toFixed(2) : null,
-        split_goals_pm: sp?.played >= 2 ? +(sp.gf / sp.played).toFixed(2) : null,
-        split_conceded_pm: sp?.played >= 2 ? +(sp.ga / sp.played).toFixed(2) : null,
+        split_goals_pm: splitG,
+        split_conceded_pm: splitGA,
         recent_gf: rgf !== null ? +rgf.toFixed(2) : null, recent_ga: rga !== null ? +rga.toFixed(2) : null, recent_sample: rn,
         corners_pm: cor !== null ? +cor.toFixed(2) : null, box_touches_pm: bt !== null ? +bt.toFixed(1) : null,
         possession: poss !== null ? +poss.toFixed(1) : null, crosses_pm: cr !== null ? +cr.toFixed(2) : null,
@@ -4845,16 +5366,16 @@ const ObsidianEngine = (() => {
         tier_s_out: unav.filter(p => p.tier === "Tier S" && p.status === "OUT"),
         tier_s_doubt: unav.filter(p => p.tier === "Tier S" && p.status === "DOUBTFUL"),
         tier_a_out: unav.filter(p => p.tier === "Tier A" && p.status === "OUT"),
-        recent_form_str: rest.recent_matches.slice(0, 5).map(x => x.res).join("")
+        recent_form_str: rest.recent_matches.slice(0, 5).map(x => x.res).join("") || afStats?.form_str || ""
       };
     };
 
-    const hm = buildMetrics(hSS, hTbl, hRest, hUnav, true);
-    const am = buildMetrics(aSS, aTbl, aRest, aUnav, false);
+    const hm = buildMetrics(hSS, hTbl, hRest, hUnav, true, afEnrich?.home_stats);
+    const am = buildMetrics(aSS, aTbl, aRest, aUnav, false, afEnrich?.away_stats);
     const weights = getWeights();
 
-    // Lineup Confirmation Status (T-60' Gate) — FotMob marks official XIs as lineupType="standard" (pre-match="predicted")
-    const xiConfirmed = fotmobXiOfficial || !!afEnrich?.xi_confirmed;
+    // Lineup Confirmation Status (T-60' Gate) — fused across FotMob + ESPN Rosters + API-Football Lineups
+    const xiConfirmed = fotmobXiOfficial || !!espnEnrich?.xi_confirmed || !!afEnrich?.xi_confirmed;
     const xiStatus = xiConfirmed
       ? `CONFIRMED XI (${hStarterCount >= 11 ? `${hStarterCount}v${aStarterCount}` : "OFFICIAL"})`
       : hLu.formation
@@ -4932,6 +5453,9 @@ const ObsidianEngine = (() => {
     lamA *= (1 - aPen * 0.88) * (1 + hDefVuln);
     if (hm.european_hangover || hm.wed_sat_fatigue) { lamH *= 0.94; lamA *= 1.05; }
     if (am.european_hangover || am.wed_sat_fatigue) { lamA *= 0.93; lamH *= 1.06; }
+    // Open-Meteo Severe Weather Guard: heavy rain or gale wind slightly dampens clean passing/finishing efficiency
+    const severeWeather = !!(weather && (weather.severity === "HEAVY_RAIN" || weather.severity === "HIGH_WIND"));
+    if (severeWeather) { lamH *= 0.955; lamA *= 0.955; }
     lamH = clamp(lamH, 0.30, 3.55); lamA = clamp(lamA, 0.24, 3.15);
 
     const rho = weights.dixon_coles_rho;
@@ -5043,8 +5567,9 @@ const ObsidianEngine = (() => {
       hcBase *= clamp(0.92 + (hm.crosses_pm / 5) * 0.1, 0.9, 1.14);
       acBase *= clamp(0.92 + (am.crosses_pm / 5) * 0.1, 0.9, 1.14);
     }
-    const lamCH = clamp(hcBase * weights.corner_lambda_scale, 2.2, 9.2);
-    const lamCA = clamp(acBase * weights.corner_lambda_scale, 1.8, 8.4);
+    const weatherCornMult = severeWeather ? 1.04 : 1.0;
+    const lamCH = clamp(hcBase * weights.corner_lambda_scale * weatherCornMult, 2.2, 9.2);
+    const lamCA = clamp(acBase * weights.corner_lambda_scale * weatherCornMult, 1.8, 8.4);
     let bCH = 0, bCA = 0, rCH = lamCH, rCA = lamCA;
     if (isLive && liveMin && liveStats.corners && liveStats.corners[0] !== null) {
       bCH = liveStats.corners[0]; bCA = liveStats.corners[1];
@@ -5059,7 +5584,7 @@ const ObsidianEngine = (() => {
     const pCHO45 = cornersOver(4.5, rCH, bCH, 6.5), pCHO55 = cornersOver(5.5, rCH, bCH, 6.5);
     const pCAO35 = cornersOver(3.5, rCA, bCA, 6.5), pCAO45 = cornersOver(4.5, rCA, bCA, 6.5);
 
-    // 12 Mandatory Filters + Leaky Defense & Star-Shock Guards
+    // 13 Mandatory Filters + Weather, Leaky Defense & Star-Shock Guards
     const volatileComp = VOLATILE_KW.some(k => lgLow.includes(k));
     const balanced = Math.abs(pHW - pAW) < 0.13 && pD >= 0.25;
     const mirassol = (hm.xga_pm ?? 1.4) <= 1.05 && (am.xga_pm ?? 1.4) <= 1.12;
@@ -5088,7 +5613,8 @@ const ObsidianEngine = (() => {
       { name: "9. Friendly & Volatile League Veto", status: volatileComp ? "FAIL" : "PASS", detail: volatileComp ? `CRITICAL RISK: ${lgName} flagged as Friendly/Youth/State league.` : `Competitive tournament verified (${lgName}).` },
       { name: "10. Motivation & UEFA Strength Index", status: isContinental ? "WARN" : "PASS", detail: isContinental ? `Cross-league strength normalized (${getLeagueStrength(hDomLgId).toFixed(2)} vs ${getLeagueStrength(aDomLgId).toFixed(2)}) · UEFA λ calibration active.` : `Dynamic League Baseline: ${leagueBaseline.avg_goals} xG/team · ${leagueBaseline.avg_corners} corners/team (${leagueBaseline.dynamic ? leagueBaseline.teams + " clubs" : "prior"}).` },
       { name: "11. Star-Shock & Leaky Defense Audit", status: (hStarShock || aStarShock || hLeaky || aLeaky) ? "WARN" : "PASS", detail: (hStarShock || aStarShock) ? `Multiple Tier-S absences detected (${[...hm.tier_s_out, ...am.tier_s_out].map(x => x.name).join(", ")}) — attack λ reduced.` : (hLeaky || aLeaky) ? `Leaky defense flagged (${hLeaky ? `${hName} xGA ${hm.xga_pm}` : ""}${hLeaky && aLeaky ? " · " : ""}${aLeaky ? `${aName} xGA ${am.xga_pm}` : ""}) — win/DNB guarded.` : "No acute Tier-S injury shock or leaky-defense flag." },
-      { name: "12. Official Starting XI Gate (T-60')", status: (!xiConfirmed || staminaRisk) ? "WARN" : "PASS", detail: !xiConfirmed ? `${xiStatus} — BELUM termasuk susunan pemain resmi; stake dikunci 50% sampai XI rilis di T-75'/T-60' (Histori: Confirmed XI 85.7% vs Pre-XI 60.7%).` : staminaRisk ? "Official XI confirmed; elevated post-75' stamina risk." : "Official Starting XI confirmed; full execution authorized." }
+      { name: "12. Official Starting XI Gate (T-60')", status: (!xiConfirmed || staminaRisk) ? "WARN" : "PASS", detail: !xiConfirmed ? `${xiStatus} — BELUM termasuk susunan pemain resmi; stake dikunci 50% sampai XI rilis di T-75'/T-60' (Histori: Confirmed XI 85.7% vs Pre-XI 60.7%).` : staminaRisk ? "Official XI confirmed; elevated post-75' stamina risk." : "Official Starting XI confirmed; full execution authorized." },
+      { name: "13. Matchday Weather & Pitch (Open-Meteo)", status: severeWeather ? "WARN" : weather ? "PASS" : "DATA GAP", detail: weather ? `${weather.icon} ${weather.city}: ${weather.condition} (${weather.temp_c}°C · Rain ${weather.rain_mm}mm / ${weather.rain_prob}% · Wind ${weather.wind_kmh} km/h)${severeWeather ? " — goal λ damped -4.5%, corner deflections +4%." : "."}` : "Stadium city unavailable for kickoff weather forecast." }
     ];
 
     const oddsMap = {};
@@ -5103,6 +5629,10 @@ const ObsidianEngine = (() => {
       else if (ouLine === 2.75) { oddsMap["under_2_75"] = [odds.under, mu]; }
       else if (ouLine === 3.0) { oddsMap["under_3_0_asian"] = [odds.under, mu]; }
     }
+    const [po35, pu35] = devig2(odds.over_3_5, odds.under_3_5);
+    if (po35 && !oddsMap["over_3_5"]) { oddsMap["over_3_5"] = [odds.over_3_5, po35]; oddsMap["under_3_5"] = [odds.under_3_5, pu35]; }
+    const [p1ho, p1hu] = devig2(odds.h1_over_0_5, odds.h1_under_0_5);
+    if (p1ho) { oddsMap["1h_over_0_5"] = [odds.h1_over_0_5, p1ho]; }
     const [pby, pbn] = devig2(odds.btts_yes, odds.btts_no);
     if (pby) { oddsMap["btts_yes"] = [odds.btts_yes, pby]; oddsMap["btts_no"] = [odds.btts_no, pbn]; }
     const [pco, pcu] = devig2(odds.corners_over, odds.corners_under);
@@ -5403,7 +5933,7 @@ const ObsidianEngine = (() => {
 
     const infoBox = content.matchFacts?.infoBox || {};
     const venueRaw = typeof infoBox.Stadium === "object" ? infoBox.Stadium?.name : infoBox.Stadium;
-    const venue = venueRaw || afEnrich?.venue || hTeamRaw?.overview?.venue?.widget?.name || "DATA GAP";
+    const venue = venueRaw || espnEnrich?.venue_name || afEnrich?.venue || hTeamRaw?.overview?.venue?.widget?.name || "DATA GAP";
     const refRaw = typeof infoBox.Referee === "object" ? infoBox.Referee?.text : infoBox.Referee;
     const referee = refRaw || afEnrich?.referee || "DATA GAP";
     const countryCode = String(gen.countryCode || stub?.country_code || "").toUpperCase();
@@ -5417,6 +5947,7 @@ const ObsidianEngine = (() => {
       league_baseline: leagueBaseline, market_anchored: marketAnchored, lambda_market_anchored: lambdaMarketAnchored,
       xi_status: xiStatus, xi_confirmed: xiConfirmed, xi_shift: null,
       venue, referee, kickoff_utc: koUtc, match_date: matchDate,
+      weather, h2h: afEnrich?.h2h || null, af_consensus: afEnrich?.ai_consensus || null, espn_news: espnEnrich?.news || [],
       state: isLive ? "LIVE" : finished ? "FT" : "UPCOMING", is_live: isLive, finished, live_minute: liveMin,
       home: { id: hId, name: hName, flag: homeFlag, logo: crestUrl(hId), score: hScore, formation: hLu.formation || "DATA GAP", metrics: hm },
       away: { id: aId, name: aName, flag: awayFlag, logo: crestUrl(aId), score: aScore, formation: aLu.formation || "DATA GAP", metrics: am },
@@ -6744,7 +7275,7 @@ const ObsidianEngine = (() => {
   return {
     fetchMatchesByDate, fetchMatchesNext7Days, analyzeMatchById, scanDailyTopPicks, scanParlayPool, buildAutoParlay, auditSlip,
     countryCodeToFlag, getLeagueEmoji, getTeamFlag, buildXiShiftAnalysis,
-    getUsage, getAfKey, setAfKey, getAfAutoFill, setAfAutoFill, getBankrollConfig, setBankrollConfig,
+    getUsage, getAfKey, setAfKey, getAfAutoFill, setAfAutoFill, syncAfCloudStatus, getAfStatus, getBankrollConfig, setBankrollConfig,
     buildFactorSnapshot, listPredictions, savePrediction, deletePrediction, settleManual, autoSettlePending,
     recalibrateWeights, resetWeights, getAnalytics, mergeCloudMemory, exportBackup, importBackup
   };
@@ -7036,12 +7567,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const popover = document.getElementById("sources-popover");
   document.getElementById("btn-sources").addEventListener("click", () => {
     popover.classList.toggle("hidden");
+    ObsidianEngine.syncAfCloudStatus(true).then(() => {
+      const chk = document.getElementById("af-autofill-chk");
+      if (chk) chk.checked = ObsidianEngine.getAfAutoFill();
+      refreshStatus();
+    });
     refreshStatus();
   });
   document.getElementById("btn-close-sources").addEventListener("click", () => popover.classList.add("hidden"));
   document.getElementById("btn-save-af-key").addEventListener("click", () => {
     ObsidianEngine.setAfKey(document.getElementById("af-key-input").value);
-    showToast("Saved API-Football fallback key locally on this device");
+    const chk = document.getElementById("af-autofill-chk");
+    if (chk) chk.checked = ObsidianEngine.getAfAutoFill();
+    showToast(ObsidianEngine.getAfKey() ? "Saved API-Football key locally — Auto-Fill Gaps ON!" : "Local key cleared (Cloud Proxy used if configured)");
     refreshStatus();
   });
 
@@ -7158,17 +7696,28 @@ function switchView(viewName) {
 
 function refreshStatus() {
   const u = ObsidianEngine.getUsage();
-  document.getElementById("header-af-quota").textContent = `AF ${u.api_football}/100`;
+  const af = ObsidianEngine.getAfStatus();
+  const afLbl = af.mode === "cloud" ? `AF Cloud ${af.used}/${af.limit}` : af.mode === "local" ? `AF ${af.used}/${af.limit}` : `AF 0/${af.limit}`;
+  document.getElementById("header-af-quota").textContent = afLbl;
   const savedCount = ObsidianEngine.listPredictions("ALL").length;
   const memBadge = document.getElementById("memory-badge");
   memBadge.textContent = savedCount;
   memBadge.classList.toggle("hidden", savedCount === 0);
 
+  const afRole = af.mode === "cloud"
+    ? "Cloud Secret Proxy Active (6h Shared KV Cache · 1xBet Odds, Injuries, XI, Stats & H2H)"
+    : af.mode === "local"
+      ? "Local Key Active (Auto-Fill Gaps · 1xBet Odds, Injuries, XI, Stats & H2H)"
+      : "No Key Set — run /setafkey in Telegram bot or paste local key below";
+  const afStat = af.enabled ? (af.auto_fill ? "ACTIVE" : "MANUAL") : "STANDBY";
+  const afCls = af.enabled ? "tag-emerald" : "tag-amber";
+
   const items = [
-    { name: "FotMob", role: "Primary (Matches, Dynamic League xG/Corners, XI, Rest)", status: "ONLINE", quota: `${u.fotmob} calls · Free`, cls: "tag-emerald" },
-    { name: "ESPN", role: "Secondary (Live DraftKings Odds & CLV Closing Prices)", status: "ONLINE", quota: `${u.espn} calls · Free`, cls: "tag-emerald" },
-    { name: "SofaScore", role: "Optional Mirror (Anti-bot 403 respected)", status: "GATED", quota: "Protected", cls: "tag-amber" },
-    { name: "API-Football", role: ObsidianEngine.getAfKey() ? "Strict Fallback Ready (Local Key)" : "Optional Fallback (No Key Set)", status: "STANDBY", quota: `${u.api_football} / 100`, cls: "tag-ice" }
+    { name: "FotMob", role: "Primary (Matches, Dynamic League xG/Corners, Confirmed XI, Rest)", status: "ONLINE", quota: `${u.fotmob} calls · Free`, cls: "tag-emerald" },
+    { name: "ESPN Scoreboard & Summary", role: "Deep Complement (Odds, Last-5 Form, Table, Venue City, Rosters & Squad News)", status: "ONLINE", quota: `${u.espn} calls · Free`, cls: "tag-emerald" },
+    { name: "API-Football v3", role: afRole, status: afStat, quota: `${af.used} / ${af.limit}${af.mode === "cloud" ? " Cloud" : ""}`, cls: afCls },
+    { name: "Open-Meteo Weather", role: "Live Kickoff Stadium Weather (Temp, Rain mm & Wind Pitch Impact)", status: "ONLINE", quota: "Zero-Key · Free", cls: "tag-ice" },
+    { name: "Google News / BBC / ESPN Intel", role: "Breaking Squad Injuries, Suspensions & Rotation Alerts", status: "ONLINE", quota: "Auto-Synced", cls: "tag-ice" }
   ];
   document.getElementById("sources-list").innerHTML = items.map((x) => `
     <div class="source-row">
@@ -7505,12 +8054,13 @@ function renderAnalysis(a) {
             ${!a.finished ? `<span class="tag tag-ice" title="Auto-recorded to Memory for next-day 5W1H settlement">AUTO-LOGGED</span>` : ""}
             <span class="tag"><span class="league-emoji" aria-hidden="true">${lgEm}</span>${esc(a.league_name)}</span>
             <span class="tag tag-ice mono">Avg ${lb.avg_goals} xG · ${lb.avg_corners} C</span>
+            ${a.weather ? `<span class="wx-pill ${(a.weather.severity === "HEAVY_RAIN" || a.weather.severity === "HIGH_WIND") ? "warn" : ""}" title="${esc(a.weather.condition)} (${esc(a.weather.city)})">${a.weather.icon} ${esc(a.weather.city)} ${a.weather.temp_c}°C · ${a.weather.rain_mm}mm · ${a.weather.wind_kmh}km/h</span>` : ""}
             ${a.sources_used.map(s => `<span class="tag">${esc(s)}</span>`).join("")}
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
             ${a.is_live ? `<button id="btn-toggle-poll" class="toggle-chip ${state.liveAutoPoll ? "on" : ""}">Live 45s ${state.liveAutoPoll ? "ON" : "OFF"}</button>` : ""}
             <button id="btn-refresh-audit" class="btn btn-ghost btn-xs">Refresh</button>
-            <button id="btn-af-fallback" class="btn btn-ghost btn-xs" title="Fill missing Odds, Injuries (STAR_WATCHLIST), Confirmed XI & Referee via API-Football (6h cache)">API-FB Enrich Gaps</button>
+            <button id="btn-af-fallback" class="btn btn-ghost btn-xs" title="Fill missing 1xBet Odds, Injuries, Confirmed XI, Season Splits & H2H via API-Football (Cloud Proxy / Local Key)">API-FB Deep Fill</button>
           </div>
         </div>
         <div class="scoreboard-grid">
@@ -7533,6 +8083,13 @@ function renderAnalysis(a) {
             </div>
           </div>
         </div>
+        ${(a.h2h || a.af_consensus?.advice || (a.espn_news && a.espn_news.length)) ? `
+          <div class="fusion-intel-box">
+            ${a.h2h ? `<div><strong style="color:var(--ice)">⚔️ H2H (${a.h2h.count} laga):</strong> ${esc(a.home.name)} <b>${a.h2h.home_wins}W</b> · <b>${a.h2h.draws}D</b> · ${esc(a.away.name)} <b>${a.h2h.away_wins}W</b> · Avg <span class="mono text-emerald">${a.h2h.avg_goals} gol</span> <span class="text-muted">(${esc(a.h2h.last_scores.join(", "))})</span></div>` : ""}
+            ${a.af_consensus?.advice ? `<div><strong style="color:var(--emerald)">🤖 API-Football Consensus:</strong> ${esc(a.af_consensus.advice)} <span class="mono text-muted">(${a.af_consensus.home_pct ?? "?"}% / ${a.af_consensus.draw_pct ?? "?"}% / ${a.af_consensus.away_pct ?? "?"}%)</span></div>` : ""}
+            ${(a.espn_news && a.espn_news.length) ? `<div><strong style="color:var(--amber)">📰 Live ESPN Intel:</strong> ${a.espn_news.slice(0, 2).map(n => n.url ? `<a href="${esc(n.url)}" target="_blank" rel="noopener" style="color:var(--ink-primary);text-decoration:underline dotted">${esc(n.headline)}</a>` : esc(n.headline)).join(" · ")}</div>` : ""}
+          </div>
+        ` : ""}
       </div>
 
       <div class="xi-gate-banner ${a.xi_confirmed ? "confirmed" : ""}">
@@ -7751,10 +8308,14 @@ function renderAnalysis(a) {
     selectMatch(a.match_id, { silent: true, keepTab: true });
   });
   document.getElementById("btn-refresh-audit").addEventListener("click", () => selectMatch(a.match_id, { forceRefresh: true }));
-  document.getElementById("btn-af-fallback").addEventListener("click", () => {
-    if (!ObsidianEngine.getAfKey()) {
+  document.getElementById("btn-af-fallback").addEventListener("click", async () => {
+    if (!ObsidianEngine.getAfStatus().enabled) {
+      await ObsidianEngine.syncAfCloudStatus(true);
+      refreshStatus();
+    }
+    if (!ObsidianEngine.getAfStatus().enabled) {
       document.getElementById("sources-popover").classList.remove("hidden");
-      showToast("Add your optional API-Football key in the Pipeline drawer first");
+      showToast("Set API-Football key via /setafkey in Telegram bot or paste in Pipeline drawer");
       return;
     }
     selectMatch(a.match_id, { fallbackAf: true });
@@ -8907,6 +9468,11 @@ function initAuthGate() {
         overlay.classList.remove("unlocking");
       }, 360);
     }
+    ObsidianEngine.syncAfCloudStatus(true).then(() => {
+      const chk = document.getElementById("af-autofill-chk");
+      if (chk) chk.checked = ObsidianEngine.getAfAutoFill();
+      refreshStatus();
+    });
   };
 
   const verifyCurrentSession = async (isPeriodic = false) => {
