@@ -829,7 +829,7 @@ function chunkTelegramHtml(htmlText) {
   return chunks;
 }
 
-async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null, chatTypeMap = {}) {
+async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null, chatTypeMap = {}, opts = {}) {
   if (!token || !chatId) {
     console.log("TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set — printing message to stdout instead:\n" + htmlText);
     return { skipped: true };
@@ -873,11 +873,17 @@ async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null,
   const richChunks = chunkTelegramHtml(htmlText);
   const chanChunks = channelFallbackHtml ? chunkTelegramHtml(channelFallbackHtml) : richChunks;
   const forceChannelCustom = String(process.env.FORCE_CHANNEL_CUSTOM_EMOJI || "").toLowerCase() === "true";
-  const hasPremiumPublisher = Boolean(
+  const premiumDisabled =
+    String(process.env.DISABLE_PREMIUM_PUBLISHER || "").toLowerCase() === "true" ||
+    opts?.premiumPublisherEnabled === false;
+  const hasPremiumPublisher = !premiumDisabled && Boolean(
     String(process.env.TG_API_ID || "").trim() &&
     String(process.env.TG_API_HASH || "").trim() &&
     String(process.env.TG_SESSION_STRING || "").trim()
   );
+  if (premiumDisabled) {
+    console.log("[PremiumPublisher] Kill-switch active (disabled via KV/env) — using Bot API directly for broadcast channels.");
+  }
   const pendingPath = path.join(DATA_DIR, "pending_channel_post.json");
   const delegatedChannels = [];
 
@@ -972,8 +978,10 @@ async function sendTelegram(token, chatId, htmlText, channelFallbackHtml = null,
         JSON.stringify({
           created_at: new Date().toISOString(),
           targets: delegatedChannels,
+          expected_owner_id: String(opts?.ownerId || "").trim() || null,
           dashboard_url: DASHBOARD_URL,
           html: htmlText,
+          channel_fallback_html: channelFallbackHtml || stripTgEmojiTags(htmlText),
         }, null, 2),
         "utf8"
       );
@@ -1063,6 +1071,10 @@ function humanizeMarket(key, fallbackLabel, home, away) {
       title: "Total Over (3.5)",
       explain: "Menang jika tercipta minimal 4 gol sepanjang laga.",
     },
+    over_4_5: {
+      title: "Total Over (4.5)",
+      explain: "Menang jika tercipta minimal 5 gol (pesta gol · odds tinggi).",
+    },
     under_2_5: {
       title: "Total Under (2.5)",
       explain: "Menang jika total gol maksimal 2 gol (laga ketat).",
@@ -1087,6 +1099,10 @@ function humanizeMarket(key, fallbackLabel, home, away) {
       title: "BTTS No",
       explain: "Menang jika minimal satu tim gagal mencetak gol.",
     },
+    btts_over_2_5: {
+      title: "BTTS Yes & Over (2.5)",
+      explain: `Menang jika kedua tim mencetak gol dan total skor minimal 3 gol.`,
+    },
     "1h_over_0_5": {
       title: "1st Half · Total Over (0.5)",
       explain: "Menang jika sudah ada minimal 1 gol di babak pertama (HT).",
@@ -1102,6 +1118,22 @@ function humanizeMarket(key, fallbackLabel, home, away) {
     away_over_0_5: {
       title: `Individual Total 2 Over (0.5) · ${a}`,
       explain: `Menang selama ${a} mencetak minimal 1 gol.`,
+    },
+    home_over_1_5: {
+      title: `Individual Total 1 Over (1.5) · ${h}`,
+      explain: `Menang jika ${h} mencetak minimal 2 gol (tidak peduli skor lawan).`,
+    },
+    away_over_1_5: {
+      title: `Individual Total 2 Over (1.5) · ${a}`,
+      explain: `Menang jika ${a} mencetak minimal 2 gol (tidak peduli skor lawan).`,
+    },
+    home_over_2_5: {
+      title: `Individual Total 1 Over (2.5) · ${h}`,
+      explain: `Menang jika ${h} mencetak minimal 3 gol (pesta gol tim unggulan).`,
+    },
+    away_over_2_5: {
+      title: `Individual Total 2 Over (2.5) · ${a}`,
+      explain: `Menang jika ${a} mencetak minimal 3 gol (pesta gol tim unggulan).`,
     },
     home_cs_yes: {
       title: `${h} Clean Sheet - Yes (IT2 Under 0.5)`,
@@ -1146,6 +1178,22 @@ function humanizeMarket(key, fallbackLabel, home, away) {
     away_ah_p025: {
       title: `Asian Handicap 2 (+0.25) · ${a}`,
       explain: `${a} menang = profit penuh · seri = setengah profit.`,
+    },
+    home_ah_m1: {
+      title: `Asian Handicap 1 (-1) · ${h}`,
+      explain: `${h} menang ≥2 gol = profit penuh · menang tepat 1 gol = refund.`,
+    },
+    away_ah_m1: {
+      title: `Asian Handicap 2 (-1) · ${a}`,
+      explain: `${a} menang ≥2 gol = profit penuh · menang tepat 1 gol = refund.`,
+    },
+    home_ah_m15: {
+      title: `Asian Handicap 1 (-1.5) · ${h}`,
+      explain: `${h} wajib menang dengan selisih minimal 2 gol (2-0, 3-1, dll).`,
+    },
+    away_ah_m15: {
+      title: `Asian Handicap 2 (-1.5) · ${a}`,
+      explain: `${a} wajib menang dengan selisih minimal 2 gol (0-2, 1-3, dll).`,
     },
     home_ah_p1: {
       title: `Asian Handicap 1 (+1) · ${h}`,
@@ -1230,6 +1278,7 @@ async function main() {
     let targetChatIds = (process.env.TELEGRAM_CHAT_ID || "").trim();
     let extraGroupId = (process.env.TELEGRAM_GROUP_ID || "").trim();
     let ownerId = (process.env.TELEGRAM_OWNER_ID || "").trim();
+    let premiumPublisherEnabled = true;
     const gateUrl = (process.env.OBSIDIAN_GATE_URL || "").trim().replace(/\/$/, "");
     const syncSecret = (process.env.BOT_SYNC_SECRET || "").trim();
     if (gateUrl && syncSecret) {
@@ -1244,7 +1293,11 @@ async function main() {
             console.log(`[Access Gate] Synced ${subJson.chat_ids.length} target(s) (${subJson.mode || "list"}) from Cloudflare KV.`);
           }
           if (subJson.group_id && !extraGroupId) extraGroupId = String(subJson.group_id).trim();
-          if (subJson.owner_id && !ownerId) ownerId = String(subJson.owner_id).trim();
+          // Always trust live KV owner_id so Emergency Owner Takeover (/auth <RECOVERY_PIN>) immediately overrides old owner
+          if (subJson.owner_id) ownerId = String(subJson.owner_id).trim();
+          if (typeof subJson.premium_publisher_enabled === "boolean") {
+            premiumPublisherEnabled = subJson.premium_publisher_enabled;
+          }
         } else {
           console.warn(`[Access Gate] Subscriber sync returned HTTP ${subResp.status}; falling back to TELEGRAM_CHAT_ID.`);
         }
@@ -1326,7 +1379,7 @@ async function main() {
         if (meR.ok && meJ.ok && meJ.result?.username) botUsername = meJ.result.username;
       } catch {}
     }
-    return { targetChatIds: list.join(","), ownerId, botUsername, chatTypeMap };
+    return { targetChatIds: list.join(","), ownerId, botUsername, chatTypeMap, premiumPublisherEnabled };
   }
 
   // 1. Auto-settle all finished matches (server-side = no browser CORS block -> exact corners & 1H goals!)
@@ -1470,7 +1523,7 @@ async function main() {
           card.push(`${ep.uiIcon("chart", "📊")} <b>PERGESERAN PELUANG PASCA XI (${d >= 0 ? "+" : ""}${d}%):</b> <i>${escHtml(a.xi_shift.why)}</i>`);
         }
         if (sp && spInfo) {
-          card.push(`▸ <b>Pilihan Aman: ${escHtml(spInfo.title)}</b> (<b>${Math.round(sp.model_prob)}%</b>)`);
+          card.push(`▸ 🛡️ <b>Pilihan Aman: ${escHtml(spInfo.title)}</b> (<b>${Math.round(sp.model_prob)}%</b>)`);
           if (spInfo.explain) card.push(`   <i>${escHtml(spInfo.explain)}</i>`);
         }
         const priceNote = v.bookmaker_odds
@@ -1479,6 +1532,10 @@ async function main() {
         card.push(`▸ <b>Pilihan Utama: ${escHtml(priInfo.title)}</b> (<b>${Math.round(v.model_prob)}%</b>${priceNote})`);
         if (priInfo.explain && (!sp || sp.key !== v.market_key)) {
           card.push(`   <i>${escHtml(priInfo.explain)}</i>`);
+        }
+        if (v.value_booster) {
+          const vbInfo = humanizeMarket(v.value_booster.key, v.value_booster.label, a.home.name, a.away.name);
+          card.push(`▸ 🚀 <b>Value Booster (+EV): ${escHtml(vbInfo.title)}</b> (<b>${Math.round(v.value_booster.model_prob)}%</b> · Fair <b>${v.value_booster.fair_odds}x</b> · ${v.value_booster.booster_stake}u)`);
         }
         card.push(`▸ Porsi Modal: <b>${escHtml(stakeDescriptor(v.stake_units))}</b> · Est. <b>~${a.goal_model.total_lambda.toFixed(1)} gol</b>`);
         if (cm.high_volume_10_15) {
@@ -1499,7 +1556,10 @@ async function main() {
     const channelMsg = buildXiMsg(plainEmojiPack);
     try { fs.writeFileSync(path.join(DATA_DIR, "last_report.txt"), richMsg); } catch {}
     try {
-      const tgRes = await sendTelegram(tgToken, tgCtx.targetChatIds, richMsg, channelMsg, tgCtx.chatTypeMap);
+      const tgRes = await sendTelegram(tgToken, tgCtx.targetChatIds, richMsg, channelMsg, tgCtx.chatTypeMap, {
+        ownerId: tgCtx.ownerId,
+        premiumPublisherEnabled: tgCtx.premiumPublisherEnabled,
+      });
       console.log("[Telegram XI Sniper]", tgRes);
     } catch (e) {
       console.warn(`::warning title=Telegram XI Sniper not delivered::${e?.message || e}`);
@@ -1547,6 +1607,15 @@ async function main() {
     stake_units: a.verdict.stake_units,
     projected_score: a.goal_model.projected_score,
     total_lambda: a.goal_model.total_lambda,
+    value_booster: a.verdict.value_booster ? {
+      key: a.verdict.value_booster.key,
+      label: a.verdict.value_booster.label,
+      strategy_label: a.verdict.value_booster.strategy_label,
+      model_prob: a.verdict.value_booster.model_prob,
+      fair_odds: a.verdict.value_booster.fair_odds,
+      min_ev_odds: a.verdict.value_booster.min_ev_odds,
+      booster_stake: a.verdict.value_booster.booster_stake,
+    } : null,
   });
 
   const sniperPicks = (scanRes.sniper_anchors || []).slice(0, 3).map(({ analysis, market }) => compactPick(analysis, market));
@@ -1554,6 +1623,12 @@ async function main() {
     const m = a.all_markets.find((x) => x.key === a.verdict.market_key) || a.radar[0];
     return compactPick(a, m);
   });
+  const topBoosters = (scanRes.value_boosters || []).slice(0, 3).map(({ analysis, market }) => ({
+    ...compactPick(analysis, market),
+    strategy_label: market.strategy_label || "Value Booster",
+    min_ev_odds: market.min_ev_odds,
+    booster_stake: market.booster_stake,
+  }));
   const highCorners1015 = (scanRes.high_corners_10_15 || []).slice(0, 3).map((c) => ({
     match_id: c.analysis.match_id,
     league_id: c.analysis.league_id || "",
@@ -1625,6 +1700,7 @@ async function main() {
       date_label: activeDate,
       scanned: scanRes.scanned,
       sniper_picks: sniperPicks,
+      value_boosters: topBoosters,
       top_anchors: topAnchors,
       high_corners_10_15: highCorners1015,
       top_corners: topCorners,
@@ -1638,6 +1714,7 @@ async function main() {
   const toPrewarm = [
     ...sniperPicks,
     ...topAnchors,
+    ...topBoosters,
     ...(highCorners1015.length ? highCorners1015 : topCorners),
     ...topBtts,
     ...(autoParlay3?.legs || []),
@@ -1678,7 +1755,7 @@ async function main() {
       lines.push(`<blockquote>${ep.uiIcon("chart", "📊")} <b>REKAM JEJAK MODEL</b>\nAkurasi: <b>${s.hit_rate}%</b> (${s.wins} Menang · ${s.pushes} Seri · ${s.losses} Kalah)</blockquote>`);
     }
 
-    // Helper to render one clean editorial match card
+    // Helper to render one clean editorial match card (Dual-Track: Safe Pick + Value Booster!)
     const renderPickCard = (p, idx, isSniper = false) => {
       const info = humanizeMarket(p.market_key, p.market, p.home, p.away);
       const lgEm = ep.leagueIcon(p.league_id, p.league, p.league_emoji || eng.getLeagueEmoji(p.league, p.country_code));
@@ -1693,9 +1770,12 @@ async function main() {
       const card = [
         `<b>${idx + 1}. ${hFlag} ${escHtml(p.home)} vs ${aFlag} ${escHtml(p.away)}</b>`,
         `${lgEm} ${escHtml(p.league)} · <code>${escHtml(p.kickoff_dual)}</code>`,
-        `▸ Rekomendasi: <b>${escHtml(info.title)}</b>`,
-        `▸ Peluang: <b>${Math.round(p.model_prob)}%</b>${priceBit}${isSniper ? "" : ` · Porsi <b>${escHtml(stakeDescriptor(p.stake_units))}</b>`}`,
+        `▸ 🛡️ Safe Pick: <b>${escHtml(info.title)}</b> (<b>${Math.round(p.model_prob)}%</b>${priceBit}${isSniper ? "" : ` · ${escHtml(stakeDescriptor(p.stake_units))}`})`,
       ];
+      if (p.value_booster && p.value_booster.key !== p.market_key) {
+        const vbInfo = humanizeMarket(p.value_booster.key, p.value_booster.label, p.home, p.away);
+        card.push(`▸ 🚀 Value Booster: <b>${escHtml(vbInfo.title)}</b> (<b>${Math.round(p.value_booster.model_prob)}%</b> · Fair <b>${p.value_booster.fair_odds}x</b> · ${p.value_booster.booster_stake}u)`);
+      }
       if (p.xi_shift && p.xi_shift.changed && p.xi_shift.before) {
         const bInfo = humanizeMarket(p.xi_shift.before.market_key, p.xi_shift.before.market_label, p.home, p.away);
         card.push(`▸ ${ep.uiIcon("shift", "🔄")} <b>XI Shift:</b> <s>${escHtml(bInfo.title)}</s> → <b>${escHtml(info.title)}</b> (<i>${escHtml(p.xi_shift.why)}</i>)`);
@@ -1704,7 +1784,6 @@ async function main() {
         card.push(`▸ Arti Singkat: <i>${escHtml(info.explain)}</i>`);
       }
       card.push(`▸ Estimasi Tempo: <b>~${Number(p.total_lambda || 2.5).toFixed(1)} gol</b> · ${xiLine}`);
-      // Only show truly meaningful breaking news (skip generic TEAM_NEWS fluff!)
       const sigTag = (p.news_signals || []).map(newsTagIndo).find(Boolean);
       if (sigTag && p.news_headline) {
         card.push(`▸ ${escHtml(sigTag)}: <i>${escHtml(p.news_headline.slice(0, 95))}</i>`);
@@ -1714,7 +1793,7 @@ async function main() {
 
     if (sniperPicks.length) {
       lines.push("");
-      lines.push(`${ep.uiIcon("target", "🎯")} <b>PILIHAN UTAMA · AKURASI TINGGI</b>`);
+      lines.push(`${ep.uiIcon("target", "🎯")} <b>PILIHAN SAFE · AKURASI TINGGI</b>`);
       lines.push(`<i>Seleksi paling ketat — fokus peluang tertinggi &amp; proteksi modal.</i>`);
       sniperPicks.forEach((p, idx) => {
         lines.push("");
@@ -1723,7 +1802,7 @@ async function main() {
     }
 
     lines.push("");
-    lines.push(`${ep.uiIcon("radar", "📡")} <b>ANALISIS PILIHAN HARI INI</b>`);
+    lines.push(`${ep.uiIcon("radar", "📡")} <b>ANALISIS PILIHAN HARI INI (SAFE + VALUE)</b>`);
     lines.push(`<i>Disaring dari ${scanRes.scanned} pertandingan prioritas hari ini.</i>`);
     if (!topAnchors.length) {
       lines.push("");
@@ -1733,6 +1812,25 @@ async function main() {
         lines.push("");
         lines.push(renderPickCard(p, idx, false));
       });
+    }
+
+    // Dedicated High-Value Boosters block (Over 3.5 / Over 4.5 / AH -1.5 / Team O1.5) — only when within 1-message limit
+    if (topBoosters.length) {
+      const vbRows = topBoosters.map((b, i) => {
+        const info = humanizeMarket(b.market_key, b.market, b.home, b.away);
+        const hf = ep.teamIcon(b.home_id, b.home, b.home_flag);
+        const af = ep.teamIcon(b.away_id, b.away, b.away_flag);
+        const lg = ep.leagueIcon(b.league_id, b.league, b.league_emoji);
+        return `${i + 1}. ${hf} <b>${escHtml(b.home)} vs ${af} ${escHtml(b.away)}</b> (${lg} ${escHtml(b.league)})\n   ▸ <b>${escHtml(info.title)}</b> (<b>${Math.round(b.model_prob)}%</b> · Fair <b>${b.fair_odds}x</b> · Min +EV ${b.min_ev_odds})`;
+      });
+      const vbBlock = [
+        ``,
+        `🚀 <b>HIGH-VALUE BOOSTERS (+EV · OVER 3.5 / 4.5 / AH -1.5)</b>`,
+        `<blockquote>${vbRows.join("\n")}</blockquote>`,
+      ].join("\n");
+      if ((visibleTextLen(lines.join("\n")) + visibleTextLen(vbBlock) + 260) < 3850) {
+        lines.push(vbBlock);
+      }
     }
 
     if (highCorners1015.length) {
@@ -1769,8 +1867,6 @@ async function main() {
     }
 
     if (topBtts.length) {
-      lines.push("");
-      lines.push(`${ep.uiIcon("fire", "🔥")} <b>BOTH TEAMS TO SCORE (BTTS)</b>`);
       const bRows = topBtts.map((b) => {
         const info = humanizeMarket(b.market_key, b.market, b.home, b.away);
         const hf = ep.teamIcon(b.home_id, b.home, b.home_flag);
@@ -1778,8 +1874,14 @@ async function main() {
         const lg = ep.leagueIcon(b.league_id, b.league, b.league_emoji);
         return `• ${hf} <b>${escHtml(b.home)} vs ${af} ${escHtml(b.away)}</b> (${lg} ${escHtml(b.league)}) — <b>${escHtml(info.title)}</b> (<b>${Math.round(b.model_prob)}%</b>)`;
       });
-      lines.push("");
-      lines.push(`<blockquote>${bRows.join("\n")}</blockquote>`);
+      const bttsBlock = [
+        ``,
+        `${ep.uiIcon("fire", "🔥")} <b>BOTH TEAMS TO SCORE (BTTS)</b>`,
+        `<blockquote>${bRows.join("\n")}</blockquote>`,
+      ].join("\n");
+      if ((visibleTextLen(lines.join("\n")) + visibleTextLen(bttsBlock) + 220) < 3850) {
+        lines.push(bttsBlock);
+      }
     }
 
     // Append compact 3-Leg Auto-Parlay Safe only if final visible message remains under 3850 chars (1 single Telegram message!)
@@ -1821,7 +1923,11 @@ async function main() {
       tgCtx.targetChatIds,
       richMsg,
       channelMsg,
-      tgCtx.chatTypeMap
+      tgCtx.chatTypeMap,
+      {
+        ownerId: tgCtx.ownerId,
+        premiumPublisherEnabled: tgCtx.premiumPublisherEnabled,
+      }
     );
   } catch (e) {
     tgRes = { ok: false, error: String(e?.message || e) };
