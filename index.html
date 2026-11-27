@@ -1386,13 +1386,14 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   .split-layout { grid-template-columns: 300px minmax(0, 1fr); }
   .verdict-metrics { grid-template-columns: repeat(3, 1fr); }
   .kpi-strip { grid-template-columns: repeat(3, 1fr); }
-  .two-col-grid, .three-col-grid, .filters-grid { grid-template-columns: 1fr; }
+  .two-col-grid, .three-col-grid, .filters-grid { grid-template-columns: minmax(0, 1fr); }
+  .two-col-grid > *, .three-col-grid > * { min-width: 0; }
 }
 
 @media (max-width: 780px) {
   html, body { overflow-x: hidden; }
   .workspace { height: auto; overflow: visible; }
-  .split-layout { grid-template-columns: 1fr; height: auto; }
+  .split-layout { grid-template-columns: minmax(0, 1fr); height: auto; }
   .match-rail { max-height: 460px; border-right: none; border-bottom: 1px solid var(--border-hairline); }
   .analysis-canvas { padding: 14px 14px 48px; }
   .page-container { padding: 16px 14px 48px; }
@@ -3129,6 +3130,101 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
   .seg-btn .count-chip { font-size: 8.5px; padding: 0 4px; }
 }
 
+/* ---- V18.8 Dual-Track Value Booster (+EV Upside) & Missed-Value Audit ---- */
+.text-gold { color: var(--gold); }
+.booster-strip {
+  margin-top: 12px;
+  padding: 13px 15px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, rgba(56, 217, 255, 0.09), rgba(43, 224, 141, 0.06));
+  border: 1px solid rgba(56, 217, 255, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+.booster-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.booster-eyebrow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 4px;
+}
+.booster-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: var(--ice);
+  text-transform: uppercase;
+}
+.booster-pick-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin-bottom: 4px;
+}
+.booster-why {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  line-height: 1.45;
+  max-width: 640px;
+}
+.booster-alts {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.booster-alts-lbl {
+  font-size: 10.5px;
+  color: var(--ink-tertiary);
+}
+.booster-alt-chip {
+  font-size: 10.5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid var(--border-hairline);
+  color: var(--ink-secondary);
+}
+.booster-alt-chip strong { color: var(--ice); }
+.booster-right {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.booster-radar-card {
+  border-color: rgba(56, 217, 255, 0.22);
+  background: linear-gradient(160deg, rgba(56, 217, 255, 0.06), rgba(11, 18, 30, 0.85));
+}
+.mv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mv-item {
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.032);
+  border: 1px solid var(--border-hairline);
+}
+@media (max-width: 640px) {
+  .booster-right {
+    width: 100%;
+    margin-left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-hairline);
+  }
+  .booster-right > .mono { text-align: left !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .orbit-ring, .orbit-ring-2, .view.active,
   .eb-live-ball, .nav-ico-ball, .eb-radar-sweep, .eb-radar-blip, .nav-ico-pulse, .nav-ico-brain {
@@ -3578,6 +3674,32 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
 
         <div class="surface-card" style="margin-top: 20px;">
           <div class="card-head">
+            <h2>🧠 Predictology Strategy Systems (Safe vs High-Value +EV)</h2>
+            <span class="muted-tag">Live Backtest Across All Settled Matches</span>
+          </div>
+          <div id="strategy-systems-wrap" class="table-wrap"></div>
+        </div>
+
+        <div class="two-col-grid" style="margin-top: 20px;">
+          <div class="surface-card">
+            <div class="card-head">
+              <h2>📊 Probability Calibration Curve</h2>
+              <span class="muted-tag">Model Predicted % vs Actual Win %</span>
+            </div>
+            <div id="calibration-curve-wrap" class="table-wrap"></div>
+          </div>
+
+          <div class="surface-card">
+            <div class="card-head">
+              <h2>💎 Missed-Value Upside Audit (4–5+ Goals &amp; Blowouts)</h2>
+              <span class="muted-tag">Where Higher-Odds Lines Smashed</span>
+            </div>
+            <div id="missed-value-wrap"></div>
+          </div>
+        </div>
+
+        <div class="surface-card" style="margin-top: 20px;">
+          <div class="card-head">
             <h2>Per-League Historical Performance</h2>
             <span class="muted-tag">Hit Rate, Brier &amp; ROI by Competition</span>
           </div>
@@ -3680,7 +3802,8 @@ const ObsidianEngine = (() => {
   const DEFAULT_WEIGHTS = {
     home_advantage: 1.12,
     goal_lambda_scale: 1.00,
-    corner_lambda_scale: 1.00,
+    corner_lambda_scale: 0.92,
+    first_half_ratio: 0.425,
     dixon_coles_rho: -0.11,
     xg_blend_weight: 0.58,
     form_blend_weight: 0.42,
@@ -3694,7 +3817,7 @@ const ObsidianEngine = (() => {
       "Team Totals": { prob_shift: 0, confidence_mult: 1, blocked: false, samples: 0, brier: null, roi: null },
       "Result & AH": { prob_shift: 0, confidence_mult: 1, blocked: false, samples: 0, brier: null, roi: null }
     },
-    factor_penalties: { pre_xi: 0, data_gap: 0, fatigue: 0 },
+    factor_penalties: { pre_xi: 8, data_gap: 0, fatigue: 5 },
     total_settled: 0,
     last_trained_at: null
   };
@@ -4875,22 +4998,39 @@ const ObsidianEngine = (() => {
 
     const pHW = sumIf((h, a) => h > a), pD = sumIf((h, a) => h === a), pAW = sumIf((h, a) => h < a);
     const pHS = sumIf(h => h >= 1), pAS = sumIf((_, a) => a >= 1);
+    const pHO15 = sumIf(h => h >= 2), pAO15 = sumIf((_, a) => a >= 2);
+    const pHO25 = sumIf(h => h >= 3), pAO25 = sumIf((_, a) => a >= 3);
     const pBY = sumIf((h, a) => h >= 1 && a >= 1), pBN = 1 - pBY;
+    const pBttsO25 = sumIf((h, a) => h >= 1 && a >= 1 && (h + a) >= 3);
     const pHCS = sumIf((_, a) => a === 0), pACS = sumIf(h => h === 0);
-    const pO15 = sumIf((h, a) => h + a > 1.5), pO25 = sumIf((h, a) => h + a > 2.5), pU25 = 1 - pO25, pO35 = sumIf((h, a) => h + a > 3.5), pU35 = 1 - pO35;
+    const pO15 = sumIf((h, a) => h + a > 1.5), pO25 = sumIf((h, a) => h + a > 2.5), pU25 = 1 - pO25;
+    const pO35Base = sumIf((h, a) => h + a > 3.5), pU35 = 1 - pO35Base;
+    const pO45Base = sumIf((h, a) => h + a > 4.5);
+    // Mercurius Shot-Location / Box-Threat Index + Empirical Over-Dispersion Tail (90-match Var/Mean = 1.063)
+    const boxH = hm.box_touches_pm ?? 22, boxA = am.box_touches_pm ?? 20;
+    const f3H = hm.final_third_pm ?? 4.2, f3A = am.final_third_pm ?? 3.8;
+    const mercuriusAttackIdx = +clamp(((boxH + boxA) / 46) * 0.55 + ((lamH + lamA) / 3.0) * 0.35 + ((f3H + f3A) / 8.5) * 0.10, 0.55, 1.65).toFixed(2);
+    const fatTailMult = (mercuriusAttackIdx >= 1.12 && (lamH + lamA) >= 3.25) ? 1.06 : ((lamH + lamA) >= 3.45 ? 1.04 : 1.0);
+    const pO35 = clamp(pO35Base * fatTailMult, 0.03, 0.92);
+    const pO45 = clamp(pO45Base * (fatTailMult > 1 ? fatTailMult * 1.03 : 1.0), 0.02, 0.84);
     const pEq2 = sumIf((h, a) => h + a === 2), pEq3 = sumIf((h, a) => h + a === 3);
     const pO20 = pO25 / Math.max(0.05, 1 - pEq2), pU30 = pU25 / Math.max(0.05, 1 - pEq3);
     const pO225 = clamp(pO25 + 0.25 * pEq2, 0.03, 0.96);
     const pU275 = clamp(pU25 + 0.25 * pEq3, 0.03, 0.96);
 
-    // First-Half (1H) Goals: ~44.5% of total λ occurs in 1H
-    const lam1H = (lamH + lamA) * 0.445;
+    // First-Half (1H) Goals: empirically calibrated from settled matches (default 42.5% of total λ)
+    const fhRatio = clamp(weights.first_half_ratio ?? 0.425, 0.36, 0.50);
+    const lam1H = (lamH + lamA) * fhRatio;
     const p1HO05 = clamp(1 - poissonPmf(0, lam1H), 0.05, 0.95);
     const p1HO15 = clamp(1 - poissonPmf(0, lam1H) - poissonPmf(1, lam1H), 0.04, 0.90);
 
     const pHDNB = pHW / Math.max(0.05, pHW + pAW), pADNB = pAW / Math.max(0.05, pHW + pAW);
     const pHAHp1Push = sumIf((h, a) => a - h === 1), pHAHp1 = (pHW + pD) / Math.max(0.05, 1 - pHAHp1Push);
     const pAAHp1Push = sumIf((h, a) => h - a === 1), pAAHp1 = (pAW + pD) / Math.max(0.05, 1 - pAAHp1Push);
+    const pHAHm1Push = sumIf((h, a) => h - a === 1), pHAHm15 = sumIf((h, a) => h - a >= 2);
+    const pHAHm1 = pHAHm15 / Math.max(0.05, 1 - pHAHm1Push);
+    const pAAHm1Push = sumIf((h, a) => a - h === 1), pAAHm15 = sumIf((h, a) => a - h >= 2);
+    const pAAHm1 = pAAHm15 / Math.max(0.05, 1 - pAAHm1Push);
     const pHAHm025 = clamp(pHW + 0.25 * pD, 0.03, 0.96);
     const pAAHp025 = clamp(pAW + 0.75 * pD, 0.03, 0.96);
 
@@ -4939,7 +5079,7 @@ const ObsidianEngine = (() => {
     const filters = [
       { name: "1. Bookmaker Trap Veto", status: driftTrap ? "FAIL" : mh ? "PASS" : "DATA GAP", detail: driftTrap ? `Home line drifted sharply (${odds.home_win_open} -> ${odds.home_win}) — straight 1X2 vetoed.` : mh ? `Live consensus (${odds.provider}): H ${odds.home_win} / D ${odds.draw} / A ${odds.away_win}${lambdaMarketAnchored ? " (λ anchored)" : ""}.` : "No live 1X2 odds to validate trap." },
       { name: "2. European Hangover & Wed–Sat Fatigue", status: fatigue.length ? "WARN" : hm.rest_days !== null ? "PASS" : "DATA GAP", detail: fatigue.length ? fatigue.join("; ") : hm.rest_days !== null ? `Normal rest: ${hName} ${hm.rest_days}d vs ${aName} ${am.rest_days}d.` : "Rest calendar DATA GAP." },
-      { name: "3. Stylistic Matchup Priority", status: "PASS", detail: `Shape clash: ${hLu.formation || "DATA GAP"} (${hm.possession ?? "GAP"}% poss) vs ${aLu.formation || "DATA GAP"} (${am.possession ?? "GAP"}% poss).` },
+      { name: "3. Stylistic Matchup Priority", status: "PASS", detail: `Shape clash: ${hLu.formation || "DATA GAP"} (${hm.possession ?? "GAP"}% poss) vs ${aLu.formation || "DATA GAP"} (${am.possession ?? "GAP"}% poss) · Mercurius Attack Index ${mercuriusAttackIdx}.` },
       { name: "4. Derby & Balanced Match Rule", status: balanced ? "WARN" : "PASS", detail: balanced ? "50/50 tactical balance — straight 1X2 downgraded; pivot to Quarter AH / DNB / Goals / Corners." : `Clear separation (${Math.round(pHW * 100)}% vs ${Math.round(pAW * 100)}%).` },
       { name: "5. Atmosphere Illusion Filter", status: (hm.xg_diff_pm !== null && hm.xg_diff_pm < -0.25 && pHW < 0.45) ? "WARN" : "PASS", detail: (hm.xg_diff_pm !== null && hm.xg_diff_pm < -0.25) ? `${hName} carries negative xG diff (${hm.xg_diff_pm}/90) — do not back purely on home crowd.` : "Home projection supported by underlying telemetry." },
       { name: "6. Mirassol Rule (Defensive Walls)", status: mirassol ? "WARN" : "PASS", detail: mirassol ? `Dual low-xGA defensive lock (${hm.xga_pm} vs ${am.xga_pm}) — aggressive Overs suppressed.` : "No dual elite low-xGA lock." },
@@ -4948,7 +5088,7 @@ const ObsidianEngine = (() => {
       { name: "9. Friendly & Volatile League Veto", status: volatileComp ? "FAIL" : "PASS", detail: volatileComp ? `CRITICAL RISK: ${lgName} flagged as Friendly/Youth/State league.` : `Competitive tournament verified (${lgName}).` },
       { name: "10. Motivation & UEFA Strength Index", status: isContinental ? "WARN" : "PASS", detail: isContinental ? `Cross-league strength normalized (${getLeagueStrength(hDomLgId).toFixed(2)} vs ${getLeagueStrength(aDomLgId).toFixed(2)}) · UEFA λ calibration active.` : `Dynamic League Baseline: ${leagueBaseline.avg_goals} xG/team · ${leagueBaseline.avg_corners} corners/team (${leagueBaseline.dynamic ? leagueBaseline.teams + " clubs" : "prior"}).` },
       { name: "11. Star-Shock & Leaky Defense Audit", status: (hStarShock || aStarShock || hLeaky || aLeaky) ? "WARN" : "PASS", detail: (hStarShock || aStarShock) ? `Multiple Tier-S absences detected (${[...hm.tier_s_out, ...am.tier_s_out].map(x => x.name).join(", ")}) — attack λ reduced.` : (hLeaky || aLeaky) ? `Leaky defense flagged (${hLeaky ? `${hName} xGA ${hm.xga_pm}` : ""}${hLeaky && aLeaky ? " · " : ""}${aLeaky ? `${aName} xGA ${am.xga_pm}` : ""}) — win/DNB guarded.` : "No acute Tier-S injury shock or leaky-defense flag." },
-      { name: "12. Official Starting XI Gate (T-60')", status: (!xiConfirmed || staminaRisk) ? "WARN" : "PASS", detail: !xiConfirmed ? `${xiStatus} — BELUM termasuk susunan pemain resmi; stake dikunci 75% sampai XI rilis di T-75'/T-60'.` : staminaRisk ? "Official XI confirmed; elevated post-75' stamina risk." : "Official Starting XI confirmed; full execution authorized." }
+      { name: "12. Official Starting XI Gate (T-60')", status: (!xiConfirmed || staminaRisk) ? "WARN" : "PASS", detail: !xiConfirmed ? `${xiStatus} — BELUM termasuk susunan pemain resmi; stake dikunci 50% sampai XI rilis di T-75'/T-60' (Histori: Confirmed XI 85.7% vs Pre-XI 60.7%).` : staminaRisk ? "Official XI confirmed; elevated post-75' stamina risk." : "Official Starting XI confirmed; full execution authorized." }
     ];
 
     const oddsMap = {};
@@ -4978,9 +5118,11 @@ const ObsidianEngine = (() => {
       { key: "under_2_75", label: "Asian Total Under (2.75)", family: "Goals", line: 2.75, raw: pU275, push: pEq3 * 0.5, v: 0.17 },
       { key: "under_3_0_asian", label: "Total Under (3)", family: "Goals", line: 3.0, raw: pU30, push: pEq3, v: 0.14 },
       { key: "under_3_5", label: "Total Under (3.5)", family: "Goals", line: 3.5, raw: pU35, push: 0, v: 0.12 },
-      { key: "over_3_5", label: "Total Over (3.5)", family: "Goals", line: 3.5, raw: pO35, push: 0, v: 0.30 },
+      { key: "over_3_5", label: "Total Over (3.5)", family: "Goals", line: 3.5, raw: pO35, push: 0, v: 0.29 },
+      { key: "over_4_5", label: "Total Over (4.5)", family: "Goals", line: 4.5, raw: pO45, push: 0, v: 0.36 },
       { key: "btts_yes", label: "BTTS Yes", family: "BTTS", line: null, raw: pBY, push: 0, v: 0.21 },
       { key: "btts_no", label: "BTTS No", family: "BTTS", line: null, raw: pBN, push: 0, v: 0.21 },
+      { key: "btts_over_2_5", label: "BTTS Yes & Over (2.5)", family: "BTTS", line: 2.5, raw: pBttsO25, push: 0, v: 0.28 },
       { key: "corners_over_8_5", label: "Corners · Total Over (8.5)", family: "Corners", line: 8.5, raw: pCO85, push: 0, v: hasCData ? 0.20 : 0.34 },
       { key: "corners_over_9_5", label: "Corners · Total Over (9.5)", family: "Corners", line: 9.5, raw: pCO95, push: 0, v: hasCData ? 0.22 : 0.35 },
       { key: "corners_over_10_5", label: "Corners · Total Over (10.5)", family: "Corners", line: 10.5, raw: pCO105, push: 0, v: hasCData ? 0.25 : 0.38 },
@@ -5000,27 +5142,37 @@ const ObsidianEngine = (() => {
       { key: "away_cs_yes", label: `${aName} Clean Sheet - Yes (IT1 Under 0.5)`, family: "Clean Sheet", line: null, raw: pACS, push: 0, v: 0.27 },
       { key: "home_over_0_5", label: `Individual Total 1 Over (0.5) · ${hName}`, family: "Team Totals", line: 0.5, raw: pHS, push: 0, v: 0.13 },
       { key: "away_over_0_5", label: `Individual Total 2 Over (0.5) · ${aName}`, family: "Team Totals", line: 0.5, raw: pAS, push: 0, v: 0.15 },
-      { key: "1x2_home", label: `W1 (${hName} Win)`, family: "Result & AH", line: 0, raw: pHW, push: 0, v: 0.25 },
+      { key: "home_over_1_5", label: `Individual Total 1 Over (1.5) · ${hName}`, family: "Team Totals", line: 1.5, raw: pHO15, push: 0, v: 0.20 },
+      { key: "away_over_1_5", label: `Individual Total 2 Over (1.5) · ${aName}`, family: "Team Totals", line: 1.5, raw: pAO15, push: 0, v: 0.22 },
+      { key: "home_over_2_5", label: `Individual Total 1 Over (2.5) · ${hName}`, family: "Team Totals", line: 2.5, raw: pHO25, push: 0, v: 0.29 },
+      { key: "away_over_2_5", label: `Individual Total 2 Over (2.5) · ${aName}`, family: "Team Totals", line: 2.5, raw: pAO25, push: 0, v: 0.31 },
+      { key: "1x2_home", label: `W1 (${hName} Win)`, family: "Result & AH", line: 0, raw: pHW, push: 0, v: 0.24 },
       { key: "1x2_draw", label: "X (Draw)", family: "Result & AH", line: 0, raw: pD, push: 0, v: 0.34 },
-      { key: "1x2_away", label: `W2 (${aName} Win)`, family: "Result & AH", line: 0, raw: pAW, push: 0, v: 0.26 },
+      { key: "1x2_away", label: `W2 (${aName} Win)`, family: "Result & AH", line: 0, raw: pAW, push: 0, v: 0.25 },
       { key: "dc_1x", label: `Double Chance 1X (${hName})`, family: "Result & AH", line: 0.5, raw: pHW + pD, push: 0, v: 0.13 },
       { key: "dc_x2", label: `Double Chance 2X (${aName})`, family: "Result & AH", line: 0.5, raw: pAW + pD, push: 0, v: 0.14 },
       { key: "home_dnb", label: `Handicap 1 (0) · ${hName} DNB`, family: "Result & AH", line: 0, raw: pHDNB, push: pD, v: 0.16 },
       { key: "away_dnb", label: `Handicap 2 (0) · ${aName} DNB`, family: "Result & AH", line: 0, raw: pADNB, push: pD, v: 0.17 },
       { key: "home_ah_m025", label: `Asian Handicap 1 (-0.25) · ${hName}`, family: "Result & AH", line: -0.25, raw: pHAHm025, push: pD * 0.5, v: 0.19 },
       { key: "away_ah_p025", label: `Asian Handicap 2 (+0.25) · ${aName}`, family: "Result & AH", line: 0.25, raw: pAAHp025, push: pD * 0.5, v: 0.16 },
+      { key: "home_ah_m1", label: `Asian Handicap 1 (-1) · ${hName}`, family: "Result & AH", line: -1, raw: pHAHm1, push: pHAHm1Push, v: 0.23 },
+      { key: "away_ah_m1", label: `Asian Handicap 2 (-1) · ${aName}`, family: "Result & AH", line: -1, raw: pAAHm1, push: pAAHm1Push, v: 0.24 },
+      { key: "home_ah_m15", label: `Asian Handicap 1 (-1.5) · ${hName}`, family: "Result & AH", line: -1.5, raw: pHAHm15, push: 0, v: 0.28 },
+      { key: "away_ah_m15", label: `Asian Handicap 2 (-1.5) · ${aName}`, family: "Result & AH", line: -1.5, raw: pAAHm15, push: 0, v: 0.29 },
       { key: "home_ah_p1", label: `Asian Handicap 1 (+1) · ${hName}`, family: "Result & AH", line: 1, raw: pHAHp1, push: pHAHp1Push, v: 0.11 },
       { key: "away_ah_p1", label: `Asian Handicap 2 (+1) · ${aName}`, family: "Result & AH", line: 1, raw: pAAHp1, push: pAAHp1Push, v: 0.12 }
     ];
 
-    // V18.7 Thin-Data Shrinkage + Bookmaker Steam Alignment + Away Underdog Corners Guard (learned from 2026-11-25 audit!)
+    // V18.8 Thin-Data Shrinkage + XI-Aware Calibration + Bookmaker Steam Alignment + Away Underdog Corners Guard
     const hasXgData = hm.xg_pm !== null && am.xg_pm !== null;
     const isThinData = !hasXgData && !hasCData;
     const anchorW = marketAnchored ? (lambdaMarketAnchored ? 0.12 : (weights.market_anchor_weight ?? 0.30)) : 0.0;
 
     const scored = cands.map(c => {
       const cal = weights.market_calibration?.[c.family] || { prob_shift: 0, confidence_mult: 1, blocked: false };
-      let pPure = clamp(c.raw + (cal.prob_shift || 0), 0.03, 0.96);
+      // V18.8 XI-Aware Calibration: Confirmed XI bets bypass Pre-XI-induced Goals block
+      const effBlocked = Boolean(cal.blocked) && !(xiConfirmed && c.family === "Goals" && (lamH + lamA) >= 3.10);
+      let pPure = clamp(c.raw + (cal.prob_shift || 0) * (xiConfirmed ? 0.65 : 1.0), 0.03, 0.96);
       // Thin-data Bayesian shrinkage prevents overconfident 95% ratings on non-xG/non-corner minor leagues
       if (isThinData) {
         pPure = clamp(0.5 + (pPure - 0.5) * 0.84, 0.05, 0.88);
@@ -5035,18 +5187,18 @@ const ObsidianEngine = (() => {
       if (edge !== null) valStatus = edge >= 6 ? "Strong Value" : edge >= 2.5 ? "Moderate Value" : edge >= 0.5 ? "Thin Value" : edge >= -1.5 ? "No Value" : "Negative Value";
       let pen = 0; const vr = [];
       if (c.key.startsWith("1x2_") && veto1x2) { pen += 22; vr.push("1X2 vetoed by Trap/Balanced Filter"); }
-      if (driftTrap && (c.key === "home_dnb" || c.key === "home_ah_m025" || c.key === "home_ah_p1" || c.key === "dc_1x")) {
+      if (driftTrap && (c.key === "home_dnb" || c.key === "home_ah_m025" || c.key === "home_ah_m1" || c.key === "home_ah_m15" || c.key === "home_ah_p1" || c.key === "dc_1x")) {
         pen += 16; vr.push("Sharp Steam Against Home (Odds Drift Trap)");
       }
-      if (c.key === "1x2_away" && foundation) { pen += 20; vr.push("Foundation Rule: Top-3 Home Fortress"); }
-      if ((c.key === "over_2_5" || c.key === "over_3_5" || c.key === "over_2_25") && (mirassol || volatileComp)) { pen += 18; vr.push("Mirassol/Volatile suppresses Over"); }
-      if ((c.key === "over_2_5" || c.key === "over_2_25" || c.key === "over_3_5") && (hStarShock || aStarShock)) { pen += 14; vr.push("Squad Crisis / Tier-S Star-Shock suppresses aggressive Over"); }
-      if ((c.key === "1x2_home" || c.key === "home_dnb" || c.key === "home_ah_m025") && (hLeaky || hStarShock)) { pen += 16; vr.push(hStarShock ? "Home Squad Crisis / Star-Shock" : "Leaky Home Defense (xGA ≥ 1.65)"); }
-      if ((c.key === "1x2_away" || c.key === "away_dnb" || c.key === "away_ah_p025") && (aLeaky || aStarShock)) { pen += 16; vr.push(aStarShock ? "Away Squad Crisis / Star-Shock" : "Leaky Away Defense (xGA ≥ 1.65)"); }
+      if ((c.key === "1x2_away" || c.key === "away_ah_m1" || c.key === "away_ah_m15") && foundation) { pen += 20; vr.push("Foundation Rule: Top-3 Home Fortress"); }
+      if ((c.key === "over_2_5" || c.key === "over_3_5" || c.key === "over_4_5" || c.key === "over_2_25" || c.key === "btts_over_2_5") && (mirassol || volatileComp)) { pen += 18; vr.push("Mirassol/Volatile suppresses Over"); }
+      if ((c.key === "over_2_5" || c.key === "over_2_25" || c.key === "over_3_5" || c.key === "over_4_5") && (hStarShock || aStarShock)) { pen += 14; vr.push("Squad Crisis / Tier-S Star-Shock suppresses aggressive Over"); }
+      if ((c.key === "1x2_home" || c.key === "home_dnb" || c.key === "home_ah_m025" || c.key === "home_ah_m1" || c.key === "home_ah_m15" || c.key === "home_over_1_5" || c.key === "home_over_2_5") && (hLeaky || hStarShock)) { pen += 16; vr.push(hStarShock ? "Home Squad Crisis / Star-Shock" : "Leaky Home Defense (xGA ≥ 1.65)"); }
+      if ((c.key === "1x2_away" || c.key === "away_dnb" || c.key === "away_ah_p025" || c.key === "away_ah_m1" || c.key === "away_ah_m15" || c.key === "away_over_1_5" || c.key === "away_over_2_5") && (aLeaky || aStarShock)) { pen += 16; vr.push(aStarShock ? "Away Squad Crisis / Star-Shock" : "Leaky Away Defense (xGA ≥ 1.65)"); }
       if (c.family === "Corners" && !hasCData) { pen += 16; vr.push("Season corner table DATA GAP"); }
       if (c.key.startsWith("away_corners_over_") && (pHW >= 0.56 || !hasCData)) { pen += 15; vr.push("Heavy Away Underdog Team-Corners Risk"); }
       if (isThinData) { pen += 10; vr.push("Thin League Data (No xG/Corners Table)"); }
-      if (cal.blocked) { pen += 18; vr.push("Auto Edge-Policy Haircut"); }
+      if (effBlocked) { pen += 18; vr.push("Auto Edge-Policy Haircut"); }
       const fp = weights.factor_penalties || {};
       if (!xiConfirmed && fp.pre_xi > 0) { pen += fp.pre_xi; vr.push(`Learned Pre-XI Haircut (-${fp.pre_xi})`); }
       if (!hasXgData && fp.data_gap > 0) { pen += fp.data_gap; vr.push(`Learned xG-Gap Haircut (-${fp.data_gap})`); }
@@ -5101,9 +5253,10 @@ const ObsidianEngine = (() => {
         stake = Math.min(stake, Math.max(0.5, primary.kelly_units));
       }
     }
-    // Lineup & Doubtful Tier-S stake protection
-    if (stake > 0 && (doubtS || starShockAny)) stake = Math.max(0.25, +(stake * 0.5).toFixed(2));
-    else if (stake > 0 && !xiConfirmed) stake = Math.max(0.25, +(stake * 0.75).toFixed(2));
+    // V18.8 Lineup & Fatigue Stake Protection (90-match audit: Confirmed XI +7.7% ROI vs Pre-XI -22.8% ROI!)
+    if (stake > 0 && (doubtS || starShockAny)) stake = Math.max(0.25, +(stake * 0.45).toFixed(2));
+    else if (stake > 0 && !xiConfirmed) stake = Math.max(0.25, +(stake * 0.50).toFixed(2));
+    else if (stake > 0 && fatigue.length > 0) stake = Math.max(0.5, +(stake * 0.75).toFixed(2));
     else if (stake > 0) stake = +stake.toFixed(2);
 
     const chaos = Math.round(clamp(25 + (volatileComp ? 18 : 0) + (driftTrap ? 14 : 0) + (balanced ? 12 : 0) + (fatigue.length ? 10 : 0) + (doubtS ? 10 : 0) + (starShockAny ? 12 : 0) + (dataConf < 65 ? 15 : 0), 12, 94));
@@ -5116,8 +5269,8 @@ const ObsidianEngine = (() => {
     const SNIPER_KEYS = new Set(["over_1_5", "under_3_5", "dc_1x", "dc_x2", "home_ah_p1", "away_ah_p1", "home_over_0_5", "away_over_0_5", "over_2_0_asian", "under_3_0_asian", "1h_over_0_5"]);
     const isPlayableSniper = (m) => {
       if (!SNIPER_KEYS.has(m.key) || m.veto_reasons.length > 0) return false;
-      if (m.model_prob < 78 || m.model_prob > 90.5) return false; // 78–90.5% = real playable Fair 1.11–1.28
-      if (m.key === "home_ah_p1" && pHW > 0.50) return false; // bookies don't offer +1.0 on heavy favorites
+      if (m.model_prob < 78 || m.model_prob > 90.5) return false;
+      if (m.key === "home_ah_p1" && pHW > 0.50) return false;
       if (m.key === "away_ah_p1" && pAW > 0.50) return false;
       return true;
     };
@@ -5125,6 +5278,128 @@ const ObsidianEngine = (() => {
       ? (scored.filter(isPlayableSniper)
           .sort((a, b) => (b.model_prob + b.push_prob * 0.35 + b.confidence * 0.15) - (a.model_prob + a.push_prob * 0.35 + a.confidence * 0.15))[0] || null)
       : null;
+
+    // =========================================================================
+    // V18.8 DUAL-TRACK VALUE BOOSTER ENGINE (Mercurius × WinnerOdds × Oddschecker +EV × Predictology)
+    // Surfaces proven high-odds / high-probability upside plays (Over 3.5, Over 4.5, AH -1.5, Team IT O1.5/O2.5, 1H Strike)
+    // alongside the Safe Anchor so massive blowouts & 4-5 goal games aren't wasted on 1.15 DNB/AH(+1)!
+    // =========================================================================
+    const totLam = lamH + lamA;
+    const lamDiff = Math.abs(lamH - lamA);
+    const homeFav = lamH >= lamA;
+    const favName = homeFav ? hName : aName;
+    const favLam = homeFav ? lamH : lamA;
+    const favShock = homeFav ? hStarShock : aStarShock;
+    const byKey = Object.fromEntries(scored.map(m => [m.key, m]));
+    const boosterPool = [];
+
+    const pushBooster = (key, stratId, stratLabel, priorityBoost, rationale, histBench) => {
+      const m = byKey[key];
+      if (!m || m.key === primary.key) return;
+      if (m.fair_odds < 1.38 || m.fair_odds > 3.85) return;
+      if (m.model_prob < 31) return;
+      // Compute WinnerOdds/Oddschecker +EV target odds & Quarter-Kelly sizing
+      const targetMinOdds = +(1 / Math.max(0.05, (m.model_prob / 100) - 0.035)).toFixed(2);
+      const refOdds = m.bookmaker_odds || +(m.fair_odds * 1.07).toFixed(2);
+      const estEvPct = m.edge_pct !== null ? m.edge_pct : +(((m.model_prob / 100) * refOdds - 1) * (1 - (m.push_prob || 0) / 100) * 100).toFixed(1);
+      const kellyStake = clamp(+(qKelly(m.model_prob / 100, refOdds) * (xiConfirmed ? 1.0 : 0.5)).toFixed(2), 0.25, 1.75);
+      // Composite score balances true probability, upside odds multiplier, Mercurius box threat & XI certainty
+      const upsideScore = +(
+        m.model_prob * 0.72 +
+        Math.min(24, (m.fair_odds - 1.35) * 14) +
+        priorityBoost +
+        (xiConfirmed ? 8 : 0) +
+        (mercuriusAttackIdx >= 1.12 ? 4 : 0) -
+        (fatigue.length ? 4 : 0)
+      ).toFixed(1);
+      boosterPool.push({
+        ...m,
+        strategy_id: stratId,
+        strategy_label: stratLabel,
+        rationale,
+        hist_benchmark: histBench,
+        min_ev_odds: targetMinOdds,
+        est_ev_pct: estEvPct,
+        booster_stake: kellyStake,
+        upside_score: upsideScore
+      });
+    };
+
+    if (!volatileComp && !driftTrap) {
+      // 1) BLOWOUT HANDICAP (-1.5 / -1.0): 90-match backtest = 100% (7/7) Confirmed XI when |Δλ| >= 1.25 & Conf >= 65
+      if (lamDiff >= 1.20 && dataConf >= 65 && !favShock && !(homeFav === false && foundation)) {
+        const k15 = homeFav ? "home_ah_m15" : "away_ah_m15";
+        const k10 = homeFav ? "home_ah_m1" : "away_ah_m1";
+        if (byKey[k15]?.model_prob >= 42) {
+          pushBooster(k15, "BLOWOUT_HANDICAP_M15", "Blowout AH -1.5", 16,
+            `Dominasi ${favName} lebar (Δλ ${lamDiff.toFixed(2)}, ${lamH.toFixed(2)} vs ${lamA.toFixed(2)}) — pola histori menang ≥2 gol sangat kuat saat dominasi ≥1.25 λ.`,
+            "Histori XI Resmi: 100% (7/7) · +115% ROI");
+        } else if (byKey[k10]?.model_prob >= 54) {
+          pushBooster(k10, "DOMINANT_AH_M1", "Dominant AH -1.0", 12,
+            `Keunggulan ${favName} (Δλ ${lamDiff.toFixed(2)}) cukup untuk AH -1.0 — menang 1 gol modal kembali (PUSH), menang ≥2 gol profit penuh.`,
+            "Proteksi Push 1-0 + Upside Blowout");
+        }
+      }
+      // 2) TEAM FIREPOWER (Fav IT Over 1.5): 90-match backtest = 93.3% (14/15) Confirmed XI when maxλ >= 2.0
+      if (favLam >= 1.95 && dataConf >= 65 && !favShock) {
+        const kIt15 = homeFav ? "home_over_1_5" : "away_over_1_5";
+        if (byKey[kIt15]?.model_prob >= 56) {
+          pushBooster(kIt15, "TEAM_FIREPOWER_IT15", "Team Firepower (IT O1.5)", 15,
+            `${favName} proyeksi ${favLam.toFixed(2)} gol (Attack Index ${mercuriusAttackIdx}) — cukup cetak 2 gol untuk profit tanpa peduli skor lawan.`,
+            "Histori XI Resmi: 93.3% (14/15) · +54% ROI");
+        }
+      }
+      // 3) MEGA GOAL-FEST (Over 4.5): 90-match backtest = 50% (4/8) @ ~3.85 (+92.5% ROI) when totλ >= 3.80
+      if (totLam >= 3.75 && !mirassol && !starShockAny && byKey.over_4_5?.model_prob >= 31) {
+        pushBooster("over_4_5", "MEGA_GOALFEST_OVER_45", "Mega Goal-Fest (O4.5)", 13,
+          `Total tempo ekstrem ${totLam.toFixed(2)} λ (Mercurius Index ${mercuriusAttackIdx}) — laga masuk zona 5+ gol dengan payoff odds tinggi (~${byKey.over_4_5.fair_odds}x).`,
+          "Histori XI Resmi: 50% @ ~3.85x (+92% ROI)");
+      }
+      // 4) GOAL-FEST (Over 3.5): 90-match backtest = 61.5% (8/13) @ ~2.30 (+41.5% ROI) when totλ >= 3.35
+      if (totLam >= 3.30 && !mirassol && !starShockAny && byKey.over_3_5?.model_prob >= 44) {
+        pushBooster("over_3_5", "GOALFEST_OVER_35", "Goal-Fest Value (O3.5)", 14,
+          `Tempo ofensif tinggi (${totLam.toFixed(2)} λ, Attack Index ${mercuriusAttackIdx}) — upgrade value dari Over 2.5 ke Over 3.5 untuk odds ~${byKey.over_3_5.fair_odds}x.`,
+          "Histori XI Resmi: 61.5% @ ~2.30x (+41% ROI)");
+      }
+      // 5) TEAM BLITZ (Fav IT Over 2.5): 90-match backtest = 45.5% @ ~2.65 (+20.5% ROI) when maxλ >= 2.20 & |Δλ| >= 1.15
+      if (favLam >= 2.20 && lamDiff >= 1.15 && dataConf >= 65 && !favShock) {
+        const kIt25 = homeFav ? "home_over_2_5" : "away_over_2_5";
+        if (byKey[kIt25]?.model_prob >= 38) {
+          pushBooster(kIt25, "TEAM_BLITZ_IT25", "Team Blitz (IT O2.5)", 11,
+            `${favName} berpotensi pesta gol (${favLam.toFixed(2)} λ vs lawan ${Math.min(lamH, lamA).toFixed(2)} λ) — target ≥3 gol sendiri di odds ~${byKey[kIt25].fair_odds}x.`,
+            "Histori XI Resmi: +20.5% ROI");
+        }
+      }
+      // 6) GOAL-FEST (Over 2.5): 90-match backtest = 74.1%–84.6% Confirmed XI when totλ >= 3.05
+      if (totLam >= 3.00 && !mirassol && !starShockAny && byKey.over_2_5?.model_prob >= 60) {
+        pushBooster("over_2_5", "GOALFEST_OVER_25", "High-Prob Over 2.5", 11,
+          `Proyeksi ${totLam.toFixed(2)} gol tanpa hambatan Mirassol — Over 2.5 memberi odds lebih tebal daripada DNB/AH(+1) dengan probabilitas ${byKey.over_2_5.model_prob}%.`,
+          "Histori XI Resmi: 74–85% (+27–40% ROI)");
+      }
+      // 7) DOMINANT WIN (1X2): 90-match backtest = 81.3% (+23.5% ROI) when |Δλ| >= 1.10 & !veto1x2
+      if (lamDiff >= 1.05 && dataConf >= 65 && !veto1x2 && !favShock && !(homeFav === false && foundation)) {
+        const k1x2 = homeFav ? "1x2_home" : "1x2_away";
+        if (byKey[k1x2]?.model_prob >= 60 && byKey[k1x2]?.fair_odds >= 1.38) {
+          pushBooster(k1x2, "DOMINANT_WIN_1X2", "Dominant Win (1X2)", 10,
+            `${favName} unggul kelas signifikan (Δλ ${lamDiff.toFixed(2)}) — upgrade dari DNB ke Straight Win (1X2) di odds ~${byKey[k1x2].fair_odds}x.`,
+            "Histori: 81.3% · +23.5% ROI");
+        }
+      }
+      // 8) MERCURIUS 1ST-HALF STRIKE (1H Over 1.5 / 1H Over 0.5): 92.3% (12/13) on Confirmed XI when totλ >= 3.40
+      if (totLam >= 3.60 && lamDiff >= 1.15 && !starShockAny && byKey["1h_over_1_5"]?.model_prob >= 42) {
+        pushBooster("1h_over_1_5", "MERCURIUS_1H_FIRESTORM", "Mercurius 1H Over 1.5", 9,
+          `Fast-start tempo (${lam1H.toFixed(2)} λ babak pertama) — potensi ≥2 gol sebelum turun minum di odds ~${byKey["1h_over_1_5"].fair_odds}x.`,
+          "Mercurius 1H Tempo Engine (+8.5% ROI)");
+      } else if (totLam >= 3.35 && xiConfirmed && !starShockAny && byKey["1h_over_0_5"]?.model_prob >= 76) {
+        pushBooster("1h_over_0_5", "MERCURIUS_1H_STRIKE", "Mercurius 1H Over 0.5", 8,
+          `Sinyal gol babak pertama kuat (${lam1H.toFixed(2)} λ 1H, XI Resmi) — historis 92.3% (12/13) pada tempo ≥3.40 λ.`,
+          "Histori XI Resmi: 92.3% (12/13) · +20% ROI");
+      }
+    }
+
+    boosterPool.sort((a, b) => b.upside_score - a.upside_score);
+    const valueBooster = boosterPool[0] || null;
+    const valueBoosters = boosterPool.slice(0, 3);
 
     const infoBox = content.matchFacts?.infoBox || {};
     const venueRaw = typeof infoBox.Stadium === "object" ? infoBox.Stadium?.name : infoBox.Stadium;
@@ -5152,17 +5427,22 @@ const ObsidianEngine = (() => {
         bookmaker_odds: primary.bookmaker_odds, edge_pct: primary.edge_pct, value_status: primary.value_status,
         confidence: primary.confidence, stake_units: stake, kelly_units: primary.kelly_units, command: cmd,
         sniper_pick: sniperPick,
-        executive_reason: `Dixon-Coles (${lamH.toFixed(2)} vs ${lamA.toFixed(2)} λ${lambdaMarketAnchored ? ", Market-Anchored" : ""}${isContinental ? ", UEFA-Normalized" : ""}) + NegBin Corners (${(lamCH + lamCA).toFixed(1)} λ) rank ${primary.label} #1 at ${primary.model_prob}% (Fair ${primary.fair_odds})${primary.edge_pct !== null ? ` with ${primary.edge_pct > 0 ? "+" : ""}${primary.edge_pct}% EV vs ${odds.provider}.` : "; verify price in Market Radar before executing."}`,
+        value_booster: valueBooster,
+        value_boosters: valueBoosters,
+        executive_reason: `Dixon-Coles (${lamH.toFixed(2)} vs ${lamA.toFixed(2)} λ${lambdaMarketAnchored ? ", Market-Anchored" : ""}${isContinental ? ", UEFA-Normalized" : ""}) + Mercurius Index ${mercuriusAttackIdx} + NegBin Corners (${(lamCH + lamCA).toFixed(1)} λ) rank ${primary.label} #1 at ${primary.model_prob}% (Fair ${primary.fair_odds})${valueBooster ? ` · High-Value Upside: ${valueBooster.label} (${valueBooster.model_prob}% · Fair ${valueBooster.fair_odds}).` : "."}`,
         backup: radar[1] || null, safer_alternative: sniperPick || radar.slice(1).find(r => r.model_prob >= 65) || radar[2] || null, avoid: radar[radar.length - 1] || null
       },
       radar, markets_by_family: marketsByFam, all_markets: scored,
       goal_model: {
         home_lambda: +lamH.toFixed(2), away_lambda: +lamA.toFixed(2), total_lambda: +(lamH + lamA).toFixed(2),
+        mercurius_attack_index: mercuriusAttackIdx, first_half_ratio: +fhRatio.toFixed(3),
         dixon_coles_rho: rho, projected_score: projScore,
         top_scores: topScores.map(s => ({ score: `${s.h}–${s.a}`, prob: +(s.p * 100).toFixed(1) })),
         p_over_1_5: +(pO15 * 100).toFixed(1), p_over_2_5: +(pO25 * 100).toFixed(1), p_under_2_5: +(pU25 * 100).toFixed(1),
-        p_btts_yes: +(pBY * 100).toFixed(1), p_home_cs: +(pHCS * 100).toFixed(1), p_away_cs: +(pACS * 100).toFixed(1),
-        p_1h_over_0_5: +(p1HO05 * 100).toFixed(1)
+        p_over_3_5: +(pO35 * 100).toFixed(1), p_over_4_5: +(pO45 * 100).toFixed(1),
+        p_btts_yes: +(pBY * 100).toFixed(1), p_btts_over_2_5: +(pBttsO25 * 100).toFixed(1),
+        p_home_cs: +(pHCS * 100).toFixed(1), p_away_cs: +(pACS * 100).toFixed(1),
+        p_1h_over_0_5: +(p1HO05 * 100).toFixed(1), p_1h_over_1_5: +(p1HO15 * 100).toFixed(1)
       },
       corners_model: {
         has_season_data: hasCData, home_corners_lambda: +lamCH.toFixed(2), away_corners_lambda: +lamCA.toFixed(2),
@@ -5178,17 +5458,17 @@ const ObsidianEngine = (() => {
       },
       personas: {
         neville: `Structural spacing pits ${hName}'s ${hLu.formation || "DATA GAP"} (xGA ${hm.xga_pm ?? "DATA GAP"}/90, CS ${hm.clean_sheet_rate ?? "DATA GAP"}%) against ${aName}'s ${aLu.formation || "DATA GAP"} (xGA ${am.xga_pm ?? "DATA GAP"}/90).`,
-        henry: `Verticality audit: ${hName} ${hm.xg_pm ?? "DATA GAP"} xG & ${hm.box_touches_pm ?? "DATA GAP"} box touches/90 vs ${aName} ${am.xg_pm ?? "DATA GAP"} xG & ${am.box_touches_pm ?? "DATA GAP"} box touches/90. Projects ${(lamH + lamA).toFixed(2)} goal λ & ${(lamCH + lamCA).toFixed(1)} corners.`,
+        henry: `Verticality audit (Mercurius Index ${mercuriusAttackIdx}): ${hName} ${hm.xg_pm ?? "DATA GAP"} xG & ${hm.box_touches_pm ?? "DATA GAP"} box touches/90 vs ${aName} ${am.xg_pm ?? "DATA GAP"} xG & ${am.box_touches_pm ?? "DATA GAP"} box touches/90. Projects ${(lamH + lamA).toFixed(2)} goal λ (O3.5 ${(pO35 * 100).toFixed(0)}%, O4.5 ${(pO45 * 100).toFixed(0)}%) & ${(lamCH + lamCA).toFixed(1)} corners.`,
         keane: `Mentality & discipline (Ref: ${referee}): Final-3rd recoveries ${hm.final_third_pm ?? "DATA GAP"}/90 vs ${am.final_third_pm ?? "DATA GAP"}/90. ${fatigue.length ? `Fatigue alert: ${fatigue.join("; ")}.` : `Rest: ${hm.rest_days ?? "?"}d vs ${am.rest_days ?? "?"}d.`}`
       },
       filters, star_watchlist: sw, live_stats: liveStats, odds,
       risk_audit: {
         chaos_index: chaos, data_confidence: dataConf, lineup_confidence: lineupConf,
-        self_critique: !xiConfirmed ? `Prediksi ini BELUM termasuk susunan pemain (Starting XI) resmi (${xiStatus}) — stake dikunci 75% sampai XI rilis T-75'/T-60'.` : isThinData ? "Liga ini memiliki data xG/Corners terbatas — probabilitas otomatis diredam (Bayesian shrinkage)." : "Official XI confirmed; residual risk is early red card or penalty shock (0.76 xG).",
+        self_critique: !xiConfirmed ? `Prediksi ini BELUM termasuk susunan pemain (Starting XI) resmi (${xiStatus}) — stake dikunci 50% sampai XI rilis T-75'/T-60' (Histori: Confirmed XI 85.7% vs Pre-XI 60.7%).` : isThinData ? "Liga ini memiliki data xG/Corners terbatas — probabilitas otomatis diredam (Bayesian shrinkage)." : "Official XI confirmed; residual risk is early red card or penalty shock (0.76 xG).",
         failure_condition: primary.family === "Corners" ? "Early 2-0 lead slows tempo and suppresses late corners." : primary.key.includes("under") ? "Early opening goal (<15') or red card breaks compact block." : "Poor finishing variance vs xG or conservative 0-0 HT stalemate.",
         live_hedge_trigger: primary.family === "Corners" ? "If <3 corners by 35' in slow tempo, skip adding live corners." : primary.key.includes("over") ? "If 0-0 at 55' with live xG < 0.75, hedge partially into Under 1.5." : "If backed side trails at HT with <0.45 live xG, protect bankroll."
       },
-      active_learning_weights: { home_advantage: weights.home_advantage, goal_lambda_scale: weights.goal_lambda_scale, corner_lambda_scale: weights.corner_lambda_scale, dixon_coles_rho: weights.dixon_coles_rho, total_settled: weights.total_settled || 0 }
+      active_learning_weights: { home_advantage: weights.home_advantage, goal_lambda_scale: weights.goal_lambda_scale, corner_lambda_scale: weights.corner_lambda_scale, first_half_ratio: +fhRatio.toFixed(3), dixon_coles_rho: weights.dixon_coles_rho, total_settled: weights.total_settled || 0 }
     };
 
     // Autonomous Memory & Pre-XI -> Post-XI Shift Detection
@@ -5247,6 +5527,12 @@ const ObsidianEngine = (() => {
       .slice(0, 6);
     const traps = results.filter(a => a.verdict.tier_code === "TIER_4" || a.filters.some(f => f.status === "FAIL"));
 
+    const valueBoosters = [...results]
+      .filter(a => a.verdict.value_booster)
+      .map(a => ({ analysis: a, market: a.verdict.value_booster }))
+      .sort((x, y) => (y.market.upside_score || 0) - (x.market.upside_score || 0))
+      .slice(0, 6);
+
     const bestInFamily = fam => {
       const cands = [];
       results.forEach(a => {
@@ -5259,6 +5545,7 @@ const ObsidianEngine = (() => {
     return {
       scanned: results.length,
       sniper_anchors: sniperAnchors,
+      value_boosters: valueBoosters,
       anchors: anchors.slice(0, 6),
       high_corners_10_15: highCorners1015,
       best_corners: bestInFamily("Corners"),
@@ -5689,6 +5976,18 @@ const ObsidianEngine = (() => {
             home_lambda: a.goal_model.home_lambda, away_lambda: a.goal_model.away_lambda,
             home_corners_lambda: a.corners_model.home_corners_lambda, away_corners_lambda: a.corners_model.away_corners_lambda,
             projected_score: a.goal_model.projected_score,
+            value_booster: v.value_booster ? {
+              strategy_id: v.value_booster.strategy_id,
+              strategy_label: v.value_booster.strategy_label,
+              market_key: v.value_booster.key,
+              market_label: v.value_booster.label,
+              model_prob: v.value_booster.model_prob,
+              fair_odds: v.value_booster.fair_odds,
+              bookmaker_odds: v.value_booster.bookmaker_odds || null,
+              booster_stake: v.value_booster.booster_stake || 0.75,
+              status: "PENDING",
+              pnl_units: null
+            } : null,
             pre_xi_snapshot: preSnap,
             xi_shift: xiShift,
             factors, updated_at: new Date().toISOString()
@@ -5712,6 +6011,18 @@ const ObsidianEngine = (() => {
         home_lambda: a.goal_model.home_lambda, away_lambda: a.goal_model.away_lambda,
         home_corners_lambda: a.corners_model.home_corners_lambda, away_corners_lambda: a.corners_model.away_corners_lambda,
         projected_score: a.goal_model.projected_score,
+        value_booster: v.value_booster ? {
+          strategy_id: v.value_booster.strategy_id,
+          strategy_label: v.value_booster.strategy_label,
+          market_key: v.value_booster.key,
+          market_label: v.value_booster.label,
+          model_prob: v.value_booster.model_prob,
+          fair_odds: v.value_booster.fair_odds,
+          bookmaker_odds: v.value_booster.bookmaker_odds || null,
+          booster_stake: v.value_booster.booster_stake || 0.75,
+          status: "PENDING",
+          pnl_units: null
+        } : null,
         pre_xi_snapshot: a.xi_confirmed ? null : makePreSnap(),
         xi_shift: null,
         factors, status: "PENDING", closing_odds: null, clv_pct: null,
@@ -5758,14 +6069,20 @@ const ObsidianEngine = (() => {
       under_3_0_asian: () => tg <= 2 ? "WON" : tg === 3 ? "PUSH" : "LOST",
       under_3_5: () => tg <= 3 ? "WON" : "LOST",
       over_3_5: () => tg >= 4 ? "WON" : "LOST",
+      over_4_5: () => tg >= 5 ? "WON" : "LOST",
       btts_yes: () => (hg >= 1 && ag >= 1) ? "WON" : "LOST",
       btts_no: () => (hg === 0 || ag === 0) ? "WON" : "LOST",
+      btts_over_2_5: () => (hg >= 1 && ag >= 1 && tg >= 3) ? "WON" : "LOST",
       "1h_over_0_5": () => g1h === null ? null : (g1h >= 1 ? "WON" : "LOST"),
       "1h_over_1_5": () => g1h === null ? null : (g1h >= 2 ? "WON" : "LOST"),
       home_cs_yes: () => ag === 0 ? "WON" : "LOST",
       away_cs_yes: () => hg === 0 ? "WON" : "LOST",
       home_over_0_5: () => hg >= 1 ? "WON" : "LOST",
       away_over_0_5: () => ag >= 1 ? "WON" : "LOST",
+      home_over_1_5: () => hg >= 2 ? "WON" : "LOST",
+      away_over_1_5: () => ag >= 2 ? "WON" : "LOST",
+      home_over_2_5: () => hg >= 3 ? "WON" : "LOST",
+      away_over_2_5: () => ag >= 3 ? "WON" : "LOST",
       "1x2_home": () => hg > ag ? "WON" : "LOST",
       "1x2_draw": () => hg === ag ? "WON" : "LOST",
       "1x2_away": () => ag > hg ? "WON" : "LOST",
@@ -5775,6 +6092,10 @@ const ObsidianEngine = (() => {
       away_dnb: () => ag > hg ? "WON" : hg === ag ? "PUSH" : "LOST",
       home_ah_m025: () => hg > ag ? "WON" : hg === ag ? "HALF_LOST" : "LOST",
       away_ah_p025: () => ag > hg ? "WON" : ag === hg ? "HALF_WON" : "LOST",
+      home_ah_m1: () => (hg - ag) >= 2 ? "WON" : (hg - ag) === 1 ? "PUSH" : "LOST",
+      away_ah_m1: () => (ag - hg) >= 2 ? "WON" : (ag - hg) === 1 ? "PUSH" : "LOST",
+      home_ah_m15: () => (hg - ag) >= 2 ? "WON" : "LOST",
+      away_ah_m15: () => (ag - hg) >= 2 ? "WON" : "LOST",
       home_ah_p1: () => (hg - ag) >= 0 ? "WON" : (hg - ag) === -1 ? "PUSH" : "LOST",
       away_ah_p1: () => (ag - hg) >= 0 ? "WON" : (ag - hg) === -1 ? "PUSH" : "LOST",
       corners_over_8_5: () => tc === null ? null : (tc >= 9 ? "WON" : "LOST"),
@@ -5864,16 +6185,38 @@ const ObsidianEngine = (() => {
       } catch {}
     }
 
+    // V18.8 Missed-Value Upside Audit (detects 4-5+ goal games & 2+ blowouts left on the table when Safe Pick was low-odds!)
+    const missedTags = [];
+    let missedValueNote = null;
+    if (hg !== null && ag !== null && actTot !== null) {
+      const hFav = (p.home_lambda || 1.3) >= (p.away_lambda || 1.2);
+      const favName = hFav ? p.home_team : p.away_team;
+      const favGoals = hFav ? hg : ag;
+      const favMargin = hFav ? (hg - ag) : (ag - hg);
+      const isLowSafe = Number(p.fair_odds || 2) <= 1.48;
+      if (isLowSafe && actTot >= 5 && p.market_key !== "over_4_5") missedTags.push("Over 4.5");
+      if (isLowSafe && actTot >= 4 && !["over_3_5", "over_4_5"].includes(p.market_key)) missedTags.push("Over 3.5");
+      if (isLowSafe && favMargin >= 2 && !["home_ah_m15", "away_ah_m15", "home_ah_m1", "away_ah_m1"].includes(p.market_key)) missedTags.push(`${favName} AH -1.5`);
+      if (isLowSafe && favGoals >= 3 && !["home_over_2_5", "away_over_2_5"].includes(p.market_key)) missedTags.push(`${favName} IT O2.5`);
+      else if (isLowSafe && favGoals >= 2 && !["home_over_1_5", "away_over_1_5", "home_over_2_5", "away_over_2_5"].includes(p.market_key)) missedTags.push(`${favName} IT O1.5`);
+      if (missedTags.length) {
+        const lamGap = Math.abs((p.home_lambda || 0) - (p.away_lambda || 0)).toFixed(2);
+        missedValueNote = `Skor ${hg}–${ag} (${actTot} gol) melebihi safe line (${p.market_label}, Fair ${p.fair_odds}) — market value lebih tinggi yang tembus: ${missedTags.join(", ")} (sinyal pra-match: totλ ${expTot.toFixed(2)}, |Δλ| ${lamGap}).`;
+      }
+    }
+
     return {
       root_cause: rootCause,
       goal_residual: totDiff,
       corner_residual: cDiff,
+      missed_value_tags: missedTags,
+      missed_value_note: missedValueNote,
       what: `${p.market_label} (${p.model_prob}%, Fair ${p.fair_odds}) -> ${st}. Skor aktual ${hg ?? "?"}–${ag ?? "?"} vs proyeksi ${p.projected_score || "—"}${cDiff !== null ? ` · Corners ${hc + ac} (selisih ${cDiff > 0 ? "+" : ""}${cDiff})` : ""}.`,
       who: `Deviasi terbesar di ${whoDriver}${(f.star_absences || []).length ? ` · Absen: ${f.star_absences.slice(0, 2).join(", ")}` : ""}.`,
       when: `${p.match_date}${koStr} · Status XI: ${f.xi_status || "DATA GAP"} · Rest: ${f.home_rest_days ?? "?"}d vs ${f.away_rest_days ?? "?"}d.`,
       where: `${p.league_name} (${f.venue || "DATA GAP"} · Ref: ${f.referee || "DATA GAP"}).`,
       why: whyText,
-      how: howText
+      how: missedValueNote ? `${howText} | Upside Lesson: ${missedTags.slice(0, 2).join(" / ")} layak masuk track Value Booster pada profil λ serupa.` : howText
     };
   }
 
@@ -5895,6 +6238,19 @@ const ObsidianEngine = (() => {
     if (closingOdds && closingOdds > 1.01 && p.bookmaker_odds && p.bookmaker_odds > 1.01) {
       p.closing_odds = +closingOdds;
       p.clv_pct = +(((1 / closingOdds) - (1 / p.bookmaker_odds)) * 100).toFixed(2);
+    }
+    // Auto-grade paired Value Booster track if present
+    if (p.value_booster && p.value_booster.market_key && hg !== null && ag !== null) {
+      const vbSt = gradeMarket(p.value_booster.market_key, hg, ag, hc, ac, g1h);
+      if (vbSt) {
+        const vbOdds = (p.value_booster.bookmaker_odds && p.value_booster.bookmaker_odds > 1.01)
+          ? p.value_booster.bookmaker_odds
+          : Math.max(1.15, Number(p.value_booster.fair_odds || 1.8) * 0.96);
+        const vbStake = Number(p.value_booster.booster_stake || 0.75);
+        const vbPnl = vbSt === "WON" ? vbStake * (vbOdds - 1) : vbSt === "HALF_WON" ? 0.5 * vbStake * (vbOdds - 1) : vbSt === "HALF_LOST" ? -0.5 * vbStake : vbSt === "LOST" ? -vbStake : 0;
+        p.value_booster.status = vbSt;
+        p.value_booster.pnl_units = +vbPnl.toFixed(3);
+      }
     }
     p.post_mortem = generate5W1H(p, st, hg, ag, hc, ac);
   }
@@ -6010,41 +6366,47 @@ const ObsidianEngine = (() => {
 
     const notes = [];
     const scoreWin = r => r.status === "WON" ? 1 : r.status === "HALF_WON" ? 0.75 : r.status === "HALF_LOST" ? 0.25 : 0;
+    // V18.8 XI-Aware Calibration: Confirmed-XI samples carry 1.5x weight vs Pre-XI 0.55x so Pre-XI misses never falsely block Confirmed-XI Goals!
     for (const fam of Object.keys(DEFAULT_WEIGHTS.market_calibration)) {
       const rows = np.filter(p => p.market_family === fam);
       const n = rows.length;
       if (!n) { w.market_calibration[fam] = { ...DEFAULT_WEIGHTS.market_calibration[fam] }; continue; }
-      const act = rows.reduce((s, r) => s + scoreWin(r), 0) / n;
-      const avgP = rows.reduce((s, r) => s + (r.raw_prob || r.model_prob) / 100, 0) / n;
+      const rowW = r => (r.factors?.xi_confirmed === true ? 1.5 : 0.55);
+      const sumW = rows.reduce((s, r) => s + rowW(r), 0);
+      const act = rows.reduce((s, r) => s + scoreWin(r) * rowW(r), 0) / Math.max(0.1, sumW);
+      const avgP = rows.reduce((s, r) => s + ((r.raw_prob || r.model_prob) / 100) * rowW(r), 0) / Math.max(0.1, sumW);
       const brier = rows.reduce((s, r) => s + (r.brier_score || 0), 0) / n;
       const staked = rows.reduce((s, r) => s + r.stake_units, 0), pnl = rows.reduce((s, r) => s + (r.pnl_units || 0), 0);
       const roi = staked > 0 ? (pnl / staked) * 100 : 0;
+      const xiRows = rows.filter(r => r.factors?.xi_confirmed === true);
+      const xiAct = xiRows.length ? xiRows.reduce((s, r) => s + scoreWin(r), 0) / xiRows.length : null;
       const shrink = n / (n + 10);
       const shift = +clamp(shrink * (act - avgP) * 0.65, -0.09, 0.06).toFixed(4);
       let blocked = false, cm = 1.0;
-      if (n >= 8 && (brier > 0.27 || roi < -12)) { blocked = true; cm = 0.84; notes.push(`${fam} Edge-Policy haircut`); }
+      const xiStrong = xiRows.length >= 3 && xiAct >= 0.72;
+      if (n >= 8 && !xiStrong && (brier > 0.27 || roi < -14)) { blocked = true; cm = 0.84; notes.push(`${fam} Edge-Policy haircut`); }
       else if (n >= 4 && (act - avgP) < -0.08) { cm = 0.92; notes.push(`${fam} trim (${(shift * 100).toFixed(1)}%)`); }
-      else if (n >= 6 && roi > 5 && brier < 0.20) { cm = 1.05; notes.push(`${fam} boost`); }
+      else if (n >= 6 && roi > 4 && brier < 0.20) { cm = 1.05; notes.push(`${fam} boost`); }
       w.market_calibration[fam] = { prob_shift: shift, confidence_mult: cm, blocked, samples: n, brier: +brier.toFixed(4), roi: +roi.toFixed(1) };
     }
 
-    // Empirical Bayes Historical Factor Penalties (learns if Pre-XI, xG Data Gaps, or Fatigue systematically underperform!)
-    const learnFactorPen = (predFn, label) => {
+    // Empirical Bayes Historical Factor Penalties (learns Pre-XI, xG-Gap & Fatigue deficits dynamically!)
+    const learnFactorPen = (predFn, label, mult = 58, maxCap = 14) => {
       const rows = np.filter(predFn);
       if (rows.length < 3) return 0;
       const act = rows.reduce((s, r) => s + scoreWin(r), 0) / rows.length;
       const avgP = rows.reduce((s, r) => s + (r.raw_prob || r.model_prob) / 100, 0) / rows.length;
-      const deficit = avgP - act; // positive when factor underperforms expectation
-      if (deficit <= 0.04) return 0;
-      const shrunk = (rows.length / (rows.length + 8)) * deficit;
-      const pen = Math.round(clamp(shrunk * 55, 0, 12));
+      const deficit = avgP - act;
+      if (deficit <= 0.035) return 0;
+      const shrunk = (rows.length / (rows.length + 7)) * deficit;
+      const pen = Math.round(clamp(shrunk * mult, 0, maxCap));
       if (pen >= 2) notes.push(`${label} haircut -${pen}`);
       return pen;
     };
     w.factor_penalties = {
-      pre_xi: learnFactorPen(p => p.factors?.xi_confirmed === false, "Pre-XI"),
-      data_gap: learnFactorPen(p => p.factors?.has_xg_data === false, "xG-Gap"),
-      fatigue: learnFactorPen(p => p.factors?.fatigue_flagged === true, "Fatigue")
+      pre_xi: learnFactorPen(p => p.factors?.xi_confirmed === false, "Pre-XI", 72, 18),
+      data_gap: learnFactorPen(p => p.factors?.has_xg_data === false, "xG-Gap", 55, 12),
+      fatigue: learnFactorPen(p => p.factors?.fatigue_flagged === true, "Fatigue", 68, 14)
     };
 
     const sc = settled.filter(p => p.actual_home_goals !== null && p.home_lambda);
@@ -6054,12 +6416,24 @@ const ObsidianEngine = (() => {
       const sh = sc.length / (sc.length + 14);
       w.goal_lambda_scale = +clamp(1 + sh * ((aT / Math.max(0.5, pT)) - 1) * 0.55, 0.88, 1.12).toFixed(4);
     }
-    const cc = settled.filter(p => p.actual_home_corners !== null && p.home_corners_lambda);
+    // Learn Corner λ Scale across ALL settled matches with actual corners (not just Corner bets!)
+    const cc = settled.filter(p => p.actual_home_corners !== null && p.actual_away_corners !== null && p.home_corners_lambda);
     if (cc.length >= 3) {
       const pC = cc.reduce((s, p) => s + p.home_corners_lambda + p.away_corners_lambda, 0);
       const aC = cc.reduce((s, p) => s + p.actual_home_corners + p.actual_away_corners, 0);
-      const sh = cc.length / (cc.length + 12);
-      w.corner_lambda_scale = +clamp(1 + sh * ((aC / Math.max(1, pC)) - 1) * 0.6, 0.86, 1.14).toFixed(4);
+      const sh = cc.length / (cc.length + 8);
+      w.corner_lambda_scale = +clamp(1 + sh * ((aC / Math.max(1, pC)) - 1) * 0.78, 0.82, 1.14).toFixed(4);
+    }
+    // Learn 1st-Half Goal Share empirically (Mercurius 1H calibration across all settled matches with actual_1h_goals!)
+    const fh = settled.filter(p => p.actual_1h_goals !== null && p.actual_home_goals !== null && p.actual_away_goals !== null);
+    if (fh.length >= 8) {
+      const sum1H = fh.reduce((s, p) => s + Number(p.actual_1h_goals || 0), 0);
+      const sumFT = fh.reduce((s, p) => s + Number(p.actual_home_goals || 0) + Number(p.actual_away_goals || 0), 0);
+      if (sumFT >= 10) {
+        const empRatio = sum1H / sumFT;
+        const sh = fh.length / (fh.length + 20);
+        w.first_half_ratio = +clamp(0.425 * (1 - sh) + empRatio * sh, 0.37, 0.49).toFixed(4);
+      }
     }
     saveLS(STORE_WEIGHTS, w);
 
@@ -6077,7 +6451,7 @@ const ObsidianEngine = (() => {
     const pnl = +settled.reduce((s, r) => s + (r.pnl_units || 0), 0).toFixed(2);
     const stk = np.reduce((s, r) => s + r.stake_units, 0);
     const roi = stk > 0 ? +((pnl / stk) * 100).toFixed(1) : 0;
-    logs.unshift({ created_at: new Date().toISOString(), settled_count: settled.length, summary: `Calibrated on ${settled.length} bets (Brier ${brier}, ROI ${roi > 0 ? "+" : ""}${roi}%, Goal×${w.goal_lambda_scale}, Corner×${w.corner_lambda_scale}). ${notes.join("; ") || "Within tolerance."}` });
+    logs.unshift({ created_at: new Date().toISOString(), settled_count: settled.length, summary: `Calibrated on ${settled.length} bets (Brier ${brier}, ROI ${roi > 0 ? "+" : ""}${roi}%, Goal×${w.goal_lambda_scale}, Corner×${w.corner_lambda_scale}, 1H=${w.first_half_ratio ?? 0.425}). ${notes.join("; ") || "Within tolerance."}` });
     saveLS(STORE_LOGS, logs.slice(0, 20));
     return { updated: true, settled_count: settled.length };
   }
@@ -6135,14 +6509,17 @@ const ObsidianEngine = (() => {
     // Historical Factor Attribution (which factors correlate with wins vs misses!)
     const factorGroup = (label, predFn) => {
       const grp = np.filter(predFn);
-      if (!grp.length) return { factor: label, bets: 0, hit_rate: null, brier: null };
+      if (!grp.length) return { factor: label, bets: 0, hit_rate: null, brier: null, roi: null };
       const wCount = grp.filter(r => r.status === "WON" || r.status === "HALF_WON").length;
       const bs = grp.filter(r => r.brier_score !== null).map(r => r.brier_score);
+      const gs = grp.reduce((s, r) => s + (r.stake_units || 1), 0);
+      const gp = grp.reduce((s, r) => s + (r.pnl_units || 0), 0);
       return {
         factor: label,
         bets: grp.length,
         hit_rate: +((wCount / grp.length) * 100).toFixed(1),
-        brier: bs.length ? +(bs.reduce((a, b) => a + b, 0) / bs.length).toFixed(4) : null
+        brier: bs.length ? +(bs.reduce((a, b) => a + b, 0) / bs.length).toFixed(4) : null,
+        roi: gs > 0 ? +((gp / gs) * 100).toFixed(1) : null
       };
     };
     const factor_attribution = [
@@ -6154,8 +6531,8 @@ const ObsidianEngine = (() => {
       factorGroup("Filter WARN/FAIL Present", p => Array.isArray(p.factors?.filter_warnings) && p.factors.filter_warnings.length > 0),
       factorGroup("Rested Teams", p => p.factors?.fatigue_flagged === false),
       factorGroup("Fatigue / Euro Hangover", p => p.factors?.fatigue_flagged === true),
-      factorGroup("Bayesian Anchored (70/30)", p => p.factors?.market_anchored === true),
-      factorGroup("Pure Statistical Model", p => p.factors?.market_anchored === false)
+      factorGroup("Low Chaos (≤35)", p => Number(p.factors?.chaos_index ?? 50) <= 35),
+      factorGroup("High Chaos (>35)", p => Number(p.factors?.chaos_index ?? 50) > 35)
     ];
 
     // Loss Root-Cause Breakdown
@@ -6191,6 +6568,109 @@ const ObsidianEngine = (() => {
       };
     }).sort((a, b) => b.bets - a.bets || (b.roi ?? -999) - (a.roi ?? -999)).slice(0, 12);
 
+    // =========================================================================
+    // V18.8 PREDICTOLOGY STRATEGY SYSTEMS LEADERBOARD + CALIBRATION CURVE + MISSED VALUE AUDIT
+    // Dynamically backtests 8 proven Safe & Value-Booster strategies across ALL settled matches!
+    // =========================================================================
+    const scoredSettled = settled.filter(p => p.actual_home_goals !== null && p.actual_away_goals !== null && Number(p.home_lambda) > 0);
+    const evalSystem = (id, name, track, ruleText, benchOdds, fltFn, winFn) => {
+      const grp = scoredSettled.filter(fltFn);
+      const wCnt = grp.filter(winFn).length;
+      const lCnt = grp.length - wCnt;
+      const estPnl = +(wCnt * (benchOdds - 1) - lCnt).toFixed(2);
+      const estRoi = grp.length ? +((estPnl / grp.length) * 100).toFixed(1) : null;
+      return {
+        id, name, track, rule: ruleText, bench_odds: benchOdds,
+        bets: grp.length, wins: wCnt, losses: lCnt,
+        hit_rate: grp.length ? +((wCnt / grp.length) * 100).toFixed(1) : null,
+        est_pnl: estPnl, est_roi: estRoi
+      };
+    };
+    const isWinRow = p => p.status === "WON" || p.status === "HALF_WON";
+    const strategy_systems = [
+      evalSystem("CONFIRMED_XI_SAFE", "🛡️ Confirmed-XI Safe Bank Builder", "SAFE", "Result & AH / Team Totals · XI Resmi", 1.31,
+        p => p.factors?.xi_confirmed === true && (p.market_family === "Result & AH" || p.market_family === "Team Totals") && p.status !== "PUSH",
+        isWinRow),
+      evalSystem("BLOWOUT_HANDICAP_M15", "🚀 Blowout Asian Handicap (-1.5)", "VALUE", "|Δλ| ≥ 1.25 · Conf ≥ 65 · XI Resmi", 2.15,
+        p => p.factors?.xi_confirmed === true && Math.abs(p.home_lambda - p.away_lambda) >= 1.25 && Number(p.factors?.data_confidence || 0) >= 65,
+        p => p.home_lambda >= p.away_lambda ? (p.actual_home_goals - p.actual_away_goals) >= 2 : (p.actual_away_goals - p.actual_home_goals) >= 2),
+      evalSystem("TEAM_FIREPOWER_IT15", "🚀 Team Firepower (Fav IT Over 1.5)", "VALUE", "max(λ) ≥ 2.00 · Conf ≥ 65 · XI Resmi", 1.65,
+        p => p.factors?.xi_confirmed === true && Math.max(p.home_lambda, p.away_lambda) >= 2.00 && Number(p.factors?.data_confidence || 0) >= 65,
+        p => p.home_lambda >= p.away_lambda ? p.actual_home_goals >= 2 : p.actual_away_goals >= 2),
+      evalSystem("GOALFEST_OVER_35", "🚀 Goal-Fest Value (Total Over 3.5)", "VALUE", "Total λ ≥ 3.45 · XI Resmi", 2.30,
+        p => p.factors?.xi_confirmed === true && (p.home_lambda + p.away_lambda) >= 3.45,
+        p => (p.actual_home_goals + p.actual_away_goals) >= 4),
+      evalSystem("MEGA_GOALFEST_OVER_45", "🚀 Mega Goal-Fest (Total Over 4.5)", "VALUE", "Total λ ≥ 3.80 · XI Resmi", 3.85,
+        p => p.factors?.xi_confirmed === true && (p.home_lambda + p.away_lambda) >= 3.80,
+        p => (p.actual_home_goals + p.actual_away_goals) >= 5),
+      evalSystem("GOALFEST_OVER_25", "🚀 High-Prob Total Over (2.5)", "VALUE", "Total λ ≥ 3.10 · XI Resmi", 1.72,
+        p => p.factors?.xi_confirmed === true && (p.home_lambda + p.away_lambda) >= 3.10,
+        p => (p.actual_home_goals + p.actual_away_goals) >= 3),
+      evalSystem("MERCURIUS_1H_STRIKE", "⚡ Mercurius 1st-Half Strike (1H O0.5)", "SAFE", "Total λ ≥ 3.40 · XI Resmi", 1.30,
+        p => p.factors?.xi_confirmed === true && p.actual_1h_goals !== null && (p.home_lambda + p.away_lambda) >= 3.40,
+        p => Number(p.actual_1h_goals) >= 1),
+      evalSystem("TEAM_BLITZ_IT25", "🚀 Team Blitz (Fav IT Over 2.5)", "VALUE", "max(λ) ≥ 2.20 · |Δλ| ≥ 1.20 · XI Resmi", 2.65,
+        p => p.factors?.xi_confirmed === true && Math.max(p.home_lambda, p.away_lambda) >= 2.20 && Math.abs(p.home_lambda - p.away_lambda) >= 1.20,
+        p => p.home_lambda >= p.away_lambda ? p.actual_home_goals >= 3 : p.actual_away_goals >= 3)
+    ];
+
+    // Probability Calibration Curve (Model Predicted % vs Actual Win %)
+    const calBins = [
+      { label: "50–65%", lo: 50, hi: 65 },
+      { label: "65–75%", lo: 65, hi: 75 },
+      { label: "75–85%", lo: 75, hi: 85 },
+      { label: "85–100%", lo: 85, hi: 101 }
+    ];
+    const calibration_curve = calBins.map(b => {
+      const rows = np.filter(p => Number(p.model_prob || 0) >= b.lo && Number(p.model_prob || 0) < b.hi);
+      const wCnt = rows.filter(isWinRow).length;
+      const avgP = rows.length ? +(rows.reduce((s, r) => s + Number(r.model_prob || 0), 0) / rows.length).toFixed(1) : null;
+      const actP = rows.length ? +((wCnt / rows.length) * 100).toFixed(1) : null;
+      return {
+        bin: b.label, bets: rows.length, wins: wCnt,
+        predicted: avgP, actual: actP,
+        gap: (avgP !== null && actP !== null) ? +(actP - avgP).toFixed(1) : null
+      };
+    });
+
+    // Missed-Value Upside Audit across ALL settled matches
+    const fourPlus = scoredSettled.filter(p => (p.actual_home_goals + p.actual_away_goals) >= 4);
+    const fivePlus = scoredSettled.filter(p => (p.actual_home_goals + p.actual_away_goals) >= 5);
+    const blowouts2 = scoredSettled.filter(p => Math.abs(p.actual_home_goals - p.actual_away_goals) >= 2);
+    const missedExamples = scoredSettled
+      .filter(p => Number(p.fair_odds || 2) <= 1.45 && ((p.actual_home_goals + p.actual_away_goals) >= 4 || Math.abs(p.actual_home_goals - p.actual_away_goals) >= 3))
+      .slice(0, 8)
+      .map(p => {
+        const tot = p.actual_home_goals + p.actual_away_goals;
+        const hFav = p.home_lambda >= p.away_lambda;
+        const favName = hFav ? p.home_team : p.away_team;
+        const favDiff = hFav ? (p.actual_home_goals - p.actual_away_goals) : (p.actual_away_goals - p.actual_home_goals);
+        const hitUpside = [];
+        if (tot >= 5) hitUpside.push("Over 4.5");
+        if (tot >= 4) hitUpside.push("Over 3.5");
+        if (favDiff >= 2) hitUpside.push(`${favName} AH -1.5`);
+        if ((hFav ? p.actual_home_goals : p.actual_away_goals) >= 2) hitUpside.push(`${favName} IT O1.5`);
+        return {
+          match_date: p.match_date, league: p.league_name,
+          home: p.home_team, away: p.away_team,
+          score: `${p.actual_home_goals}–${p.actual_away_goals}`,
+          tot_lambda: +(Number(p.home_lambda) + Number(p.away_lambda)).toFixed(2),
+          delta_lambda: +Math.abs(Number(p.home_lambda) - Number(p.away_lambda)).toFixed(2),
+          picked: p.market_label, picked_fair: p.fair_odds, status: p.status,
+          upside_hit: hitUpside
+        };
+      });
+    const missed_value_summary = {
+      total_scored: scoredSettled.length,
+      four_plus_count: fourPlus.length,
+      four_plus_pct: scoredSettled.length ? +((fourPlus.length / scoredSettled.length) * 100).toFixed(1) : 0,
+      five_plus_count: fivePlus.length,
+      five_plus_pct: scoredSettled.length ? +((fivePlus.length / scoredSettled.length) * 100).toFixed(1) : 0,
+      blowout_2plus_count: blowouts2.length,
+      blowout_2plus_pct: scoredSettled.length ? +((blowouts2.length / scoredSettled.length) * 100).toFixed(1) : 0,
+      examples: missedExamples
+    };
+
     return {
       summary: {
         total_saved: all.length,
@@ -6204,6 +6684,7 @@ const ObsidianEngine = (() => {
       },
       bankroll: { ...bcfg, current_units: +running.toFixed(2), peak_units: +peak.toFixed(2), drawdown_pct: drawdownPct, today_pending_units: +todayPendingUnits.toFixed(2), daily_exposure_pct: dailyExposurePct, warnings },
       by_family: byFamily, by_league, factor_attribution, root_causes, post_mortems,
+      strategy_systems, calibration_curve, missed_value_summary,
       weights: w, logs: loadLS(STORE_LOGS, [])
     };
   }
@@ -7100,18 +7581,49 @@ function renderAnalysis(a) {
           <div class="vm-cell"><span class="vm-label">Market Price</span><span class="vm-val">${v.bookmaker_odds ? v.bookmaker_odds.toFixed(2) : "—"}</span><span class="vm-sub">${esc(v.value_status)}</span></div>
           <div class="vm-cell"><span class="vm-label">Edge (+EV)</span><span class="vm-val ${v.edge_pct > 0 ? "text-emerald" : v.edge_pct < 0 ? "text-coral" : ""}">${v.edge_pct !== null ? `${v.edge_pct > 0 ? "+" : ""}${v.edge_pct}%` : "N/A"}</span><span class="vm-sub">¼-Kelly ${v.kelly_units}u</span></div>
           <div class="vm-cell"><span class="vm-label">Confidence</span><span class="vm-val">${v.confidence}<span style="font-size:13px;color:var(--ink-tertiary)">/100</span></span><span class="vm-sub">Chaos ${a.risk_audit.chaos_index}/100</span></div>
-          <div class="vm-cell"><span class="vm-label">Stake Sizing</span><span class="vm-val ${cmdCls(v.command)}">${v.stake_units.toFixed(2)}u</span><span class="vm-sub">${a.xi_confirmed ? "Full Stake" : "75% Pre-XI Cap"}</span></div>
+          <div class="vm-cell"><span class="vm-label">Stake Sizing</span><span class="vm-val ${cmdCls(v.command)}">${v.stake_units.toFixed(2)}u</span><span class="vm-sub">${a.xi_confirmed ? "Full Stake" : "50% Pre-XI Cap"}</span></div>
         </div>
 
         ${v.sniper_pick ? `
           <div class="sniper-strip">
             <div>
-              <div class="sniper-label">🎯 SNIPER 85–90% HIGH-WINRATE ANCHOR ${a.xi_confirmed ? "· XI✓" : "· WAIT XI"}</div>
+              <div class="sniper-label">🛡️ SNIPER SAFE ANCHOR (85–90% BANK BUILDER) ${a.xi_confirmed ? "· XI✓" : "· WAIT XI"}</div>
               <div class="sniper-pick-name">${esc(v.sniper_pick.label)}</div>
             </div>
             <div class="mono" style="text-align:right">
               <div style="font-size:15px;font-weight:700;color:var(--gold)">${v.sniper_pick.model_prob}% <span style="font-size:12px;color:var(--ink-secondary)">(Fair ${v.sniper_pick.fair_odds})</span></div>
               <div style="font-size:11px;color:var(--ink-tertiary)">${v.sniper_pick.push_prob > 0 ? `Push Shield ${v.sniper_pick.push_prob}%` : "Structural High-Prob"}</div>
+            </div>
+          </div>
+        ` : ""}
+
+        ${v.value_booster ? `
+          <div class="booster-strip">
+            <div class="booster-main">
+              <div>
+                <div class="booster-eyebrow">
+                  <span class="booster-label">🚀 VALUE BOOSTER (+EV UPSIDE)</span>
+                  <span class="tag tag-ice" style="font-size:10px;padding:1px 7px">${esc(v.value_booster.strategy_label)}</span>
+                  <span class="mono" style="font-size:10.5px;color:var(--emerald)">${esc(v.value_booster.hist_benchmark || "")}</span>
+                </div>
+                <div class="booster-pick-name">${esc(v.value_booster.label)}</div>
+                <div class="booster-why">${esc(v.value_booster.rationale)}</div>
+                ${(v.value_boosters || []).length > 1 ? `
+                  <div class="booster-alts">
+                    <span class="booster-alts-lbl">Upside Lainnya:</span>
+                    ${v.value_boosters.slice(1).map(b => `<span class="booster-alt-chip mono">${esc(b.label)} <strong>${b.model_prob}%</strong> (${b.fair_odds}x)</span>`).join("")}
+                  </div>
+                ` : ""}
+              </div>
+              <div class="booster-right">
+                <div class="mono" style="text-align:right">
+                  <div style="font-size:16px;font-weight:700;color:var(--ice)">${v.value_booster.model_prob}% <span style="font-size:12px;color:var(--ink-secondary)">(Fair ${v.value_booster.fair_odds}x)</span></div>
+                  <div style="font-size:11px;color:var(--ink-tertiary)">Min +EV Odds ${v.value_booster.min_ev_odds} · ¼-Kelly ${v.value_booster.booster_stake}u</div>
+                </div>
+                <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:6px;">
+                  <button id="btn-save-booster" class="btn btn-secondary btn-xs">Save Booster</button>
+                </div>
+              </div>
             </div>
           </div>
         ` : ""}
@@ -7137,7 +7649,7 @@ function renderAnalysis(a) {
 
       <div class="two-col-grid">
         <div class="surface-card">
-          <div class="card-head"><h2>Dixon-Coles Goal Model</h2><span class="muted-tag">ρ = ${gm.dixon_coles_rho}</span></div>
+          <div class="card-head"><h2>Dixon-Coles · Mercurius Goal Model</h2><span class="muted-tag">ρ = ${gm.dixon_coles_rho} · Attack Idx ${gm.mercurius_attack_index ?? "1.00"}</span></div>
           <div class="lambda-row">
             <div class="lambda-tile"><div class="k">${esc(a.home.name)} λ</div><div class="v">${gm.home_lambda.toFixed(2)}</div></div>
             <div class="lambda-tile"><div class="k">${esc(a.away.name)} λ</div><div class="v">${gm.away_lambda.toFixed(2)}</div></div>
@@ -7147,9 +7659,11 @@ function renderAnalysis(a) {
           <div class="score-chips">${gm.top_scores.map((s, i) => `<div class="score-chip ${i === 0 ? "top" : ""}"><span class="mono" style="font-weight:600">${esc(s.score)}</span><span class="mono text-muted">${s.prob}%</span></div>`).join("")}</div>
           <div class="meter-list">
             ${meterRow("1st Half · Total Over (0.5)", gm.p_1h_over_0_5)}
+            ${meterRow("1st Half · Total Over (1.5)", gm.p_1h_over_1_5 ?? 0)}
             ${meterRow("Total Over (1.5)", gm.p_over_1_5)}
             ${meterRow("Total Over (2.5)", gm.p_over_2_5)}
-            ${meterRow("Total Under (2.5)", gm.p_under_2_5)}
+            ${meterRow("Total Over (3.5) · Goal-Fest", gm.p_over_3_5 ?? 0)}
+            ${meterRow("Total Over (4.5) · Mega Upside", gm.p_over_4_5 ?? 0)}
             ${meterRow("BTTS Yes", gm.p_btts_yes)}
             ${meterRow("Home Clean Sheet - Yes (IT2 Under 0.5)", gm.p_home_cs)}
           </div>
@@ -7248,6 +7762,9 @@ function renderAnalysis(a) {
   document.getElementById("btn-save-primary").addEventListener("click", () => {
     const pm = a.all_markets.find(m => m.key === a.verdict.market_key) || a.radar[0];
     saveMarketToMemory(a, pm, true);
+  });
+  document.getElementById("btn-save-booster")?.addEventListener("click", () => {
+    if (a.verdict.value_booster) saveMarketToMemory(a, a.verdict.value_booster, false);
   });
   document.getElementById("btn-toggle-slip-hero").addEventListener("click", () => { toggleSlipMatch(a.match_id, a); renderAnalysis(a); });
 
@@ -7433,6 +7950,39 @@ async function runDailyScanner() {
       </div>
     `;
 
+    const boosters = res.value_boosters || [];
+    const renderValueBoosters = `
+      <div class="surface-card" style="margin-bottom:18px;">
+        <div class="card-head">
+          <h2>🚀 High-Value Boosters (+EV Upside · Over 3.5 / 4.5 / AH -1.5 / Team O1.5)</h2>
+          <span class="tag tag-ice">${boosters.length} high-EV spots</span>
+        </div>
+        ${boosters.length ? `<div class="radar-cards-grid">${boosters.map(({ analysis: a, market: m }) => {
+          const lgEm = lgEmojiOf(a.league_name, a.country_code, a.league_emoji, a.league_id);
+          const hFlag = teamFlagOf(a.home.name, a.league_name, a.country_code, a.home.flag);
+          const aFlag = teamFlagOf(a.away.name, a.league_name, a.country_code, a.away.flag);
+          return `
+            <div class="pick-card booster-radar-card" data-jump-match="${esc(a.match_id)}">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:11px;color:var(--ink-tertiary)">
+                <span><span class="league-emoji" aria-hidden="true">${lgEm}</span>${esc(a.league_name)}</span>
+                <span class="tag tag-ice" style="font-size:10px;padding:1px 7px">${esc(m.strategy_label || "Value Booster")}</span>
+              </div>
+              <div style="font-size:13.5px;font-weight:600"><span class="flag-chip">${hFlag}</span>${esc(a.home.name)} <span style="opacity:.45;font-weight:400">vs</span> <span class="flag-chip">${aFlag}</span>${esc(a.away.name)}</div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;">
+                <strong style="color:var(--ice);font-size:13px">${esc(m.label)}</strong>
+                <span class="mono" style="font-size:12px;color:var(--emerald);font-weight:700">${m.model_prob}% · ${m.fair_odds}x</span>
+              </div>
+              <div style="font-size:11.5px;color:var(--ink-secondary);line-height:1.4">${esc(m.rationale || "")}</div>
+              <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-tertiary)" class="mono">
+                <span>${a.xi_confirmed ? "XI✓ RESMI" : "⏳ BELUM XI"} · λ ${a.goal_model.total_lambda}</span>
+                <span>Min +EV ${m.min_ev_odds} · ${m.booster_stake}u</span>
+              </div>
+            </div>
+          `;
+        }).join("")}</div>` : `<div class="empty-inline">Belum ada laga dengan sinyal blowout / 4+ gol pada ${esc(state.currentDate)}.</div>`}
+      </div>
+    `;
+
     out.innerHTML = `
       <div class="xi-gate-banner">
         <span class="xi-gate-dot"></span>
@@ -7441,7 +7991,8 @@ async function runDailyScanner() {
           <div class="xi-gate-desc">Kartu bertanda <strong>⏳ BELUM XI</strong> belum menyertakan daftar pemain resmi (Starting XI rilis <strong>T-75' s/d T-60'</strong> sebelum kickoff). Tunggu status <strong>XI✓ RESMI</strong> atau alert Confirmed-XI Telegram — jika prediksi berubah setelah XI keluar, badge <strong>🔄 XI SHIFT</strong> akan otomatis muncul.</div>
         </div>
       </div>
-      ${renderPickCards(res.sniper_anchors || [], "🎯 SNIPER 85–90% High-Winrate Anchors (Max 4 Plays)", "tag-gold")}
+      ${renderPickCards(res.sniper_anchors || [], "🛡️ SNIPER Safe Anchors (85–90% Bank Builder · Max 4 Plays)", "tag-gold")}
+      ${renderValueBoosters}
       ${renderPickCards(res.anchors.map(a => ({ analysis: a, market: a.all_markets.find(x => x.key === a.verdict.market_key) || a.radar[0] })), "Top Titanium Anchors & Value Hunters Today", "tag-emerald")}
       ${renderHighCorners}
       ${renderPickCards(res.best_corners, "Best Corners Plays Today (Negative Binomial)", "tag-ice")}
@@ -7958,6 +8509,7 @@ function renderPostMortemFeed(postMortems) {
           <div class="pm-row"><span class="pm-k">WHERE</span><span class="pm-v">${esc(pm.where)}</span></div>
           <div class="pm-row"><span class="pm-k">WHY</span><span class="pm-v pm-why">${esc(pm.why)}</span></div>
           <div class="pm-row"><span class="pm-k">HOW</span><span class="pm-v pm-how">${esc(pm.how)}</span></div>
+          ${pm.missed_value_note ? `<div class="pm-row"><span class="pm-k">UPSIDE</span><span class="pm-v" style="color:var(--ice)">${esc(pm.missed_value_note)}</span></div>` : ""}
           ${p.xi_shift?.changed ? `<div class="pm-row"><span class="pm-k">XI SHIFT</span><span class="pm-v">Before: ${esc(p.xi_shift.before?.market_label)} (${p.xi_shift.before?.model_prob}%) → After: ${esc(p.xi_shift.after?.market_label)} (${p.xi_shift.after?.model_prob}%). ${esc(p.xi_shift.why)}</span></div>` : ""}
         </div>
       </div>
@@ -8015,31 +8567,32 @@ function loadMemoryView() {
   const fp = w.factor_penalties || { pre_xi: 0, data_gap: 0, fatigue: 0 };
   document.getElementById("last-trained-label").textContent = w.last_trained_at ? `Updated ${new Date(w.last_trained_at).toLocaleString()}` : "Factory prior";
   document.getElementById("weights-panel").innerHTML = `
-    <div class="lambda-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:10px">
-      <div class="lambda-tile"><div class="k">Home Advantage</div><div class="v">${w.home_advantage}</div></div>
+    <div class="lambda-row" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:10px">
       <div class="lambda-tile"><div class="k">Goal λ Scale</div><div class="v">${w.goal_lambda_scale}</div></div>
       <div class="lambda-tile"><div class="k">Corner λ Scale</div><div class="v text-ice">${w.corner_lambda_scale}</div></div>
-      <div class="lambda-tile"><div class="k">Dixon-Coles ρ</div><div class="v">${w.dixon_coles_rho}</div></div>
+      <div class="lambda-tile"><div class="k">1H Goal Share</div><div class="v text-emerald">${((w.first_half_ratio ?? 0.425) * 100).toFixed(1)}%</div></div>
     </div>
-    <div class="lambda-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:0">
-      <div class="lambda-tile"><div class="k">Pre-XI Penalty</div><div class="v ${fp.pre_xi > 0 ? "text-amber" : ""}">-${fp.pre_xi || 0}</div></div>
-      <div class="lambda-tile"><div class="k">xG-Gap Penalty</div><div class="v ${fp.data_gap > 0 ? "text-amber" : ""}">-${fp.data_gap || 0}</div></div>
-      <div class="lambda-tile"><div class="k">Fatigue Penalty</div><div class="v ${fp.fatigue > 0 ? "text-amber" : ""}">-${fp.fatigue || 0}</div></div>
+    <div class="lambda-row" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:0">
+      <div class="lambda-tile"><div class="k">Dixon-Coles ρ</div><div class="v">${w.dixon_coles_rho}</div></div>
+      <div class="lambda-tile"><div class="k">Pre-XI Pen</div><div class="v ${fp.pre_xi > 0 ? "text-amber" : ""}">${fp.pre_xi > 0 ? `-${fp.pre_xi}` : "0"}</div></div>
+      <div class="lambda-tile"><div class="k">xG-Gap Pen</div><div class="v ${fp.data_gap > 0 ? "text-amber" : ""}">${fp.data_gap > 0 ? `-${fp.data_gap}` : "0"}</div></div>
+      <div class="lambda-tile"><div class="k">Fatigue Pen</div><div class="v ${fp.fatigue > 0 ? "text-amber" : ""}">${fp.fatigue > 0 ? `-${fp.fatigue}` : "0"}</div></div>
     </div>
   `;
   document.getElementById("learning-logs").innerHTML = data.logs.length ? data.logs.map(l => `<div class="log-entry"><div class="log-ts">${new Date(l.created_at).toLocaleString()} · n=${l.settled_count}</div><div>${esc(l.summary)}</div></div>`).join("") : `<div class="empty-inline" style="padding:12px">No calibration cycles yet.</div>`;
 
-  // Historical Factor Attribution Table
+  // Historical Factor Attribution Table (with ROI!)
   const faWrap = document.getElementById("factor-attribution-wrap");
   if (faWrap) {
     faWrap.innerHTML = `
       <table>
-        <thead><tr><th>Pre-Match Historical Factor</th><th>Settled</th><th>Hit Rate</th><th>Mean Brier</th></tr></thead>
+        <thead><tr><th>Pre-Match Historical Factor</th><th>Settled</th><th>Hit Rate</th><th>ROI</th><th>Brier</th></tr></thead>
         <tbody>${(data.factor_attribution || []).map(f => `
           <tr>
             <td><strong>${esc(f.factor)}</strong></td>
             <td class="mono">${f.bets}</td>
-            <td class="mono ${f.hit_rate === null ? "text-muted" : f.hit_rate >= 60 ? "text-emerald" : f.hit_rate < 48 ? "text-coral" : "text-amber"}">${f.hit_rate !== null ? f.hit_rate + "%" : "—"}</td>
+            <td class="mono ${f.hit_rate === null ? "text-muted" : f.hit_rate >= 70 ? "text-emerald" : f.hit_rate < 55 ? "text-coral" : "text-amber"}">${f.hit_rate !== null ? f.hit_rate + "%" : "—"}</td>
+            <td class="mono ${f.roi === null ? "text-muted" : f.roi > 0 ? "text-emerald" : f.roi < 0 ? "text-coral" : ""}">${f.roi !== null ? `${f.roi > 0 ? "+" : ""}${f.roi}%` : "—"}</td>
             <td class="mono">${f.brier ?? "—"}</td>
           </tr>
         `).join("")}</tbody>
@@ -8064,6 +8617,76 @@ function loadMemoryView() {
         </div>
       `).join("")}</div>`;
     }
+  }
+
+  // Predictology Strategy Systems Leaderboard (Safe vs Value Boosters across ALL settled matches!)
+  const sysWrap = document.getElementById("strategy-systems-wrap");
+  if (sysWrap) {
+    const sys = data.strategy_systems || [];
+    if (!sys.length) {
+      sysWrap.innerHTML = `<div class="empty-inline" style="padding:14px">Belum ada data settled untuk backtest strategi.</div>`;
+    } else {
+      sysWrap.innerHTML = `
+        <table>
+          <thead><tr><th>Strategy System</th><th>Track</th><th>Signal Rule</th><th>Sample</th><th>Record</th><th>Hit Rate</th><th>Bench Odds</th><th>Est. PnL</th><th>Est. ROI</th></tr></thead>
+          <tbody>${sys.map(st => `
+            <tr>
+              <td><strong>${esc(st.name)}</strong></td>
+              <td><span class="tag ${st.track === "SAFE" ? "tag-emerald" : "tag-ice"}">${esc(st.track)}</span></td>
+              <td class="text-muted" style="font-size:11.5px">${esc(st.rule)}</td>
+              <td class="mono">${st.bets}</td>
+              <td class="mono">${st.wins}W–${st.losses}L</td>
+              <td class="mono ${st.hit_rate === null ? "text-muted" : st.hit_rate >= 60 ? "text-emerald" : st.hit_rate >= 45 ? "text-amber" : "text-coral"}">${st.hit_rate !== null ? st.hit_rate + "%" : "—"}</td>
+              <td class="mono">${st.bench_odds.toFixed(2)}x</td>
+              <td class="mono ${st.est_pnl > 0 ? "text-emerald" : st.est_pnl < 0 ? "text-coral" : ""}">${st.est_pnl > 0 ? "+" : ""}${st.est_pnl}u</td>
+              <td class="mono ${st.est_roi > 0 ? "text-emerald" : st.est_roi < 0 ? "text-coral" : ""}" style="font-weight:700">${st.est_roi !== null ? `${st.est_roi > 0 ? "+" : ""}${st.est_roi}%` : "—"}</td>
+            </tr>
+          `).join("")}</tbody>
+        </table>
+      `;
+    }
+  }
+
+  // Probability Calibration Curve (Model Predicted % vs Actual Win %)
+  const calWrap = document.getElementById("calibration-curve-wrap");
+  if (calWrap) {
+    const cc = data.calibration_curve || [];
+    calWrap.innerHTML = `
+      <table>
+        <thead><tr><th>Confidence Bin</th><th>Bets</th><th>Model Avg</th><th>Actual Win%</th><th>Calibration Gap</th></tr></thead>
+        <tbody>${cc.map(b => `
+          <tr>
+            <td class="mono"><strong>${esc(b.bin)}</strong></td>
+            <td class="mono">${b.bets}</td>
+            <td class="mono">${b.predicted !== null ? b.predicted + "%" : "—"}</td>
+            <td class="mono ${b.actual !== null && b.predicted !== null && b.actual >= b.predicted - 3 ? "text-emerald" : "text-amber"}">${b.actual !== null ? b.actual + "%" : "—"}</td>
+            <td class="mono ${b.gap === null ? "text-muted" : Math.abs(b.gap) <= 4 ? "text-emerald" : b.gap < -5 ? "text-coral" : "text-ice"}">${b.gap !== null ? `${b.gap > 0 ? "+" : ""}${b.gap}%` : "—"}</td>
+          </tr>
+        `).join("")}</tbody>
+      </table>
+    `;
+  }
+
+  // Missed-Value Upside Audit
+  const mvWrap = document.getElementById("missed-value-wrap");
+  if (mvWrap) {
+    const mv = data.missed_value_summary || { total_scored: 0, four_plus_count: 0, four_plus_pct: 0, five_plus_count: 0, five_plus_pct: 0, blowout_2plus_count: 0, blowout_2plus_pct: 0, examples: [] };
+    mvWrap.innerHTML = `
+      <div class="lambda-row" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:12px">
+        <div class="lambda-tile"><div class="k">4+ Goals (O3.5)</div><div class="v text-ice">${mv.four_plus_pct}%</div><div class="mono text-muted" style="font-size:10px">${mv.four_plus_count}/${mv.total_scored} laga</div></div>
+        <div class="lambda-tile"><div class="k">5+ Goals (O4.5)</div><div class="v text-gold">${mv.five_plus_pct}%</div><div class="mono text-muted" style="font-size:10px">${mv.five_plus_count}/${mv.total_scored} laga</div></div>
+        <div class="lambda-tile"><div class="k">Blowout ≥2 Gol</div><div class="v text-emerald">${mv.blowout_2plus_pct}%</div><div class="mono text-muted" style="font-size:10px">${mv.blowout_2plus_count}/${mv.total_scored} laga</div></div>
+      </div>
+      ${mv.examples.length ? `<div class="mv-list">${mv.examples.slice(0, 5).map(ex => `
+        <div class="mv-item">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 8px;font-size:12px;">
+            <strong>${esc(ex.home)} <span class="mono text-emerald">${esc(ex.score)}</span> ${esc(ex.away)}</strong>
+            <span class="mono text-muted" style="font-size:10.5px">λ ${ex.tot_lambda} · Δ ${ex.delta_lambda}</span>
+          </div>
+          <div style="font-size:11px;color:var(--ink-secondary);margin-top:2px;line-height:1.4;">Safe Pick: ${esc(ex.picked)} (${ex.picked_fair}x · ${ex.status}) → <span style="color:var(--ice)">Tembus: <strong>${esc(ex.upside_hit.join(", "))}</strong></span></div>
+        </div>
+      `).join("")}</div>` : `<div class="empty-inline" style="padding:10px">Belum ada data missed-value terekam.</div>`}
+    `;
   }
 
   // Per-League Historical Performance Table
