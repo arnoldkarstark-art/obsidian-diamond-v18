@@ -7652,6 +7652,10 @@ const state = {
   parlayPool: null,
   parlayPoolDateKey: null,
   parlayScanning: false,
+  radarResults: null,
+  radarDate: null,
+  cloudDailyPicks: null,
+  analyzedCache: {},
 };
 
 const SLIP_PICK_OPTIONS = [
@@ -8081,6 +8085,7 @@ async function loadMatches(forceRefresh = false, autoSelectFirst = false) {
     document.getElementById("live-count").textContent = data.live_count > 0 ? `(${data.live_count})` : "";
     renderMatchesList();
     refreshStatus();
+    if (typeof window.__ebAiRefreshContext === "function") window.__ebAiRefreshContext();
     if (autoSelectFirst && !state.selectedMatchId && data.leagues?.[0]?.matches?.[0]) {
       selectMatch(data.leagues[0].matches[0].match_id);
     }
@@ -8345,6 +8350,7 @@ async function selectMatch(matchId, opts = {}) {
       marketAnchored: state.marketAnchored
     });
     state.currentAnalysis = data;
+    state.analyzedCache[String(matchId)] = data;
     if (!opts.keepTab) state.activeMarketTab = "RADAR";
     renderAnalysis(data);
     refreshStatus();
@@ -8791,6 +8797,12 @@ async function runDailyScanner() {
     });
 
     stTxt.textContent = `Completed: ${res.scanned} priority fixtures analyzed & auto-logged (${state.currentDate})`;
+    state.radarResults = res;
+    state.radarDate = state.currentDate;
+    for (const a of (res.analyses || [])) {
+      if (a?.match_id) state.analyzedCache[String(a.match_id)] = a;
+    }
+    if (typeof window.__ebAiRefreshContext === "function") window.__ebAiRefreshContext();
 
     const renderPickCards = (items, title, badgeCls) => `
       <div class="surface-card" style="margin-bottom:18px;">
@@ -9735,6 +9747,18 @@ async function syncFromCloudMemory(silent = false) {
     }
   } catch {}
 
+  // Load Auto-Bot server-scanned daily picks pool (Sniper, Top Anchors, Value Boosters, High Corners, BTTS)
+  try {
+    const dpResp = await fetch(`./data/daily_picks.json?t=${Date.now()}`, { cache: "no-store" });
+    if (dpResp.ok) {
+      const dpJson = await dpResp.json();
+      if (dpJson && (dpJson.top_anchors || dpJson.sniper_picks || dpJson.value_boosters)) {
+        state.cloudDailyPicks = dpJson;
+        if (typeof window.__ebAiRefreshContext === "function") window.__ebAiRefreshContext();
+      }
+    }
+  } catch {}
+
   try {
     const resp = await fetch(`./data/memory.json?t=${Date.now()}`, { cache: "no-store" });
     if (!resp.ok) return null;
@@ -10659,13 +10683,23 @@ function initAiCopilot() {
     return el;
   }
 
-  function appendTyping() {
+  function appendTyping(statusText = "") {
     const el = document.createElement("div");
     el.className = "ai-msg assistant";
-    el.innerHTML = `<div class="ai-typing"><span></span><span></span><span></span></div>`;
+    el.innerHTML = `<div class="ai-typing"><span></span><span></span><span></span></div><div class="ai-scan-status mono" style="font-size:10.5px;color:var(--ice);margin-top:4px;display:${statusText ? "block" : "none"}">${esc(statusText)}</div>`;
     msgList.appendChild(el);
     msgList.scrollTop = msgList.scrollHeight;
-    return el;
+    return {
+      el,
+      setStatus(txt) {
+        const s = el.querySelector(".ai-scan-status");
+        if (!s) return;
+        s.textContent = txt || "";
+        s.style.display = txt ? "block" : "none";
+        msgList.scrollTop = msgList.scrollHeight;
+      },
+      remove() { el.remove(); }
+    };
   }
 
   function getActiveViewName() {
@@ -10683,76 +10717,318 @@ function initAiCopilot() {
     }
   }
 
-  function buildContextDigest() {
-    if (ctxToggle && !ctxToggle.checked) return "";
-    const parts = [];
-    const a = state.currentAnalysis;
-    if (a) {
-      const v = a.verdict || {};
-      const gm = a.goal_model || {};
-      const cm = a.corners_model || {};
-      const vb = v.value_booster;
-      const warns = (a.filters || []).filter((f) => f.status === "WARN" || f.status === "FAIL").map((f) => `${f.name}: ${f.status}`).slice(0, 4);
-      const absH = (a.home?.metrics?.tier_s_out || []).map((p) => p.name).slice(0, 3).join(", ");
-      const absA = (a.away?.metrics?.tier_s_out || []).map((p) => p.name).slice(0, 3).join(", ");
-      parts.push([
-        `MATCH AKTIF: ${a.home?.name} vs ${a.away?.name} (${a.league_name} · ${a.match_date} · State: ${a.state}${a.is_live ? ` ${a.live_minute}' (${a.home?.score}-${a.away?.score})` : ""})`,
-        `XI Status: ${a.xi_status} | Formasi: ${a.home?.formation} vs ${a.away?.formation} | Sources: ${(a.sources_used || []).join(", ")}`,
-        `Dixon-Coles λ: Home ${gm.home_lambda} vs Away ${gm.away_lambda} (Total ${gm.total_lambda} · Proj ${gm.projected_score} · Mercurius Idx ${gm.mercurius_attack_index})`,
-        `Goal Probs: O2.5 ${gm.p_over_2_5}%, O3.5 ${gm.p_over_3_5}%, O4.5 ${gm.p_over_4_5}%, BTTS ${gm.p_btts_yes}%, 1H O0.5 ${gm.p_1h_over_0_5}% | Corners λ ${cm.total_corners_lambda} (O9.5 ${cm.p_over_9_5}%, O10.5 ${cm.p_over_10_5}%)`,
-        `🛡️ Safe Pick Utama: ${v.primary_bet} (${v.model_prob}%, Fair ${v.fair_odds}x${v.bookmaker_odds ? `, Bookie ${v.bookmaker_odds}x, Edge ${v.edge_pct}%` : ""}, Stake ${v.stake_units}u, Tier ${v.tier})`,
-        vb ? `🚀 Value Booster (+EV): ${vb.label} [${vb.strategy_label}] (${vb.model_prob}%, Fair ${vb.fair_odds}x, Min +EV ${vb.min_ev_odds}x, ¼-Kelly ${vb.booster_stake}u) — ${vb.rationale}` : `🚀 Value Booster: tidak ada trigger kuat pada laga ini`,
-        a.weather ? `Cuaca Kickoff (${a.weather.city}): ${a.weather.condition} ${a.weather.temp_c}°C, Rain ${a.weather.rain_mm}mm (${a.weather.rain_prob}%), Wind ${a.weather.wind_kmh}km/h` : null,
-        a.h2h ? `H2H (${a.h2h.count} laga): H ${a.h2h.home_wins}W · D ${a.h2h.draws} · A ${a.h2h.away_wins}W · Avg ${a.h2h.avg_goals} gol (${(a.h2h.last_scores || []).join(", ")})` : null,
-        a.af_consensus?.advice ? `API-FB Consensus: ${a.af_consensus.advice} (${a.af_consensus.home_pct}/${a.af_consensus.draw_pct}/${a.af_consensus.away_pct}%)` : null,
-        (absH || absA) ? `Absensi Kunci: ${absH ? `${a.home?.name}: ${absH}` : ""}${absH && absA ? " | " : ""}${absA ? `${a.away?.name}: ${absA}` : ""}` : null,
-        warns.length ? `Filter Peringatan: ${warns.join(" ; ")}` : "Filter: semua bersih",
-        `Risk Audit: Chaos ${a.risk_audit?.chaos_index}/100 · DataConf ${a.risk_audit?.data_confidence}% · Failure: ${a.risk_audit?.failure_condition} · Live Hedge: ${a.risk_audit?.live_hedge_trigger}`
-      ].filter(Boolean).join("\n"));
+  // ---- Site-Wide Pool Aggregator (Radar + Parlay + Session Cache + Cloud Daily Picks + Pending Memory) ----
+  function collectSiteWidePool(dateFilter = state.currentDate) {
+    const map = new Map();
+    const putFromAnalysis = (a) => {
+      if (!a || !a.match_id || a.finished) return;
+      const v = a.verdict || {}, gm = a.goal_model || {}, cm = a.corners_model || {}, vb = v.value_booster;
+      map.set(String(a.match_id), {
+        match_id: String(a.match_id),
+        match_date: a.match_date || dateFilter,
+        kickoff: a.kickoff_utc ? fmtKickoff(a.kickoff_utc) : "",
+        league: a.league_name || "",
+        home: a.home?.name || "",
+        away: a.away?.name || "",
+        xi_confirmed: !!a.xi_confirmed,
+        market: v.primary_bet || "",
+        prob: Number(v.model_prob || 0),
+        fair_odds: Number(v.fair_odds || 0),
+        bookie_odds: v.bookmaker_odds ? Number(v.bookmaker_odds) : null,
+        edge_pct: v.edge_pct !== undefined && v.edge_pct !== null ? Number(v.edge_pct) : null,
+        confidence: Number(v.confidence || 0),
+        tier: v.tier || "",
+        stake_u: Number(v.stake_units || 0),
+        total_lambda: Number(gm.total_lambda || 0),
+        proj_score: gm.projected_score || "",
+        p_o25: gm.p_over_2_5, p_o35: gm.p_over_3_5, p_btts: gm.p_btts_yes,
+        corners_lam: cm.total_corners_lambda,
+        p_c105: cm.p_over_10_5,
+        weather: a.weather ? `${a.weather.icon}${a.weather.temp_c}°C` : "",
+        booster: vb ? { label: vb.label, prob: vb.model_prob, fair: vb.fair_odds, min_ev: vb.min_ev_odds, stake: vb.booster_stake, strat: vb.strategy_label } : null,
+        score: (Number(v.model_prob || 0) * 0.55) + (Number(v.confidence || 0) * 0.30) + (a.xi_confirmed ? 12 : 0) + (v.edge_pct > 0 ? Math.min(14, v.edge_pct * 1.4) : 0) + (vb ? 8 : 0)
+      });
+    };
+
+    if (state.currentAnalysis) putFromAnalysis(state.currentAnalysis);
+    for (const a of (state.radarResults?.analyses || [])) putFromAnalysis(a);
+    for (const a of (state.parlayPool || [])) putFromAnalysis(a);
+    for (const a of Object.values(state.analyzedCache || {})) putFromAnalysis(a);
+
+    // Include Auto-Bot server-scanned daily_picks.json if present
+    const dp = state.cloudDailyPicks;
+    if (dp) {
+      const flatDp = [...(dp.sniper_picks || []), ...(dp.top_anchors || []), ...(dp.value_boosters || [])];
+      for (const p of flatDp) {
+        if (!p?.match_id || map.has(String(p.match_id))) continue;
+        const vb = p.value_booster;
+        map.set(String(p.match_id), {
+          match_id: String(p.match_id),
+          match_date: dp.date_label || dateFilter,
+          kickoff: p.kickoff_dual || "",
+          league: p.league || "",
+          home: p.home || "",
+          away: p.away || "",
+          xi_confirmed: !!p.xi_confirmed,
+          market: p.market || "",
+          prob: Number(p.model_prob || 0),
+          fair_odds: Number(p.fair_odds || 0),
+          bookie_odds: p.bookmaker_odds ? Number(p.bookmaker_odds) : null,
+          edge_pct: p.edge_pct !== undefined && p.edge_pct !== null ? Number(p.edge_pct) : null,
+          confidence: Number(p.confidence || 72),
+          tier: p.tier || "",
+          stake_u: Number(p.stake_units || 0),
+          total_lambda: Number(p.total_lambda || 0),
+          proj_score: p.projected_score || "",
+          booster: vb ? { label: vb.label, prob: vb.model_prob, fair: vb.fair_odds, min_ev: vb.min_ev_odds, stake: vb.booster_stake, strat: vb.strategy_label } : null,
+          score: (Number(p.model_prob || 0) * 0.55) + (Number(p.confidence || 72) * 0.30) + (p.xi_confirmed ? 12 : 0) + (p.edge_pct > 0 ? Math.min(14, p.edge_pct * 1.4) : 0) + (vb ? 8 : 0)
+        });
+      }
     }
 
-    const view = getActiveViewName();
-    if (view === "memory" || !a) {
-      try {
-        const an = ObsidianEngine.getAnalytics();
-        const s = an.summary || {};
-        const topSys = (an.strategy_systems || []).slice(0, 4).map((x) => `${x.name}: ${x.wins}W-${x.losses}L (${x.hit_rate}%, ROI ${x.est_roi >= 0 ? "+" : ""}${x.est_roi}%)`).join(" | ");
-        parts.push(`MEMORY TRACK RECORD: ${s.settled || 0} settled (${s.wins || 0}W-${s.pushes || 0}P-${s.losses || 0}L, Hit ${s.hit_rate || 0}%, PnL ${s.pnl_units || 0}u, ROI ${s.roi_pct || 0}%). Top Systems: ${topSys}`);
-      } catch {}
+    // Include PENDING predictions already auto-logged in Memory (for selected date / upcoming)
+    try {
+      const pending = ObsidianEngine.listPredictions("PENDING") || [];
+      for (const p of pending) {
+        if (!p?.match_id || map.has(String(p.match_id))) continue;
+        if (dateFilter && p.match_date && p.match_date < dateFilter) continue;
+        const vb = p.value_booster;
+        const xiOk = !!p.factors?.xi_confirmed;
+        map.set(String(p.match_id), {
+          match_id: String(p.match_id),
+          match_date: p.match_date || dateFilter,
+          kickoff: p.kickoff_utc ? fmtKickoff(p.kickoff_utc) : "",
+          league: p.league_name || "",
+          home: p.home_team || "",
+          away: p.away_team || "",
+          xi_confirmed: xiOk,
+          market: p.market_label || "",
+          prob: Number(p.model_prob || 0),
+          fair_odds: Number(p.fair_odds || 0),
+          bookie_odds: p.bookmaker_odds ? Number(p.bookmaker_odds) : null,
+          edge_pct: p.edge_pct !== undefined && p.edge_pct !== null ? Number(p.edge_pct) : null,
+          confidence: Number(p.confidence || 70),
+          tier: p.tier || "",
+          stake_u: Number(p.stake_units || 0),
+          total_lambda: +((Number(p.home_lambda || 0) + Number(p.away_lambda || 0))).toFixed(2),
+          proj_score: p.projected_score || "",
+          booster: vb ? { label: vb.market_label, prob: vb.model_prob, fair: vb.fair_odds, min_ev: +(Number(vb.fair_odds || 1.5) * 1.035).toFixed(2), stake: vb.booster_stake, strat: vb.strategy_label } : null,
+          score: (Number(p.model_prob || 0) * 0.55) + (Number(p.confidence || 70) * 0.30) + (xiOk ? 12 : 0) + (p.edge_pct > 0 ? Math.min(14, p.edge_pct * 1.4) : 0) + (vb ? 8 : 0)
+        });
+      }
+    } catch {}
+
+    return Array.from(map.values()).sort((a, b) => b.score - a.score);
+  }
+
+  function findMentionedMatchesInSlate(prompt, allMatches) {
+    const low = String(prompt || "").toLowerCase();
+    const leagueAliases = [
+      [/liga inggris|premier league|epl\b/i, "premier league"],
+      [/liga spanyol|la\s*liga/i, "laliga"],
+      [/liga italia|serie a/i, "serie a"],
+      [/liga jerman|bundesliga/i, "bundesliga"],
+      [/liga prancis|ligue 1/i, "ligue 1"],
+      [/champions league|\bucl\b/i, "champions league"],
+      [/europa league|\buel\b/i, "europa league"],
+      [/conference league|\buecl\b/i, "conference league"],
+      [/championship/i, "championship"],
+      [/eredivisie/i, "eredivisie"],
+      [/\bmls\b|major league/i, "major league soccer"],
+      [/brasileirao|liga brasil/i, "serie a"],
+      [/liga indonesia|bri liga/i, "liga 1"]
+    ];
+    const matchedLeagues = leagueAliases.filter(([rx]) => rx.test(low)).map(([, kw]) => kw);
+
+    const stopWords = new Set(["yang", "dengan", "untuk", "dari", "hari", "malam", "besok", "partai", "laga", "match", "value", "bagus", "tinggi", "probabilitas", "carikan", "cari", "tolong", "analisa", "analisis", "prediksi", "over", "under", "handicap", "corner", "corners", "btts", "parlay", "safe", "booster", "liga", "bola", "skor", "menang", "kalah", "seri", "terbaik", "rekomendasi", "semua", "seluruh", "city", "united", "club", "real", "inter", "sporting", "athletic"]);
+    const promptWords = low.replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter((w) => w.length >= 4 && !stopWords.has(w));
+
+    const teamHits = [];
+    const leagueHits = [];
+    for (const m of allMatches) {
+      if (m.finished || m.state === "CANC") continue;
+      const hn = String(m.home_name || "").toLowerCase();
+      const an = String(m.away_name || "").toLowerCase();
+      const ln = String(m.league_name || "").toLowerCase();
+
+      const fullTeamHit = (hn.length >= 4 && low.includes(hn)) || (an.length >= 4 && low.includes(an));
+      const tokenHit = !fullTeamHit && promptWords.some((w) => hn.split(/\s+/).includes(w) || an.split(/\s+/).includes(w));
+      if (fullTeamHit || tokenHit) {
+        teamHits.push(m);
+      } else if (matchedLeagues.length && matchedLeagues.some((kw) => ln.includes(kw))) {
+        leagueHits.push(m);
+      }
+    }
+    return { teamHits, leagueHits };
+  }
+
+  function formatMatchFullDigest(a, label = "MATCH") {
+    const v = a.verdict || {}, gm = a.goal_model || {}, cm = a.corners_model || {}, vb = v.value_booster;
+    const warns = (a.filters || []).filter((f) => f.status === "WARN" || f.status === "FAIL").map((f) => `${f.name}:${f.status}`).slice(0, 3);
+    const absH = (a.home?.metrics?.tier_s_out || []).map((p) => p.name).slice(0, 2).join(", ");
+    const absA = (a.away?.metrics?.tier_s_out || []).map((p) => p.name).slice(0, 2).join(", ");
+    return [
+      `${label}: ${a.home?.name} vs ${a.away?.name} (${a.league_name} · ${a.match_date} · ${a.state}${a.is_live ? ` ${a.live_minute}' ${a.home?.score}-${a.away?.score}` : ""})`,
+      `XI: ${a.xi_status} | λ ${gm.home_lambda}–${gm.away_lambda} (Tot ${gm.total_lambda}, Proj ${gm.projected_score}, MercIdx ${gm.mercurius_attack_index}) | O2.5 ${gm.p_over_2_5}%, O3.5 ${gm.p_over_3_5}%, O4.5 ${gm.p_over_4_5}%, BTTS ${gm.p_btts_yes}%, Cλ ${cm.total_corners_lambda}`,
+      `🛡️ Safe: ${v.primary_bet} (${v.model_prob}%, Fair ${v.fair_odds}x${v.bookmaker_odds ? `, Bookie ${v.bookmaker_odds}x, Edge ${v.edge_pct}%` : ""}, Stake ${v.stake_units}u)` +
+        (vb ? ` | 🚀 Booster: ${vb.label} [${vb.strategy_label}] (${vb.model_prob}%, Fair ${vb.fair_odds}x, Min+EV ${vb.min_ev_odds}x, ¼K ${vb.booster_stake}u)` : ""),
+      a.weather ? `Cuaca: ${a.weather.icon}${a.weather.city} ${a.weather.temp_c}°C Rain ${a.weather.rain_mm}mm Wind ${a.weather.wind_kmh}km/h` : null,
+      a.h2h ? `H2H(${a.h2h.count}): H${a.h2h.home_wins}W D${a.h2h.draws} A${a.h2h.away_wins}W Avg ${a.h2h.avg_goals}g` : null,
+      a.af_consensus?.advice ? `AF-AI: ${a.af_consensus.advice}` : null,
+      (absH || absA) ? `Absen: ${[absH && `${a.home?.name}:${absH}`, absA && `${a.away?.name}:${absA}`].filter(Boolean).join(" | ")}` : null,
+      warns.length ? `Warn: ${warns.join("; ")}` : null,
+      `Risk: Chaos ${a.risk_audit?.chaos_index} · Fail: ${a.risk_audit?.failure_condition} · Hedge: ${a.risk_audit?.live_hedge_trigger}`
+    ].filter(Boolean).join("\n");
+  }
+
+  async function gatherSiteWideContext(userPrompt, onStatus) {
+    if (ctxToggle && !ctxToggle.checked) return { text: "", scannedCount: 0, pool: [] };
+    const allMatches = getAllSlateMatchesFlat();
+    const low = String(userPrompt || "").toLowerCase();
+
+    // 1) Detect if user asks for multi-match recommendations / value / corners / over / parlay / site-wide search
+    const wantsDiscovery = /cari(kan)?|rekomendasi|terbaik|top\s*\d|\d+\s*(partai|laga|match|tim|pilihan|pick)|value|\+ev|probabilitas|booster|sniper|over\s*[234]|corner|btts|parlay|hari ini|malam ini|besok|seluruh|semua laga|jadwal|bandingkan/i.test(low);
+    const { teamHits, leagueHits } = findMentionedMatchesInSlate(userPrompt, allMatches);
+    const newlyAnalyzed = [];
+
+    // 2) On-demand analyze specifically mentioned teams or league fixtures (up to 3)
+    const specificTargets = [...teamHits, ...leagueHits].slice(0, 3);
+    for (let i = 0; i < specificTargets.length; i++) {
+      const m = specificTargets[i];
+      if (!state.analyzedCache[String(m.match_id)]) {
+        if (onStatus) onStatus(`🔍 Memindai data 5-sumber: ${m.home_name} vs ${m.away_name} (${i + 1}/${specificTargets.length})...`);
+        try {
+          const res = await ObsidianEngine.analyzeMatchById(m.match_id, { matchStub: m, marketAnchored: state.marketAnchored });
+          state.analyzedCache[String(m.match_id)] = res;
+          newlyAnalyzed.push(res);
+        } catch {}
+      } else {
+        newlyAnalyzed.push(state.analyzedCache[String(m.match_id)]);
+      }
     }
 
-    return parts.join("\n---\n").slice(0, 2350);
+    // 3) If user asks for multi-match discovery (e.g. "Carikan 5 partai value bagus") and pool < 8 -> AUTO-SCAN Daily Radar right inside chat!
+    let pool = collectSiteWidePool(state.currentDate);
+    if (wantsDiscovery && pool.length < 8 && allMatches.length > 0) {
+      const upcomingCount = allMatches.filter((m) => !m.finished && m.state !== "CANC").length;
+      if (upcomingCount > 0) {
+        const scanTarget = Math.min(14, upcomingCount);
+        if (onStatus) onStatus(`🔍 AI memindai ${scanTarget} laga prioritas ENGINE BOLA (${state.currentDate})...`);
+        try {
+          const scanRes = await ObsidianEngine.scanDailyTopPicks(allMatches, scanTarget, (done, tot) => {
+            if (onStatus) onStatus(`🔍 Memindai seluruh jadwal hari ini (${done}/${tot} laga)...`);
+          });
+          state.radarResults = scanRes;
+          state.radarDate = state.currentDate;
+          for (const a of (scanRes.analyses || [])) {
+            if (a?.match_id) state.analyzedCache[String(a.match_id)] = a;
+          }
+          refreshStatus();
+          pool = collectSiteWidePool(state.currentDate);
+        } catch {}
+      }
+    }
+
+    if (onStatus) onStatus("🧠 Menyusun analisis kuantitatif...");
+
+    // 4) Build compact, information-dense site-wide context digest (~4,500–5,800 chars)
+    const blocks = [];
+
+    // Active Match Detail (if open)
+    if (state.currentAnalysis) {
+      blocks.push(formatMatchFullDigest(state.currentAnalysis, "MATCH AKTIF DI LAYAR"));
+    }
+
+    // Specific mentioned matches (if different from active match)
+    for (const a of newlyAnalyzed) {
+      if (state.currentAnalysis && String(a.match_id) === String(state.currentAnalysis.match_id)) continue;
+      blocks.push(formatMatchFullDigest(a, "MATCH DITEMUKAN DI JADWAL"));
+    }
+
+    // Site-Wide Ranked Radar & Analyzed Pool (up to 14 matches across entire dashboard!)
+    if (pool.length) {
+      const poolLines = pool.slice(0, 14).map((p, i) => {
+        const xiTag = p.xi_confirmed ? "XI✓" : "Pre-XI";
+        const oddsStr = p.bookie_odds
+          ? `Bookie ${p.bookie_odds}x${p.edge_pct !== null ? ` (${p.edge_pct > 0 ? "+" : ""}${p.edge_pct}% EV)` : ""}`
+          : `Fair ${p.fair_odds}x`;
+        const vbStr = p.booster ? ` | 🚀 Booster: ${p.booster.label} (${p.booster.prob}% · Fair ${p.booster.fair}x · Min+EV ${p.booster.min_ev}x)` : "";
+        const cStr = p.corners_lam >= 10.2 ? ` | 🚩Cλ ${p.corners_lam}` : "";
+        return `${i + 1}. ${p.home} vs ${p.away} (${p.league} · ${xiTag}${p.weather ? ` · ${p.weather}` : ""}) → 🛡️ ${p.market} ${p.prob}% (${oddsStr}, Conf ${p.confidence}, Totλ ${p.total_lambda})${vbStr}${cStr}`;
+      });
+      blocks.push(`[POOL RADAR & PARTAI TERANALISIS · ${pool.length} LAGA TERSEDIA (${state.currentDate})]\n${poolLines.join("\n")}`);
+    }
+
+    // High-Volume Corners (10-15+) & League Slate Summary
+    const highC = (state.radarResults?.high_corners_10_15 || []).slice(0, 4);
+    if (highC.length) {
+      blocks.push(`[HIGH-VOLUME CORNERS 10-15+]\n` + highC.map((c) => `• ${c.analysis.home.name} vs ${c.analysis.away.name}: Cλ ${c.corners_lambda} (O10.5 ${c.p_over_10_5}%, O11.5 ${c.p_over_11_5}%)`).join("\n"));
+    }
+
+    // Slate Overview (shows all top leagues playing today)
+    if (allMatches.length) {
+      const upcoming = allMatches.filter((m) => !m.finished && m.state !== "CANC");
+      const byLg = new Map();
+      for (const m of upcoming) byLg.set(m.league_name, (byLg.get(m.league_name) || 0) + 1);
+      const topLgs = Array.from(byLg.entries()).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, v]) => `${k}(${v})`).join(", ");
+      blocks.push(`[JADWAL WEB AKTIF · ${state.currentDate}] Total ${allMatches.length} laga (${upcoming.length} upcoming/live). Liga utama: ${topLgs}`);
+      if (leagueHits.length) {
+        blocks.push(`[DAFTAR LAGA LIGA DIMINTA]\n` + leagueHits.slice(0, 10).map((m) => `• ${m.home_name} vs ${m.away_name} (${m.league_name} · ${fmtKickoff(m.kickoff_utc)})`).join("\n"));
+      }
+    }
+
+    // Active Slip Builder
+    if (state.slipLegs.length) {
+      blocks.push(`[SLIP AKTIF (${state.slipLegs.length} leg)] ` + state.slipLegs.map((l) => `${l.home_name} vs ${l.away_name} (${l.user_pick_key || "Auto"})`).join(" ; "));
+    }
+
+    // Breaking Squad News Intel matching active/pool matches
+    const newsEntries = Object.values(state.newsIntelByMatch || {}).filter((n) => n?.headlines?.length).slice(0, 4);
+    if (newsEntries.length) {
+      blocks.push(`[BREAKING SQUAD NEWS]\n` + newsEntries.map((n) => `• ${n.match_label || ""}: ${n.headlines[0]?.title || ""}`).join("\n"));
+    }
+
+    // Memory Track Record & Predictology Strategy Leaderboard
+    try {
+      const an = ObsidianEngine.getAnalytics();
+      const s = an.summary || {};
+      const topSys = (an.strategy_systems || []).slice(0, 4).map((x) => `${x.name} ${x.wins}W-${x.losses}L (${x.hit_rate}%, ROI ${x.est_roi >= 0 ? "+" : ""}${x.est_roi}%)`).join(" | ");
+      blocks.push(`[MEMORY TRACK RECORD] ${s.settled || 0} settled (${s.wins || 0}W-${s.pushes || 0}P-${s.losses || 0}L, Hit ${s.hit_rate || 0}%, PnL ${s.pnl_units || 0}u, ROI ${s.roi_pct || 0}%). Top Systems: ${topSys}`);
+    } catch {}
+
+    return {
+      text: blocks.join("\n---\n").slice(0, 6100),
+      scannedCount: pool.length,
+      pool
+    };
   }
 
   function refreshContextUi() {
     const a = state.currentAnalysis;
-    const view = getActiveViewName();
+    const poolCount = collectSiteWidePool(state.currentDate).length;
+    const totalSlate = getAllSlateMatchesFlat().length;
     if (ctxPill) {
       if (a) {
-        const wxBit = a.weather ? ` · ${a.weather.icon} ${a.weather.temp_c}°C` : "";
-        ctxPill.textContent = `⚽ ${a.home?.name} vs ${a.away?.name} · ${a.xi_confirmed ? "XI Resmi" : "Pre-XI"}${wxBit}`;
-      } else if (view === "scanner") {
-        ctxPill.textContent = "📡 Daily Radar · Tanya strategi atau hasil scan";
-      } else if (view === "memory") {
-        ctxPill.textContent = "🧠 Memory & Strategy Backtest aktif";
+        const wxBit = a.weather ? ` · ${a.weather.icon}${a.weather.temp_c}°C` : "";
+        ctxPill.textContent = `🌐 ${poolCount} teranalisis / ${totalSlate} laga · Aktif: ${a.home?.name} vs ${a.away?.name}${wxBit}`;
       } else {
-        ctxPill.textContent = "⚽ Pilih laga di kiri untuk bedah otomatis";
+        ctxPill.textContent = `🌐 Site-Wide Search aktif · ${poolCount} teranalisis / ${totalSlate} laga (${state.currentDate})`;
       }
     }
 
     if (chipsWrap) {
       const chips = a
         ? [
-            { label: "🔍 Bedah Laga Ini", prompt: "Bedah singkat pertandingan ini: kekuatan utama, ancaman terbesar, dan kesimpulan akhirnya." },
+            { label: "🏆 Top 5 Value Hari Ini", prompt: "Carikan 5 partai dengan value paling bagus (+EV) dan probabilitas tinggi dari seluruh jadwal hari ini." },
+            { label: "🔍 Bedah Laga Ini", prompt: "Bedah singkat pertandingan aktif ini: kekuatan utama, ancaman terbesar, dan kesimpulan akhirnya." },
             { label: "🛡️ Safe vs 🚀 Booster", prompt: "Bandingkan Safe Pick vs Value Booster (+EV) di laga ini — kapan pilih yang aman dan kapan ambil booster?" },
-            { label: "⚠️ Risiko & Hedge Live", prompt: "Apa risiko paling bahaya di laga ini dan kapan harus hedge saat live?" },
-            { label: "📘 Arti Market Ini", prompt: "Jelaskan arti market rekomendasi utama di laga ini dengan contoh skor menang/seri/kalah." }
+            { label: "🚩 Top Corners & Over 3.5", prompt: "Carikan partai terbaik hari ini untuk High Corners (10-15+) dan Over 3.5 / 4.5." }
           ]
         : [
+            { label: "🏆 Top 5 Value Hari Ini", prompt: "Carikan 5 partai dengan value paling bagus (+EV) dan probabilitas tinggi dari seluruh jadwal hari ini." },
+            { label: "🚀 Top Value Boosters", prompt: "Cari partai terbaik hari ini untuk Value Booster (+EV) seperti Over 3.5, Over 4.5, AH -1.5, atau Team Over 1.5." },
             { label: "🧠 Audit Rekor Kita", prompt: "Ringkas performa historis Memory Engine Bola kita: kenapa menang, kenapa kalah, dan strategi mana yang paling profit?" },
-            { label: "🛡️ Safe vs 🚀 Booster", prompt: "Jelaskan cara main Dual-Track Safe Anchor + Value Booster (+EV) biar profit stabil." },
-            { label: "💰 Atur Modal Kelly", prompt: "Bagaimana cara membagi stake modal dengan aman antara Safe Pick dan ¼-Kelly Value Booster?" },
-            { label: "📘 Arti AH -1 vs -1.5", prompt: "Jelaskan perbedaan Asian Handicap (-1), (-1.5), dan DNB (0) dengan contoh skor singkat." }
+            { label: "💰 Atur Modal Kelly", prompt: "Bagaimana cara membagi stake modal dengan aman antara Safe Pick dan ¼-Kelly Value Booster?" }
           ];
       chipsWrap.innerHTML = chips
         .map((c, idx) => `<button type="button" class="ai-chip" data-chip-idx="${idx}">${esc(c.label)}</button>`)
@@ -10766,10 +11042,17 @@ function initAiCopilot() {
     }
   }
 
-  function buildLocalQuantReply(prompt) {
+  function buildLocalQuantReply(prompt, pool = []) {
     const low = String(prompt || "").toLowerCase();
     const a = state.currentAnalysis;
-    const ownerHint = `\n\n**Catatan:** Cloud AI belum diaktifkan. Owner cukup ketik \`/setai gemini <API_KEY>\` (gratis di Google AI Studio — Gemini 3.5 Flash-Lite) atau \`/setai groq <KEY>\` di DM bot Telegram agar bisa ngobrol bebas.`;
+    const ownerHint = `\n\n**Catatan:** Cloud AI belum aktif. Owner cukup ketik \`/setai gemini <API_KEY>\` di DM bot Telegram agar bisa ngobrol bebas.`;
+
+    if (pool.length && /cari|top|partai|value|rekomendasi|terbaik|probabilitas|booster|over|corner/i.test(low)) {
+      const top5 = pool.slice(0, 5).map((p, i) =>
+        `${i + 1}. **${p.home} vs ${p.away}** (${p.league} · ${p.xi_confirmed ? "XI✓" : "Pre-XI"})\n   - 🛡️ **${p.market}** (**${p.prob}%** · ${p.bookie_odds ? `Bookie \`${p.bookie_odds}x\`` : `Fair \`${p.fair_odds}x\``})${p.booster ? `\n   - 🚀 Booster: **${p.booster.label}** (${p.booster.prob}% · Fair \`${p.booster.fair}x\`)` : ""}`
+      ).join("\n");
+      return `**Top ${Math.min(5, pool.length)} Partai Value & Probabilitas Tertinggi (${state.currentDate}):**\n${top5}${ownerHint}`;
+    }
 
     if (a && /bedah|analisis|laga|match|safe|booster|risiko|hedge|arti|kenapa|over|handicap|skor/i.test(low)) {
       const v = a.verdict || {}, gm = a.goal_model || {}, vb = v.value_booster;
@@ -10802,7 +11085,7 @@ function initAiCopilot() {
       ].join("\n") + ownerHint;
     }
 
-    return `Halo! Saat ini AI berjalan di **Mode Quant Lokal (0 kuota)**. Pilih salah satu pertandingan di sebelah kiri lalu klik **🔍 Bedah Laga Ini** untuk ringkasan otomatis.${ownerHint}`;
+    return `Halo! Saat ini AI berjalan di **Mode Quant Lokal (0 kuota)**. Klik **🏆 Top 5 Value Hari Ini** atau pilih pertandingan lalu klik **🔍 Bedah Laga Ini**.${ownerHint}`;
   }
 
   async function syncStatus() {
@@ -10836,16 +11119,20 @@ function initAiCopilot() {
     input.value = "";
     sendBtn.disabled = true;
     appendMessage("user", clean);
-    const typingEl = appendTyping();
+    const typing = appendTyping("🔍 Mencari data di seluruh ENGINE BOLA...");
 
     const gateUrl = String(OBSIDIAN_AUTH_GATE_URL || "").trim().replace(/\/$/, "");
     const tok = localStorage.getItem(AUTH_SESSION_KEY) || "";
-    const context = buildContextDigest();
+    let gathered = { text: "", scannedCount: 0, pool: [] };
+    try {
+      gathered = await gatherSiteWideContext(clean, (st) => typing.setStatus(st));
+      refreshContextUi();
+    } catch {}
 
     try {
       if (!gateUrl || !tok) {
-        typingEl.remove();
-        appendMessage("assistant", buildLocalQuantReply(clean), "Local Quant · 0 kuota");
+        typing.remove();
+        appendMessage("assistant", buildLocalQuantReply(clean, gathered.pool), "Local Quant · 0 kuota");
         return;
       }
       const resp = await fetch(`${gateUrl}/api/ai/chat`, {
@@ -10853,12 +11140,12 @@ function initAiCopilot() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${tok}` },
         body: JSON.stringify({
           message: clean,
-          context,
+          context: gathered.text,
           history: aiState.history.slice(-6)
         })
       });
       const data = await resp.json().catch(() => ({}));
-      typingEl.remove();
+      typing.remove();
 
       if (resp.ok && data.ok && data.reply) {
         aiState.enabled = true;
@@ -10873,20 +11160,21 @@ function initAiCopilot() {
         aiState.history.push({ role: "assistant", content: data.reply });
         if (aiState.history.length > 8) aiState.history = aiState.history.slice(-8);
 
+        const scopeNote = gathered.scannedCount ? ` · 🌐 ${gathered.scannedCount} laga` : "";
         const meta = data.cached
-          ? `${shortModelLabel(data.provider, data.model)} · ⚡ cache (0 kuota)`
-          : `${shortModelLabel(data.provider, data.model)} · sisa ${aiState.remaining}/${aiState.limit}`;
+          ? `${shortModelLabel(data.provider, data.model)}${scopeNote} · ⚡ cache (0 kuota)`
+          : `${shortModelLabel(data.provider, data.model)}${scopeNote} · sisa ${aiState.remaining}/${aiState.limit}`;
         appendMessage("assistant", data.reply, meta);
       } else if (data.code === "AI_NOT_CONFIGURED") {
         aiState.enabled = false;
         updateStatusUi();
-        appendMessage("assistant", buildLocalQuantReply(clean), "Local Quant Fallback · 0 kuota");
+        appendMessage("assistant", buildLocalQuantReply(clean, gathered.pool), "Local Quant Fallback · 0 kuota");
       } else {
         appendMessage("assistant", `⚠️ ${data.error || "Gagal menghubungi ENGINE BOLA AI. Coba lagi sebentar."}`, "Status");
       }
     } catch {
-      typingEl.remove();
-      appendMessage("assistant", buildLocalQuantReply(clean), "Offline Local Fallback · 0 kuota");
+      typing.remove();
+      appendMessage("assistant", buildLocalQuantReply(clean, gathered.pool), "Offline Local Fallback · 0 kuota");
     } finally {
       aiState.busy = false;
       sendBtn.disabled = false;
@@ -10898,8 +11186,8 @@ function initAiCopilot() {
     msgList.innerHTML = "";
     appendMessage(
       "assistant",
-      "Halo! Saya **ENGINE BOLA AI** (mode hemat kuota). Tanyakan apa saja — bedah laga aktif, perbandingan **🛡️ Safe Pick vs 🚀 Value Booster (+EV)**, arti market Asian Handicap/Corners, atau manajemen modal Kelly.",
-      "Siap membantu"
+      "Halo! Saya **ENGINE BOLA AI** (mode hemat kuota + **Site-Wide Search**). Saya bisa otomatis memindai seluruh jadwal, Daily Radar, Value Boosters (+EV), Corners 10–15+, dan Memory — coba klik **🏆 Top 5 Value Hari Ini** atau sebutkan nama tim/liga apa saja!",
+      "Site-Wide AI Ready"
     );
   }
 
