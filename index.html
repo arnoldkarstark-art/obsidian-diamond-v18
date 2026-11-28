@@ -3336,8 +3336,296 @@ select option:checked, select option:hover, select option:focus {
   .booster-right > .mono { text-align: left !important; }
 }
 
+/* ENGINE BOLA AI Copilot (Floating Orb + Frosted Glass Drawer) */
+.ai-fab {
+  position: fixed;
+  right: 20px;
+  bottom: max(20px, env(safe-area-inset-bottom, 20px));
+  z-index: 68;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 15px 9px 11px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, rgba(12, 26, 44, 0.86), rgba(9, 22, 34, 0.90));
+  border: 1px solid rgba(56, 217, 255, 0.42);
+  color: #eef8ff;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.48), 0 0 22px rgba(56, 217, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  transition: transform 160ms var(--ease-spring), border-color 160ms ease, box-shadow 160ms ease;
+}
+.ai-fab:hover {
+  transform: translateY(-2px);
+  border-color: rgba(56, 217, 255, 0.78);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.54), 0 0 28px rgba(56, 217, 255, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+.ai-fab-orb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, rgba(56, 217, 255, 0.28), rgba(43, 224, 141, 0.26));
+  color: #7ee8ff;
+  box-shadow: 0 0 12px rgba(56, 217, 255, 0.30);
+}
+.ai-drawer {
+  position: fixed;
+  right: 20px;
+  bottom: max(20px, env(safe-area-inset-bottom, 20px));
+  z-index: 75;
+  width: 400px;
+  max-width: calc(100vw - 24px);
+  height: min(610px, calc(100dvh - 88px));
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  background: linear-gradient(165deg, rgba(8, 16, 28, 0.94), rgba(6, 12, 22, 0.96));
+  border: 1px solid rgba(56, 217, 255, 0.28);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.68), 0 0 36px rgba(56, 217, 255, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  overflow: hidden;
+  animation: aiDrawerIn 190ms var(--ease-spring);
+}
+@keyframes aiDrawerIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.ai-drawer.hidden { display: none; }
+.ai-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px 14px 11px;
+  border-bottom: 1px solid var(--border-hairline);
+  background: rgba(14, 26, 44, 0.55);
+}
+.ai-drawer-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+.ai-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--emerald);
+  box-shadow: 0 0 8px rgba(48, 209, 88, 0.7);
+  flex-shrink: 0;
+}
+.ai-dot.local {
+  background: var(--amber);
+  box-shadow: 0 0 8px rgba(245, 185, 66, 0.6);
+}
+.ai-model-pill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: rgba(56, 217, 255, 0.14);
+  border: 1px solid rgba(56, 217, 255, 0.28);
+  color: var(--ice);
+}
+.ai-drawer-sub {
+  font-size: 10.5px;
+  color: var(--ink-tertiary);
+  margin-top: 2px;
+}
+.ai-drawer-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ai-context-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 12px;
+  background: rgba(56, 217, 255, 0.055);
+  border-bottom: 1px solid var(--border-hairline);
+  font-size: 11px;
+}
+.ai-context-pill {
+  color: var(--ink-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.ai-ctx-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 11px;
+}
+.ai-ctx-toggle input { accent-color: var(--ice); cursor: pointer; }
+.ai-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+.ai-msg {
+  max-width: 89%;
+  padding: 9px 12px;
+  border-radius: 13px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+.ai-msg.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, rgba(56, 217, 255, 0.22), rgba(43, 224, 141, 0.18));
+  border: 1px solid rgba(56, 217, 255, 0.36);
+  color: #f3f9ff;
+  border-bottom-right-radius: 4px;
+}
+.ai-msg.assistant {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.048);
+  border: 1px solid var(--border-hairline);
+  color: #e4eef9;
+  border-bottom-left-radius: 4px;
+}
+.ai-msg.assistant strong { color: #ffffff; font-weight: 600; }
+.ai-msg.assistant code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: rgba(56, 217, 255, 0.12);
+  color: #8ee8ff;
+}
+.ai-msg.assistant ul {
+  margin: 5px 0 4px 16px;
+  padding: 0;
+}
+.ai-msg.assistant li { margin-bottom: 3px; }
+.ai-msg-meta {
+  margin-top: 5px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--ink-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ai-typing {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 3px 2px;
+}
+.ai-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ice);
+  opacity: 0.45;
+  animation: aiBounce 1.1s infinite ease-in-out;
+}
+.ai-typing span:nth-child(2) { animation-delay: 0.18s; }
+.ai-typing span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes aiBounce {
+  0%, 80%, 100% { transform: scale(0.75); opacity: 0.35; }
+  40% { transform: scale(1.1); opacity: 1; }
+}
+.ai-quick-chips {
+  display: flex;
+  gap: 6px;
+  padding: 7px 12px 6px;
+  overflow-x: auto;
+  border-top: 1px solid var(--border-hairline);
+  scrollbar-width: none;
+}
+.ai-quick-chips::-webkit-scrollbar { display: none; }
+.ai-chip {
+  flex-shrink: 0;
+  appearance: none;
+  background: rgba(16, 30, 50, 0.72);
+  border: 1px solid rgba(118, 178, 255, 0.22);
+  color: #cfe6fb;
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+.ai-chip:hover {
+  background: rgba(56, 217, 255, 0.18);
+  border-color: rgba(56, 217, 255, 0.50);
+  color: #ffffff;
+}
+.ai-input-bar {
+  display: flex;
+  gap: 7px;
+  padding: 9px 11px 11px;
+  border-top: 1px solid var(--border-hairline);
+  background: rgba(7, 14, 24, 0.85);
+}
+.ai-input-bar input {
+  flex: 1;
+  min-width: 0;
+  background: rgba(14, 26, 44, 0.78);
+  border: 1px solid rgba(118, 178, 255, 0.24);
+  border-radius: 10px;
+  padding: 8px 11px;
+  color: var(--ink-primary);
+  font-family: inherit;
+  font-size: 12.5px;
+  outline: none;
+}
+.ai-input-bar input:focus {
+  border-color: rgba(56, 217, 255, 0.62);
+  box-shadow: 0 0 0 3px rgba(56, 217, 255, 0.12);
+}
+.ai-input-bar input::placeholder { color: var(--ink-tertiary); }
+.ai-send-btn {
+  padding: 8px 13px !important;
+  font-size: 12px !important;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .ai-fab {
+    right: 14px;
+    bottom: max(14px, env(safe-area-inset-bottom, 14px));
+    padding: 8px 13px 8px 9px;
+  }
+  .ai-drawer {
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    height: min(84dvh, 640px);
+    border-radius: 18px 18px 0 0;
+    border-bottom: none;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .orbit-ring, .orbit-ring-2, .view.active,
+  .orbit-ring, .orbit-ring-2, .view.active, .ai-drawer, .ai-typing span,
   .eb-live-ball, .nav-ico-ball, .eb-radar-sweep, .eb-radar-blip, .nav-ico-pulse, .nav-ico-brain {
     animation: none !important;
   }
@@ -3881,6 +4169,53 @@ select option:checked, select option:hover, select option:focus {
       </div>
     </div>
   </div>
+
+  <!-- ENGINE BOLA AI Copilot (Floating Launcher + Slide-Over Chat Drawer) -->
+  <button id="eb-ai-fab" class="ai-fab" type="button" aria-label="Buka ENGINE BOLA AI Copilot" title="Tanya ENGINE BOLA AI (Model Hemat Kuota)">
+    <span class="ai-fab-orb" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/>
+        <path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16z"/>
+      </svg>
+    </span>
+    <span class="ai-fab-label">AI Copilot</span>
+  </button>
+
+  <aside id="eb-ai-drawer" class="ai-drawer hidden" role="dialog" aria-label="ENGINE BOLA AI Copilot">
+    <div class="ai-drawer-head">
+      <div class="ai-drawer-title-wrap">
+        <div class="ai-drawer-title">
+          <span class="ai-dot" id="ai-status-dot"></span>
+          <span>ENGINE BOLA AI</span>
+          <span id="ai-model-badge" class="ai-model-pill mono">Flash-Lite</span>
+        </div>
+        <div id="ai-quota-sub" class="ai-drawer-sub mono">Memeriksa status AI...</div>
+      </div>
+      <div class="ai-drawer-head-actions">
+        <button id="btn-ai-clear" class="icon-btn" type="button" title="Bersihkan percakapan" aria-label="Clear chat">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        </button>
+        <button id="btn-ai-close" class="icon-btn" type="button" aria-label="Tutup AI Copilot">&times;</button>
+      </div>
+    </div>
+
+    <div class="ai-context-bar">
+      <div id="ai-context-pill" class="ai-context-pill">⚽ Pilih laga untuk konteks otomatis</div>
+      <label class="ai-ctx-toggle" title="Kirim data laga / radar aktif ke AI (hemat token ~350t)">
+        <input id="ai-include-ctx" type="checkbox" checked />
+        <span>Konteks</span>
+      </label>
+    </div>
+
+    <div id="ai-messages" class="ai-messages"></div>
+
+    <div id="ai-quick-chips" class="ai-quick-chips"></div>
+
+    <form id="ai-chat-form" class="ai-input-bar">
+      <input id="ai-chat-input" type="text" maxlength="600" autocomplete="off" placeholder="Tanya soal laga ini, Safe vs Booster, AH, Kelly, atau apa saja..." />
+      <button id="btn-ai-send" class="btn btn-primary btn-xs ai-send-btn" type="submit" aria-label="Kirim pesan">Kirim</button>
+    </form>
+  </aside>
 
   <div id="toast" class="toast hidden" role="status"></div>
 
@@ -7463,6 +7798,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFluidStadiumEngine();
   initInteractive3DFootball();
   initGlassMicroInteractions();
+  initAiCopilot();
 
   const heroParlayBtn = document.getElementById("btn-hero-parlay");
   if (heroParlayBtn) {
@@ -7692,6 +8028,7 @@ function switchView(viewName) {
   if (viewName === "parlay") ensureParlayPoolLoaded();
   if (viewName === "slip") renderSlipBuilder();
   if (viewName === "memory") loadMemoryView();
+  if (typeof window.__ebAiRefreshContext === "function") window.__ebAiRefreshContext();
 }
 
 function refreshStatus() {
@@ -8011,6 +8348,7 @@ async function selectMatch(matchId, opts = {}) {
     if (!opts.keepTab) state.activeMarketTab = "RADAR";
     renderAnalysis(data);
     refreshStatus();
+    if (typeof window.__ebAiRefreshContext === "function") window.__ebAiRefreshContext();
 
     // Live 45-second Auto-Polling when watching an active LIVE match
     if (data.is_live && state.liveAutoPoll) {
@@ -9473,6 +9811,7 @@ function initAuthGate() {
       if (chk) chk.checked = ObsidianEngine.getAfAutoFill();
       refreshStatus();
     });
+    if (typeof window.__ebAiSyncStatus === "function") window.__ebAiSyncStatus();
   };
 
   const verifyCurrentSession = async (isPeriodic = false) => {
@@ -10243,6 +10582,358 @@ function initGlassMicroInteractions() {
       authCard.style.transform = "";
     });
   }
+}
+
+/* ============================================================================
+ * ENGINE BOLA AI COPILOT — Quota-Efficient Quant Assistant (Flash-Lite / Groq)
+ * ============================================================================ */
+function initAiCopilot() {
+  const fab = document.getElementById("eb-ai-fab");
+  const drawer = document.getElementById("eb-ai-drawer");
+  const closeBtn = document.getElementById("btn-ai-close");
+  const clearBtn = document.getElementById("btn-ai-clear");
+  const msgList = document.getElementById("ai-messages");
+  const chipsWrap = document.getElementById("ai-quick-chips");
+  const form = document.getElementById("ai-chat-form");
+  const input = document.getElementById("ai-chat-input");
+  const sendBtn = document.getElementById("btn-ai-send");
+  const ctxPill = document.getElementById("ai-context-pill");
+  const ctxToggle = document.getElementById("ai-include-ctx");
+  const modelBadge = document.getElementById("ai-model-badge");
+  const quotaSub = document.getElementById("ai-quota-sub");
+  const statusDot = document.getElementById("ai-status-dot");
+  if (!fab || !drawer || !msgList || !form || !input) return;
+
+  const aiState = {
+    open: false,
+    busy: false,
+    enabled: false,
+    provider: null,
+    model: null,
+    used: 0,
+    limit: 25,
+    remaining: 25,
+    isOwner: false,
+    history: []
+  };
+
+  function shortModelLabel(provider, model) {
+    if (!provider) return "Local Quant";
+    if (provider === "gemini") return String(model || "gemini-3.5-flash-lite").replace(/^gemini-/, "Gemini ").replace(/-/g, " ");
+    if (provider === "groq") return "Groq Lite";
+    if (provider === "cf_ai") return "CF Llama-8B";
+    return "AI Lite";
+  }
+
+  function renderAiMarkdown(rawText) {
+    const safe = esc(String(rawText || ""));
+    const lines = safe.split(/\r?\n/);
+    let html = "";
+    let inList = false;
+    const inlineFmt = (s) => s
+      .replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/`([^`\n]+)`/g, "<code>$1</code>")
+      .replace(/(^|\s)_([^_\n]+)_(?=\s|$|[.,!])/g, "$1<em>$2</em>");
+    for (const line of lines) {
+      const m = line.match(/^\s*(?:[-*•]|\d+\.)\s+(.*)$/);
+      if (m) {
+        if (!inList) { html += "<ul>"; inList = true; }
+        html += `<li>${inlineFmt(m[1])}</li>`;
+      } else {
+        if (inList) { html += "</ul>"; inList = false; }
+        if (line.trim()) html += `<div>${inlineFmt(line)}</div>`;
+        else html += `<div style="height:5px"></div>`;
+      }
+    }
+    if (inList) html += "</ul>";
+    return html || safe;
+  }
+
+  function appendMessage(role, content, meta = "") {
+    const el = document.createElement("div");
+    el.className = `ai-msg ${role}`;
+    el.innerHTML = (role === "assistant" ? renderAiMarkdown(content) : esc(content)) +
+      (meta ? `<div class="ai-msg-meta">${esc(meta)}</div>` : "");
+    msgList.appendChild(el);
+    msgList.scrollTop = msgList.scrollHeight;
+    return el;
+  }
+
+  function appendTyping() {
+    const el = document.createElement("div");
+    el.className = "ai-msg assistant";
+    el.innerHTML = `<div class="ai-typing"><span></span><span></span><span></span></div>`;
+    msgList.appendChild(el);
+    msgList.scrollTop = msgList.scrollHeight;
+    return el;
+  }
+
+  function getActiveViewName() {
+    const active = document.querySelector(".seg-btn.active");
+    return active?.dataset?.view || "matches";
+  }
+
+  function updateStatusUi() {
+    if (modelBadge) modelBadge.textContent = shortModelLabel(aiState.provider, aiState.model);
+    if (statusDot) statusDot.classList.toggle("local", !aiState.enabled);
+    if (quotaSub) {
+      quotaSub.textContent = aiState.enabled
+        ? `Hemat Kuota · Sisa ${aiState.remaining}/${aiState.limit} chat hari ini`
+        : "Mode Quant Lokal (0 kuota) · /setai gemini <key> untuk AI penuh";
+    }
+  }
+
+  function buildContextDigest() {
+    if (ctxToggle && !ctxToggle.checked) return "";
+    const parts = [];
+    const a = state.currentAnalysis;
+    if (a) {
+      const v = a.verdict || {};
+      const gm = a.goal_model || {};
+      const cm = a.corners_model || {};
+      const vb = v.value_booster;
+      const warns = (a.filters || []).filter((f) => f.status === "WARN" || f.status === "FAIL").map((f) => `${f.name}: ${f.status}`).slice(0, 4);
+      const absH = (a.home?.metrics?.tier_s_out || []).map((p) => p.name).slice(0, 3).join(", ");
+      const absA = (a.away?.metrics?.tier_s_out || []).map((p) => p.name).slice(0, 3).join(", ");
+      parts.push([
+        `MATCH AKTIF: ${a.home?.name} vs ${a.away?.name} (${a.league_name} · ${a.match_date} · State: ${a.state}${a.is_live ? ` ${a.live_minute}' (${a.home?.score}-${a.away?.score})` : ""})`,
+        `XI Status: ${a.xi_status} | Formasi: ${a.home?.formation} vs ${a.away?.formation} | Sources: ${(a.sources_used || []).join(", ")}`,
+        `Dixon-Coles λ: Home ${gm.home_lambda} vs Away ${gm.away_lambda} (Total ${gm.total_lambda} · Proj ${gm.projected_score} · Mercurius Idx ${gm.mercurius_attack_index})`,
+        `Goal Probs: O2.5 ${gm.p_over_2_5}%, O3.5 ${gm.p_over_3_5}%, O4.5 ${gm.p_over_4_5}%, BTTS ${gm.p_btts_yes}%, 1H O0.5 ${gm.p_1h_over_0_5}% | Corners λ ${cm.total_corners_lambda} (O9.5 ${cm.p_over_9_5}%, O10.5 ${cm.p_over_10_5}%)`,
+        `🛡️ Safe Pick Utama: ${v.primary_bet} (${v.model_prob}%, Fair ${v.fair_odds}x${v.bookmaker_odds ? `, Bookie ${v.bookmaker_odds}x, Edge ${v.edge_pct}%` : ""}, Stake ${v.stake_units}u, Tier ${v.tier})`,
+        vb ? `🚀 Value Booster (+EV): ${vb.label} [${vb.strategy_label}] (${vb.model_prob}%, Fair ${vb.fair_odds}x, Min +EV ${vb.min_ev_odds}x, ¼-Kelly ${vb.booster_stake}u) — ${vb.rationale}` : `🚀 Value Booster: tidak ada trigger kuat pada laga ini`,
+        a.weather ? `Cuaca Kickoff (${a.weather.city}): ${a.weather.condition} ${a.weather.temp_c}°C, Rain ${a.weather.rain_mm}mm (${a.weather.rain_prob}%), Wind ${a.weather.wind_kmh}km/h` : null,
+        a.h2h ? `H2H (${a.h2h.count} laga): H ${a.h2h.home_wins}W · D ${a.h2h.draws} · A ${a.h2h.away_wins}W · Avg ${a.h2h.avg_goals} gol (${(a.h2h.last_scores || []).join(", ")})` : null,
+        a.af_consensus?.advice ? `API-FB Consensus: ${a.af_consensus.advice} (${a.af_consensus.home_pct}/${a.af_consensus.draw_pct}/${a.af_consensus.away_pct}%)` : null,
+        (absH || absA) ? `Absensi Kunci: ${absH ? `${a.home?.name}: ${absH}` : ""}${absH && absA ? " | " : ""}${absA ? `${a.away?.name}: ${absA}` : ""}` : null,
+        warns.length ? `Filter Peringatan: ${warns.join(" ; ")}` : "Filter: semua bersih",
+        `Risk Audit: Chaos ${a.risk_audit?.chaos_index}/100 · DataConf ${a.risk_audit?.data_confidence}% · Failure: ${a.risk_audit?.failure_condition} · Live Hedge: ${a.risk_audit?.live_hedge_trigger}`
+      ].filter(Boolean).join("\n"));
+    }
+
+    const view = getActiveViewName();
+    if (view === "memory" || !a) {
+      try {
+        const an = ObsidianEngine.getAnalytics();
+        const s = an.summary || {};
+        const topSys = (an.strategy_systems || []).slice(0, 4).map((x) => `${x.name}: ${x.wins}W-${x.losses}L (${x.hit_rate}%, ROI ${x.est_roi >= 0 ? "+" : ""}${x.est_roi}%)`).join(" | ");
+        parts.push(`MEMORY TRACK RECORD: ${s.settled || 0} settled (${s.wins || 0}W-${s.pushes || 0}P-${s.losses || 0}L, Hit ${s.hit_rate || 0}%, PnL ${s.pnl_units || 0}u, ROI ${s.roi_pct || 0}%). Top Systems: ${topSys}`);
+      } catch {}
+    }
+
+    return parts.join("\n---\n").slice(0, 2350);
+  }
+
+  function refreshContextUi() {
+    const a = state.currentAnalysis;
+    const view = getActiveViewName();
+    if (ctxPill) {
+      if (a) {
+        const wxBit = a.weather ? ` · ${a.weather.icon} ${a.weather.temp_c}°C` : "";
+        ctxPill.textContent = `⚽ ${a.home?.name} vs ${a.away?.name} · ${a.xi_confirmed ? "XI Resmi" : "Pre-XI"}${wxBit}`;
+      } else if (view === "scanner") {
+        ctxPill.textContent = "📡 Daily Radar · Tanya strategi atau hasil scan";
+      } else if (view === "memory") {
+        ctxPill.textContent = "🧠 Memory & Strategy Backtest aktif";
+      } else {
+        ctxPill.textContent = "⚽ Pilih laga di kiri untuk bedah otomatis";
+      }
+    }
+
+    if (chipsWrap) {
+      const chips = a
+        ? [
+            { label: "🔍 Bedah Laga Ini", prompt: "Bedah singkat pertandingan ini: kekuatan utama, ancaman terbesar, dan kesimpulan akhirnya." },
+            { label: "🛡️ Safe vs 🚀 Booster", prompt: "Bandingkan Safe Pick vs Value Booster (+EV) di laga ini — kapan pilih yang aman dan kapan ambil booster?" },
+            { label: "⚠️ Risiko & Hedge Live", prompt: "Apa risiko paling bahaya di laga ini dan kapan harus hedge saat live?" },
+            { label: "📘 Arti Market Ini", prompt: "Jelaskan arti market rekomendasi utama di laga ini dengan contoh skor menang/seri/kalah." }
+          ]
+        : [
+            { label: "🧠 Audit Rekor Kita", prompt: "Ringkas performa historis Memory Engine Bola kita: kenapa menang, kenapa kalah, dan strategi mana yang paling profit?" },
+            { label: "🛡️ Safe vs 🚀 Booster", prompt: "Jelaskan cara main Dual-Track Safe Anchor + Value Booster (+EV) biar profit stabil." },
+            { label: "💰 Atur Modal Kelly", prompt: "Bagaimana cara membagi stake modal dengan aman antara Safe Pick dan ¼-Kelly Value Booster?" },
+            { label: "📘 Arti AH -1 vs -1.5", prompt: "Jelaskan perbedaan Asian Handicap (-1), (-1.5), dan DNB (0) dengan contoh skor singkat." }
+          ];
+      chipsWrap.innerHTML = chips
+        .map((c, idx) => `<button type="button" class="ai-chip" data-chip-idx="${idx}">${esc(c.label)}</button>`)
+        .join("");
+      chipsWrap.querySelectorAll(".ai-chip").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.chipIdx);
+          if (chips[idx]) sendPrompt(chips[idx].prompt);
+        });
+      });
+    }
+  }
+
+  function buildLocalQuantReply(prompt) {
+    const low = String(prompt || "").toLowerCase();
+    const a = state.currentAnalysis;
+    const ownerHint = `\n\n_Catatan: Cloud AI belum diaktifkan. Owner cukup ketik \`/setai gemini <API_KEY>\` (gratis di Google AI Studio — Gemini 3.5 Flash-Lite) atau \`/setai groq <KEY>\` di DM bot Telegram agar bisa ngobrol bebas._`;
+
+    if (a && /bedah|analisis|laga|match|safe|booster|risiko|hedge|arti|kenapa|over|handicap|skor/i.test(low)) {
+      const v = a.verdict || {}, gm = a.goal_model || {}, vb = v.value_booster;
+      const lines = [
+        `**Bedah Cepat: ${a.home?.name} vs ${a.away?.name}** (${a.league_name})`,
+        `- **Status XI:** ${a.xi_status} ${a.xi_confirmed ? "(eksekusi penuh aman)" : "(⚠️ stake ditahan 50% sampai T-60')"}`,
+        `- **Proyeksi Gol:** ${gm.home_lambda} vs ${gm.away_lambda} λ (Total **${gm.total_lambda} λ**, skor proyeksi **${gm.projected_score}**, Mercurius Index **${gm.mercurius_attack_index}**)`,
+        `- **🛡️ Safe Pick:** **${v.primary_bet}** — peluang **${v.model_prob}%** (Fair \`${v.fair_odds}x\`, Stake \`${v.stake_units}u\`)`,
+        vb ? `- **🚀 Value Booster (+EV):** **${vb.label}** (${vb.model_prob}%, Fair \`${vb.fair_odds}x\`, Min +EV \`${vb.min_ev_odds}x\`, ¼-Kelly \`${vb.booster_stake}u\`) — ${vb.rationale}` : `- **🚀 Value Booster:** Belum ada garis agresif yang lolos filter +EV di laga ini.`,
+        a.weather ? `- **Cuaca Kickoff (${a.weather.city}):** ${a.weather.icon} ${a.weather.condition} (${a.weather.temp_c}°C, Rain ${a.weather.rain_mm}mm, Wind ${a.weather.wind_kmh}km/h)` : null,
+        `- **Risiko & Live Hedge:** ${a.risk_audit?.failure_condition || "—"} | Hedge: ${a.risk_audit?.live_hedge_trigger || "—"}`
+      ].filter(Boolean);
+      return lines.join("\n") + ownerHint;
+    }
+
+    if (/rekor|memory|menang|kalah|audit|strategi|roi/i.test(low)) {
+      const an = ObsidianEngine.getAnalytics();
+      const s = an.summary || {};
+      const top = (an.strategy_systems || []).slice(0, 3).map((x) => `- **${x.name}**: ${x.wins}W–${x.losses}L (**${x.hit_rate}%**, Est. ROI **${x.est_roi >= 0 ? "+" : ""}${x.est_roi}%**)`).join("\n");
+      return `**Ringkasan Rekor ENGINE BOLA (${s.settled || 0} laga settled)**\n- Akurasi: **${s.hit_rate || 0}%** (${s.wins || 0}W · ${s.pushes || 0}P · ${s.losses || 0}L) · PnL \`${s.pnl_units || 0}u\`\n${top}${ownerHint}`;
+    }
+
+    if (/ah|handicap|dnb|kelly|modal|stake/i.test(low)) {
+      return [
+        "**Panduan Singkat Market & Modal:**",
+        "- **DNB (0):** Menang = profit penuh · Seri = modal kembali (PUSH).",
+        "- **Asian Handicap (-1):** Wajib menang selisih ≥2 gol (menang tepat 1 gol = refund).",
+        "- **Asian Handicap (-1.5):** Wajib menang selisih minimal 2 gol (`2-0`, `3-1`, dll).",
+        "- **Dual-Track Modal:** Alokasikan 70–80% porsi ke **🛡️ Safe Pick** (akurasi tinggi) dan 20–30% porsi kecil (**¼-Kelly `0.5u–0.85u`**) ke **🚀 Value Booster (+EV)** khusus saat **Confirmed XI**!"
+      ].join("\n") + ownerHint;
+    }
+
+    return `Halo! Saat ini AI berjalan di **Mode Quant Lokal (0 kuota)**. Pilih salah satu pertandingan di sebelah kiri lalu klik **🔍 Bedah Laga Ini** untuk ringkasan otomatis.${ownerHint}`;
+  }
+
+  async function syncStatus() {
+    const gateUrl = String(OBSIDIAN_AUTH_GATE_URL || "").trim().replace(/\/$/, "");
+    const tok = localStorage.getItem(AUTH_SESSION_KEY) || "";
+    if (!gateUrl || !tok) {
+      aiState.enabled = false;
+      updateStatusUi();
+      return;
+    }
+    try {
+      const resp = await fetch(`${gateUrl}/api/ai/status`, { headers: { Authorization: `Bearer ${tok}` } });
+      if (resp.ok) {
+        const j = await resp.json();
+        aiState.enabled = !!j.enabled;
+        aiState.provider = j.provider || null;
+        aiState.model = j.model || null;
+        aiState.used = Number(j.used_today || 0);
+        aiState.limit = Number(j.daily_limit || 25);
+        aiState.remaining = Number(j.remaining ?? Math.max(0, aiState.limit - aiState.used));
+        aiState.isOwner = !!j.is_owner;
+      }
+    } catch {}
+    updateStatusUi();
+  }
+
+  async function sendPrompt(text) {
+    const clean = String(text || "").trim();
+    if (!clean || aiState.busy) return;
+    aiState.busy = true;
+    input.value = "";
+    sendBtn.disabled = true;
+    appendMessage("user", clean);
+    const typingEl = appendTyping();
+
+    const gateUrl = String(OBSIDIAN_AUTH_GATE_URL || "").trim().replace(/\/$/, "");
+    const tok = localStorage.getItem(AUTH_SESSION_KEY) || "";
+    const context = buildContextDigest();
+
+    try {
+      if (!gateUrl || !tok) {
+        typingEl.remove();
+        appendMessage("assistant", buildLocalQuantReply(clean), "Local Quant · 0 kuota");
+        return;
+      }
+      const resp = await fetch(`${gateUrl}/api/ai/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${tok}` },
+        body: JSON.stringify({
+          message: clean,
+          context,
+          history: aiState.history.slice(-6)
+        })
+      });
+      const data = await resp.json().catch(() => ({}));
+      typingEl.remove();
+
+      if (resp.ok && data.ok && data.reply) {
+        aiState.enabled = true;
+        aiState.provider = data.provider || aiState.provider;
+        aiState.model = data.model || aiState.model;
+        aiState.used = Number(data.used_today ?? aiState.used);
+        aiState.limit = Number(data.daily_limit ?? aiState.limit);
+        aiState.remaining = Number(data.remaining ?? Math.max(0, aiState.limit - aiState.used));
+        updateStatusUi();
+
+        aiState.history.push({ role: "user", content: clean });
+        aiState.history.push({ role: "assistant", content: data.reply });
+        if (aiState.history.length > 8) aiState.history = aiState.history.slice(-8);
+
+        const meta = data.cached
+          ? `${shortModelLabel(data.provider, data.model)} · ⚡ cache (0 kuota)`
+          : `${shortModelLabel(data.provider, data.model)} · sisa ${aiState.remaining}/${aiState.limit}`;
+        appendMessage("assistant", data.reply, meta);
+      } else if (data.code === "AI_NOT_CONFIGURED") {
+        aiState.enabled = false;
+        updateStatusUi();
+        appendMessage("assistant", buildLocalQuantReply(clean), "Local Quant Fallback · 0 kuota");
+      } else {
+        appendMessage("assistant", `⚠️ ${data.error || "Gagal menghubungi ENGINE BOLA AI. Coba lagi sebentar."}`, "Status");
+      }
+    } catch {
+      typingEl.remove();
+      appendMessage("assistant", buildLocalQuantReply(clean), "Offline Local Fallback · 0 kuota");
+    } finally {
+      aiState.busy = false;
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  }
+
+  function showWelcome() {
+    msgList.innerHTML = "";
+    appendMessage(
+      "assistant",
+      "Halo! Saya **ENGINE BOLA AI** (mode hemat kuota). Tanyakan apa saja — bedah laga aktif, perbandingan **🛡️ Safe Pick vs 🚀 Value Booster (+EV)**, arti market Asian Handicap/Corners, atau manajemen modal Kelly.",
+      "Siap membantu"
+    );
+  }
+
+  function toggleDrawer(open) {
+    aiState.open = typeof open === "boolean" ? open : !aiState.open;
+    drawer.classList.toggle("hidden", !aiState.open);
+    fab.classList.toggle("hidden", aiState.open);
+    if (aiState.open) {
+      refreshContextUi();
+      syncStatus();
+      if (!msgList.children.length) showWelcome();
+      setTimeout(() => input.focus(), 80);
+    }
+  }
+
+  fab.addEventListener("click", () => toggleDrawer(true));
+  closeBtn?.addEventListener("click", () => toggleDrawer(false));
+  clearBtn?.addEventListener("click", () => {
+    aiState.history = [];
+    showWelcome();
+    showToast("Percakapan AI dibersihkan");
+  });
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    sendPrompt(input.value);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && aiState.open) toggleDrawer(false);
+  });
+
+  window.__ebAiRefreshContext = refreshContextUi;
+  window.__ebAiSyncStatus = syncStatus;
+  refreshContextUi();
+  updateStatusUi();
 }
 
 </script>
