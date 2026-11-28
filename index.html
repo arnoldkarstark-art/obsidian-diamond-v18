@@ -10769,7 +10769,7 @@ function initAiCopilot() {
   function buildLocalQuantReply(prompt) {
     const low = String(prompt || "").toLowerCase();
     const a = state.currentAnalysis;
-    const ownerHint = `\n\n_Catatan: Cloud AI belum diaktifkan. Owner cukup ketik \`/setai gemini <API_KEY>\` (gratis di Google AI Studio — Gemini 3.5 Flash-Lite) atau \`/setai groq <KEY>\` di DM bot Telegram agar bisa ngobrol bebas._`;
+    const ownerHint = `\n\n**Catatan:** Cloud AI belum diaktifkan. Owner cukup ketik \`/setai gemini <API_KEY>\` (gratis di Google AI Studio — Gemini 3.5 Flash-Lite) atau \`/setai groq <KEY>\` di DM bot Telegram agar bisa ngobrol bebas.`;
 
     if (a && /bedah|analisis|laga|match|safe|booster|risiko|hedge|arti|kenapa|over|handicap|skor/i.test(low)) {
       const v = a.verdict || {}, gm = a.goal_model || {}, vb = v.value_booster;
